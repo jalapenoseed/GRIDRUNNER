@@ -1,0 +1,61 @@
+import {createDrone,DRONE_CLASSES} from './dist/drone-system.js';
+import {PRESETS} from './dist/immersion.js';
+import {leg3Defaults,leg3Sites,objective3,antennaCorrect,endingCost} from './dist/leg3.js';
+import {leg2Defaults,leg2Sites,leg2Objective,phaseInput,hydroAvailable} from './dist/leg2.js';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import * as T from './dist/three.js';
+import {pedalStep,generationStep,validateSave,SAVE_VERSION} from './dist/expedition.js';
+const moving={battery:0,stamina:100,speed:0,forward:1,pedaling:false,road:true,weight:12,regen:false};
+assert(pedalStep(moving,1).target>0,'Zero-charge bike must move');
+assert(pedalStep({...moving,weight:40},1).target<pedalStep(moving,1).target,'Trailer load must slow pedaling');
+assert.equal(pedalStep({...moving,stamina:1},1).stamina,0);
+assert(pedalStep({...moving,stamina:0,forward:0},1).stamina>0);
+assert.equal(pedalStep({...moving,battery:30,forward:-1,speed:10,regen:true},1).mode,'REGEN');
+assert.equal(generationStep('solar',{fuel:1,reserve:20,daylight:false,stopped:true},10).gain,0);
+assert.equal(generationStep('fuel',{fuel:1,reserve:20,daylight:true,stopped:false},10).gain,0);
+assert.equal(generationStep('fuel',{fuel:0,reserve:20,daylight:true,stopped:true},10).gain,0);
+const g=generationStep('fuel',{fuel:.01,reserve:39.99,daylight:true,stopped:true},100);assert(g.gain<=.010001);assert(g.fuelUsed<=.01);
+const src=fs.readFileSync('./dist/game.js','utf8');
+const memory=new Map(),nodes=new Map();function node(sel){if(!nodes.has(sel))nodes.set(sel,{innerHTML:'',dataset:{},style:{},textContent:'',setAttribute(){},insertAdjacentHTML(where,text){this.innerHTML=where==='afterbegin'?text+this.innerHTML:this.innerHTML+text;},querySelector(){return {focus(){}};}});return nodes.get(sel);}
+const ctx=vm.createContext({T,createDrone,DRONE_CLASSES,PRESETS,mobile:false,augmentV7Panel(){},releaseDroneView(){},leg3Defaults,leg3Sites,objective3,antennaCorrect,endingCost,sound:{event(){},setLevels(){},start(){},pause(){}},leg2Defaults,leg2Sites,leg2Objective,phaseInput,hydroAvailable,SAVE_VERSION,validateSave,generationStep,console,Date,Math,JSON,Number,Blob,setTimeout,URL,performance,localStorage:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,v)},$ :node,document:{body:{classList:{toggle(){}}}},clamp:(v,a,b)=>Math.max(a,Math.min(b,v)),settings:null,bike:{position:new T.Vector3(1,0,3),rotation:{}},trailer:{position:new T.Vector3(2,0,5),rotation:{}},droneOrigin:null,crates:Array.from({length:4},()=>({done:false,mesh:{visible:true}})),enemies:[[15,-575],[138,-704]].map(home=>({home,x:home[0],z:home[1],hp:75,mesh:{position:new T.Vector3(),rotation:new T.Euler()}})),hud(){},toast(){},radio(){},play(){},screen:'start',nearest:null,keys:{},drawMap(){},cargo:()=>0,cargoLimit:()=>40,recipes:[],can:()=>false,dist:()=>20,weights:{},scene:{},renderer:{},camera:{},time:0});
+vm.runInContext(src.slice(src.indexOf('const initial='),src.indexOf(';let stickX')).replace('const initial=','globalThis.initial='),ctx);
+vm.runInContext('s=initial()',ctx);
+vm.runInContext(src.slice(src.indexOf('function renderLegacyPanel()'),src.indexOf("$('#panel').addEventListener('click'")),ctx);
+vm.runInContext(src.slice(src.indexOf('const defaults='),src.lastIndexOf("$('#panel').addEventListener('click'")),ctx);
+vm.runInContext("started=true;s.inv.wire=4;s.met=true;s.generator='fuel';crates[1].done=true;enemies[0].hp=0;s.mode='drone';s.droneSystem.mode='MANUAL';droneOrigin={pos:new T.Vector3(4,2,8),yaw:.5,mode:'bike'};",ctx);
+const record=vm.runInContext('snapshot()',ctx);validateSave(record);
+vm.runInContext("s.battery=0;s.inv.wire=0;crates[1].done=false;enemies[0].hp=75;restore(JSON.parse(JSON.stringify("+JSON.stringify(record)+")))",ctx);
+assert.equal(ctx.s.battery,27);assert.equal(ctx.s.inv.wire,4);assert.equal(ctx.crates[1].done,true);assert.equal(ctx.crates[1].mesh.visible,false);assert.equal(ctx.enemies[0].hp,0);assert(ctx.s.pos instanceof T.Vector3);assert(ctx.droneOrigin.pos instanceof T.Vector3);assert.equal(ctx.s.harvesting,null);
+assert(vm.runInContext("writeSave('manual1')",ctx));assert.equal(memory.size,1);
+for(const mutate of [r=>r.version=99,r=>r.state.battery=NaN,r=>r.state.fuel=-1,r=>r.state.inv.wire=-2,r=>r.origin=null,r=>r.enemies.pop()]){const r=JSON.parse(JSON.stringify(record));mutate(r);assert.throws(()=>validateSave(r));}
+vm.runInContext(src.slice(src.indexOf('function startLegTwo(supplied)'),src.indexOf('// v7 interface adapters.')),ctx);
+for(const screen of ['leg3brief','antenna','core','leg3win','leg2brief','cal','phase','leg2win','start','pause','quick','saves','settings','controls','rig','drones','journal','guide','reference','confirmNew','inventory','map','dead']){ctx.screen=screen;vm.runInContext('renderPanel()',ctx);assert(node('#panel').innerHTML.length>100,screen);assert(!node('#panel').innerHTML.includes('undefined'),screen+' has undefined text');}
+console.log('PASS: zero-charge movement, stamina, weight, generation constraints, complete save restoration, malformed save rejection, and 15 menu renders.');
+
+ctx.can=cost=>Object.entries(cost).every(([k,n])=>ctx.s.inv[k]>=n);ctx.take=cost=>{for(const [k,n]of Object.entries(cost))ctx.s.inv[k]-=n;};ctx.open=t=>{ctx.screen=t;};ctx.add=items=>{for(const k in items)ctx.s.inv[k]+=items[k];};ctx.spend=n=>{if(ctx.s.battery<n)return false;ctx.s.battery-=n;return true;};ctx.dist=(x,z)=>Math.hypot(ctx.s.pos.x-x,ctx.s.pos.z-z);
+vm.runInContext("s=initial();s.leg=2;s.pos.set(45,1.7,-1810);s.mode='foot';s.battery=40;",ctx);
+vm.runInContext("interactLegTwo({kind:'l2archive'})",ctx);assert(!ctx.s.relayPowered,'Archive must not skip waterworks');
+vm.runInContext("interactLegTwo({kind:'l2cal'});interactLegTwo({kind:'l2intake'})",ctx);assert(!ctx.s.intakeCleared,'Intake must need drone');
+vm.runInContext("s.mode='drone';interactLegTwo({kind:'l2intake'});s.mode='foot';s.pos.set(65,1.7,-2355);screen='phase';operatePhase('B');",ctx);assert.equal(ctx.s.phaseStep,0,'Need clue first');
+vm.runInContext("interactLegTwo({kind:'l2note'});operatePhase('A');",ctx);assert.equal(ctx.s.phaseStep,0);
+vm.runInContext("s.puzzleLock=0;operatePhase('B');operatePhase('A');operatePhase('C');",ctx);assert(ctx.s.hydroRestored);
+ctx.trailer.position.set(60,0,-2340);assert(hydroAvailable(ctx.s,ctx.trailer.position));
+assert(generationStep('water',{fuel:0,reserve:0,stopped:true,flowing:true},1).gain>0);assert.equal(generationStep('water',{fuel:0,reserve:0,stopped:true,flowing:false},1).gain,0);
+vm.runInContext("interactLegTwo({kind:'l2archive'});interactLegTwo({kind:'l2archive'});",ctx);assert(ctx.s.leg2Won);assert.equal(ctx.s.battery,18);
+const chapterSave=vm.runInContext('snapshot()',ctx);validateSave(chapterSave);
+ctx.record=chapterSave;vm.runInContext('restore(record)',ctx);assert(ctx.s.leg2Won);assert.equal(ctx.s.phaseStep,3);assert.equal(ctx.s.leg,2);
+const old=JSON.parse(JSON.stringify(chapterSave));for(const k of Object.keys(leg2Defaults))delete old.state[k];validateSave(old);ctx.record=old;vm.runInContext('restore(record)',ctx);assert.equal(ctx.s.leg,1);assert.equal(ctx.s.leg2Won,false);
+console.log('PASS: Leg 2 prerequisite gates, drone-only intake, clue and breaker puzzle, water generation bounds, complete chapter progression, and backward-compatible saves.');
+
+vm.runInContext("s=initial();s.leg=3;s.mode='foot';s.battery=70;s.pos.set(0,1.7,-4590);interactLegThree({kind:'l3core'});",ctx);assert(!ctx.s.leg3Won);
+vm.runInContext("interactLegThree({kind:'l3security'});",ctx);assert(!ctx.s.securityOff);
+vm.runInContext("s.mode='drone';s.droneType='scout';interactLegThree({kind:'l3security'});",ctx);assert(!ctx.s.securityOff);
+vm.runInContext("s.droneType='engineer';interactLegThree({kind:'l3security'});s.mode='foot';interactLegThree({kind:'l3key'});s.pos.set(50,1.7,-3980);alignAntenna();",ctx);assert.equal(ctx.s.puzzleLock,15);assert(!ctx.s.antennaAligned);
+vm.runInContext("s.dialA=3;s.dialB=1;s.dialC=4;alignAntenna();",ctx);assert(!ctx.s.antennaAligned,'Cooldown blocks retry');
+vm.runInContext("s.puzzleLock=0;alignAntenna();interactLegThree({kind:'l3capacitor'});s.pos.set(0,1.7,-4590);finishLegThree('transmit');",ctx);assert(ctx.s.leg3Won);assert.equal(ctx.s.ending,'transmit');assert.equal(ctx.s.battery,44);
+const complete3=vm.runInContext('snapshot()',ctx);validateSave(complete3);ctx.record=complete3;vm.runInContext('restore(record)',ctx);assert(ctx.s.leg3Won);
+vm.runInContext("s.leg3Won=false;s.ending='';s.battery=19;finishLegThree('restore');",ctx);assert(!ctx.s.leg3Won);vm.runInContext("s.battery=20;finishLegThree('restore');",ctx);assert.equal(ctx.s.ending,'restore');assert.equal(ctx.s.battery,0);
+ctx.blocked=()=>false;ctx.s.hp=100;ctx.s.leg=2;ctx.s.leg3Won=false;ctx.s.mode='bike';ctx.s.powerMode='FULL';ctx.s.pos.set(0,1.7,-2610);vm.runInContext('updateSecurity(1)',ctx);assert(ctx.s.hp<100);const hp=ctx.s.hp;ctx.s.pos.x=-80;vm.runInContext('updateSecurity(1)',ctx);assert.equal(ctx.s.hp,hp,'Off-road route bypasses security');
+console.log('PASS: engineer requirement, Leg 3 prerequisite chain, cooldowns, both ending costs, chapter save round-trip, and security bypass.');
