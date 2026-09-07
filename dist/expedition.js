@@ -19,11 +19,15 @@ export function validateSave(r){
  const vec=v=>Array.isArray(v)&&v.length===3&&v.every(n=>number(n,-10000,10000));
  if(!vec(s.pos)||!vec(r.bike)||!vec(r.trailer)||!['bike','foot','drone'].includes(s.mode))bad();
  for(const [k,a,b]of [['battery',0,100],['trailer',0,40],['drone',0,100],['hp',0,100],['stamina',0,100],['fuel',0,20],['elapsed',0,1e10],['yaw',-1e10,1e10],['pitch',-2,2],['ammo',0,100000],['ev',0,36],['solarEnergy',0,48],['gridEnergy',0,70],['lineEnergy',0,48]])if(!number(s[k],a,b))bad();
- if(s.leg!==undefined&&![1,2].includes(s.leg))bad();
+ if(s.leg!==undefined&&![1,2,3].includes(s.leg))bad();
  for(const k of ['calMet','intakeCleared','phaseNote','hydroRestored','relayPowered','leg2Won','leg2Cache'])if(s[k]!==undefined&&typeof s[k]!=='boolean')bad();
+ for(const k of ['securityOff','archiveKey','antennaAligned','capacitorReady','leg3Won','leg3Supply','towerCode'])if(s[k]!==undefined&&typeof s[k]!=='boolean')bad();
+ for(const k of ['dialA','dialB','dialC'])if(s[k]!==undefined&&(!Number.isInteger(s[k])||s[k]<0||s[k]>5))bad();
+ if(s.puzzleLock!==undefined&&!number(s.puzzleLock,0,60))bad();
+ if(s.ending!==undefined&&!['','restore','transmit'].includes(s.ending))bad();
  if(s.phaseStep!==undefined&&(!Number.isInteger(s.phaseStep)||s.phaseStep<0||s.phaseStep>3))bad();
  if(!s.inv||Object.keys(s.inv).length!==4||!['wire','cells','electronics','steel'].every(k=>number(s.inv[k],0,100000)))bad();
- if(s.powerTarget!==null&&!['ev','solar','grid','line','l2hydro'].includes(s.powerTarget))bad();
+ if(s.powerTarget!==null&&!['ev','solar','grid','line','l2hydro','l3supply'].includes(s.powerTarget))bad();
  if(!number(s.temp,0,1000)||!number(s.chargeHeat,0,200))bad();
  if(!['scout','engineer'].includes(s.droneType)||!['off','fuel','solar','water'].includes(s.generator))bad();
  for(const k of ['trailerAttached','engineerBuilt','controller','interface','upgrade','solar','relay','met','scanned','won','dead','regenBuilt'])if(typeof s[k]!=='boolean')bad();
