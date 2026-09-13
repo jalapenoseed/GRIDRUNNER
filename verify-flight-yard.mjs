@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {GATES,createFlightSession,stepFlightSession,useFlightCargo} from './dist/flight-yard.js';
+import {environmentState} from './dist/weather-system.js';
+import {GamepadInput} from './dist/gamepad.js';
+let f=createFlightSession(),d={pos:[0,0,0],speed:0,hp:100};
+for(const p of GATES){d.pos=p;stepFlightSession(f,d,.02,'scout');}assert(f.complete&&f.gate===6);
+f=createFlightSession();f.job='inspect';for(const p of [[132,9,52],[102,13,52],[122,17,22]]){d.pos=p;for(let i=0;i<130;i++)stepFlightSession(f,d,.02,'scout');}assert(f.complete);
+for(const [job,type,pos]of [['repair','engineer',[132,9,52]],['relay','relay',[122,29,22]]]){f=createFlightSession();f.job=job;d.pos=pos;for(let i=0;i<260;i++)stepFlightSession(f,d,.02,'cargo');assert(!f.complete,'Wrong airframe cannot complete job');for(let i=0;i<260;i++)stepFlightSession(f,d,.02,type);assert(f.complete);}
+f=createFlightSession();f.job='cargo';d.pos=[170,4,52];useFlightCargo(f,d,'scout');assert(!f.carrying);d.speed=8;useFlightCargo(f,d,'cargo');assert(!f.carrying);d.speed=0;useFlightCargo(f,d,'cargo');assert(f.carrying);d.pos=[104,4,84];useFlightCargo(f,d,'cargo');assert(f.complete&&!f.carrying);
+assert.equal(environmentState({weather:'blackout',sunHour:12,movingSun:true},999).daylight,0);assert.equal(environmentState({weather:'storm'}).rain,1);assert.notEqual(environmentState({weather:'dusk',sunHour:12,movingSun:true},0).hour,environmentState({weather:'dusk',sunHour:12,movingSun:true},20).hour);
+const pad={index:0,mapping:'standard',connected:true,axes:[0,0,0,0],buttons:Array.from({length:17},()=>({value:0}))},input=new GamepadInput();input.poll([pad],{},0);pad.buttons[8].value=1;assert.deepEqual(input.poll([pad],{},.1).actions,[]);pad.buttons[2].value=1;assert.deepEqual(input.poll([pad],{},.2).actions,['scanHUD']);pad.buttons[2].value=0;pad.buttons[8].value=0;assert.deepEqual(input.poll([pad],{},.3).actions,[]);pad.buttons[8].value=1;pad.buttons[3].value=1;assert.deepEqual(input.poll([pad],{},.4).actions,['nightVision']);pad.buttons[8].value=0;pad.buttons[3].value=0;input.poll([pad],{},.5);pad.buttons[8].value=1;input.poll([pad],{},.6);pad.buttons[8].value=0;assert.deepEqual(input.poll([pad],{},.7).actions,['map']);
+console.log('PASS: six ordered gates, scan dwell, role-specific repair/relay, cargo constraints, weather time, Xbox View chords and tap-map preservation.');

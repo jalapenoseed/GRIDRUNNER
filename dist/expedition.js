@@ -34,7 +34,7 @@ export function validateSave(r){
  validateInventory(s.inv);for(const k of ['wire','cells','electronics','steel'])if(s.inv[k]===undefined)s.inv[k]=0;s.field=validateField(s.field);s.residents=residentState(s.residents);s.relayHouse=validateRelayHouse(s.relayHouse);s.experience=migrateExperience(s.experience);
  if(s.powerTarget!==null&&!['ev','solar','grid','line','l2hydro','l3supply'].includes(s.powerTarget))bad();
  if(!number(s.temp,0,1000)||!number(s.chargeHeat,0,200))bad();
- if(!['scout','engineer'].includes(s.droneType)||!['off','fuel','solar','water'].includes(s.generator))bad();
+ if(!['scout','engineer','cargo','relay'].includes(s.droneType)||!['off','fuel','solar','water'].includes(s.generator))bad();
  for(const k of ['trailerAttached','engineerBuilt','controller','interface','upgrade','solar','relay','met','scanned','won','dead','regenBuilt'])if(typeof s[k]!=='boolean')bad();
  if(!Array.isArray(r.crates)||r.crates.length!==4||r.crates.some(x=>typeof x!=='boolean'))bad();
  if(!Array.isArray(r.enemies)||r.enemies.length!==2||r.enemies.some(e=>!number(e.x,-2000,2000)||!number(e.z,-3000,3000)||!number(e.hp,-100,75)))bad();

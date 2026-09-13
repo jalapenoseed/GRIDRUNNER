@@ -1,3 +1,11 @@
+# GRIDRUNNER v7.6 — Flight Yard
+
+[Play GRIDRUNNER](https://jalapenoseed.github.io/GRIDRUNNER/)
+
+Four reference-pack drones, Flight Yard missions, scan HUD toggle, night vision, moving sun/weather and a settlement/NPC pass. **G** hangar · **K** scan overlay · **N** night vision · **O** atmosphere. Xbox **View + X/Y** toggles scan / night vision.
+
+[Changes and controls](CHANGELOG-v7.6.md) · [Validation](QA-v7.6.md)
+
 # GRIDRUNNER v7.5 — The Relay House
 
 [Play GRIDRUNNER](https://jalapenoseed.github.io/GRIDRUNNER/)

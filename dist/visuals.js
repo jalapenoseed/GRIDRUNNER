@@ -61,7 +61,19 @@ export function makeCockpit(){
  g.userData.display={canvas,tex};return g;
 }
 export function makeWeapon(){const g=new T.Group();box(g,.28,-.3,-.67,.1,.13,.4,palette.black);box(g,.28,-.23,-.69,.045,.02,.32,palette.steel);box(g,.28,-.39,-.53,.07,.19,.08,palette.rubber);rod(g,[.28,-.28,-.85],[.28,-.28,-1.14],.025,palette.edge);box(g,.32,-.285,-.72,.015,.035,.1,palette.cyan);return combine(g);}
-export function makePerson(x,z,c){const g=new T.Group();box(g,0,1.42,0,.63,.8,.35,c);box(g,0,1.55,.21,.52,.48,.12,palette.black);for(const xx of [-.16,.16]){box(g,xx,.71,0,.23,.73,.25,0x343632);box(g,xx,.31,.08,.26,.14,.43,palette.black);rod(g,[xx*2,1.78,0],[xx*2.5,1.13,.15],.11,c);}mesh(g,new T.SphereGeometry(.235,10,8),0,2.01,0,0x302f29);box(g,0,2.035,.21,.33,.085,.05,0x1b424d);box(g,0,1.5,-.25,.48,.63,.23,palette.black);rod(g,[-.28,1.24,.25],[.38,1.45,.45],.045,palette.black);g.position.set(x,0,z);return combine(g);}
+export function makePerson(x,z,c){
+ const g=new T.Group(),head=new T.Group(),arms=[];
+ const torso=mesh(g,new T.CapsuleGeometry(.24,.42,3,10),0,1.4,0,c);torso.scale.set(1.2,1,.72);
+ box(g,0,1.46,.18,.49,.5,.12,0x394442);box(g,0,1.09,0,.55,.09,.32,0x222c2b);
+ for(const side of [-1,1]){box(g,side*.18,1.42,.265,.13,.18,.06,0x727b66);box(g,side*.18,1.24,.255,.15,.14,.06,0x494c3e);box(g,side*.15,1.69,.15,.035,.2,.04,0xb2a88b);
+  const leg=mesh(g,new T.CapsuleGeometry(.115,.54,3,9),side*.16,.67,0,0x3b413c);leg.rotation.z=side*.035;
+  box(g,side*.16,.24,.09,.25,.19,.43,0x17201f);box(g,side*.16,.58,.12,.19,.21,.08,0x555b4b);
+  const arm=new T.Group();arm.position.set(side*.33,1.66,0);rod(arm,[0,0,0],[side*.08,-.35,.04],.09,c);rod(arm,[side*.08,-.35,.04],[side*.08,-.62,.19],.08,c);mesh(arm,new T.SphereGeometry(.088,8,6),side*.08,-.67,.2,0x282e29);combine(arm);g.add(arm);arms.push(arm);
+ }
+ head.position.set(0,1.96,0);const face=mesh(head,new T.SphereGeometry(.215,14,10),0,0,0,0x8a745a);face.scale.set(.86,1.08,.9);
+ mesh(head,new T.SphereGeometry(.222,12,8,0,Math.PI*2,0,Math.PI*.54),0,.015,-.015,0x485449);box(head,0,.015,.172,.31,.085,.05,0x233e43);box(head,0,-.102,.16,.22,.12,.07,0x51584b);for(const side of [-1,1])mesh(head,new T.SphereGeometry(.045,8,6),side*.21,0,0,0x242c2c);
+ combine(head);g.add(head);box(g,0,1.44,-.24,.45,.58,.21,0x303b37);box(g,0,1.55,-.36,.28,.13,.03,0xa79668);g.userData.head=head;g.userData.arms=arms;g.position.set(x,0,z);return combine(g);
+}
 export function heightAt(x,z){const edge=Math.max(0,Math.abs(x)-210);return edge*(.17+.13*Math.sin(z*.005+x*.01)**2)+Math.max(0,edge-75)*(.25+.19*Math.sin(z*.012+x*.019)*Math.cos(x*.017));}
 export function makeTerrain(scene,mobile){const group=new T.Group();scene.add(group);const loader=new T.TextureLoader();const texture=loader.load('./assets/desert-ground.png');texture.wrapS=texture.wrapT=T.RepeatWrapping;texture.repeat.set(130,180);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=4;const geo=new T.PlaneGeometry(3000,7600,mobile?110:180,mobile?150:240);geo.rotateX(-Math.PI/2);geo.translate(0,0,-1500);const a=geo.attributes.position;const colors=[];for(let i=0;i<a.count;i++){const x=a.getX(i),z=a.getZ(i),h=heightAt(x,z);a.setY(i,h-.04);const basin=new T.Color(.79,.73,.63),river=new T.Color(.51,.64,.53),industrial=new T.Color(.47,.49,.5);const c=basin.lerp(river,T.MathUtils.smoothstep(-z,1700,1860)).lerp(industrial,T.MathUtils.smoothstep(-z,3150,3330));c.multiplyScalar(Math.max(.45,1-h*.0008));colors.push(c.r,c.g,c.b);}geo.setAttribute('color',new T.Float32BufferAttribute(colors,3));geo.computeVertexNormals();group.add(new T.Mesh(geo,new T.MeshStandardMaterial({map:texture,roughness:1,vertexColors:true})));
 return group;}
