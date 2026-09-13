@@ -1,3 +1,17 @@
+import * as weather from './dist/weather-system.js';
+import * as yard from './dist/flight-yard.js';
+import * as fleetModule from './dist/drone-fleet.js';
+import {EnvironmentDetail} from './dist/environment-detail.js';
+import * as relay from './dist/relay-house.js';
+import * as relayWorldModule from './dist/relay-world.js';
+import * as relayUI from './dist/relay-ui.js';
+import {machineSettings} from './dist/control-settings.js';
+import {drawInstruments} from './dist/instruments.js';
+import {ControllerBridge} from './dist/controller-bridge.js';
+import * as experience from './dist/experience.js';
+import {CameraManager} from './dist/camera-manager.js';
+import * as settlements from './dist/settlements.js';
+import * as survival from './dist/survival.js';
 // Full module/DOM integration with real Three.js scene objects. WebGL is stubbed;
 // this suite does NOT claim GPU, screenshot, pointer-lock or audio listening QA.
 import {JSDOM} from 'jsdom';
@@ -10,7 +24,7 @@ const context2d=new Proxy({measureText:()=>({width:50}),createLinearGradient:()=
 w.HTMLCanvasElement.prototype.getContext=()=>context2d;
 w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};w.document.exitPointerLock=()=>{};w.HTMLCanvasElement.prototype.requestPointerLock=()=>Promise.resolve();
 let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={render:{calls:0}};}setPixelRatio(){}setSize(){}render(scene,camera){assert(scene.isScene&&camera.isPerspectiveCamera);frames++;}}
-const ctx=vm.createContext({T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
+const ctx=vm.createContext({...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\n/gm,'');
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 const tick=(seconds)=>{for(let i=0;i<seconds*50;i++)run('update(.02)');run('hud();loop(performance.now()+20)');};
@@ -33,3 +47,65 @@ const legacy=run('snapshot()');delete legacy.state.droneSystem;delete legacy.sta
 // Check live scene numbers; shader compilation is deliberately outside this test.
 run('scene.updateMatrixWorld(true)');const stats=run('(()=>{let meshes=0,triangles=0;scene.traverse(o=>{if(o.isMesh){meshes++;triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3*(o.isInstancedMesh?o.count:1);if(o.matrixWorld.elements.some(n=>!Number.isFinite(n)))throw Error("Invalid transform");}});return {meshes,triangles};})()');
 console.log('PASS: full startup, actual DOM menus, input-driven bike/drone updates, commands, scan persistence, save/restore, presets, all three real mission chains and final save. Render stub frames:',frames,stats);
+// Fieldwork: real DOM events, transactions, mining and persistent depleted state.
+run('newExpedition();s.inv.toaster=1;open("supplies")');
+w.document.querySelector('[data-field=salvage][data-item=toaster]').click();assert.equal(run('s.inv.toaster'),0);assert.equal(run('s.inv.copper'),1);
+run('s.pos.copy(bike.position);open("supplies")');w.document.querySelector('[data-field=store][data-item=copper][data-storage=bike]').click();assert.equal(run('s.field.storage.bike.copper'),1);assert.equal(run('s.inv.copper'),0);
+w.document.querySelector('[data-field=retrieve][data-item=copper][data-storage=bike]').click();assert.equal(run('s.inv.copper'),1);
+run('s.inv.steel=4;s.inv.rubber=1;s.pos.copy(trailer.position);open("supplies")');w.document.querySelector('[data-field=craft][data-item=pickaxe]').click();assert.equal(run('s.inv.pickaxe'),1);
+run('activeField=s.field.world.find(p=>p.kind==="node").id;s.pos.set(s.field.world[5].x,1.7,s.field.world[5].z);open("supplies")');w.document.querySelector('[data-field=mine]').click();tick(4.2);assert.equal(run('s.field.world[5].left'),3);assert.equal(run('fieldJob'),null);
+run('s.inv.fuel=1;s.fuel=0;s.pos.copy(trailer.position);open("supplies")');w.document.querySelector('[data-field=refuel]').click();assert.equal(run('s.fuel'),1);assert.equal(run('s.inv.fuel'),0);
+assert(run('writeSave("manual1")'));run('s.field.storage.bike={};s.field.world[5].left=4;restore(getSave("manual1"))');assert.equal(run('s.field.world[5].left'),3);
+const old=run('snapshot()');delete old.state.field;assert.equal(expedition.validateSave(old).state.field.world.length,144);
+run('newExpedition();s.pos.set(54,1.7,-94);s.inv.steel=20');for(let i=0;i<3;i++){run('open("rig")');w.document.querySelector('[data-ui=fuel]').click();}assert.equal(run('s.field.fuelTrades'),2);assert.equal(run('s.inv.steel'),12);
+const inaccessible=run('s.field.world.filter(p=>solids.some(b=>Math.abs(p.x-b.x)<b.w+2&&Math.abs(p.z-b.z)<b.d+2)).map(p=>p.id)');console.log('Field sites near solid infrastructure:',inaccessible);
+console.log('PASS: DOM salvage, cargo transfer, fabrication, timed mining, fuel pour, finite trade, depletion save/reload and legacy field migration.');
+run('open("controls")');const launchSelect=w.document.querySelector('[data-remap=q]');launchSelect.value='z';launchSelect.dispatchEvent(new w.Event('change',{bubbles:true}));assert.equal(run('mappedKey("z")'),'q');assert.equal(run('mappedKey("q")'),'');run('play()');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'z'}));assert.equal(run('s.mode'),'drone');assert.equal(JSON.parse(w.localStorage.getItem('gridrunner.keys')).q,'z');
+console.log('PASS: visible rebind UI, persisted launch mapping, old key disabled and real remapped launch event.');
+// Settlements: proximity-gated real interaction, finite barter and save migration.
+run('newExpedition();s.pos.set(-123,1.7,-146);s.inv.steel=4');tick(.02);assert.equal(run('nearest.id'),'riggs');run('interact()');assert(w.document.querySelector('#panel').textContent.includes('Riggs'));w.document.querySelector('[data-resident-trade=riggs]').click();assert.equal(run('s.inv.cutters'),1);assert.equal(run('s.inv.steel'),2);assert.equal(run('s.residents.riggs.trades'),1);assert(w.document.querySelector('[data-resident-trade=riggs]').disabled);
+assert(run('writeSave("manual1")'));run('s.residents={};restore(getSave("manual1"))');assert.equal(run('s.residents.riggs.trades'),1);run('open("journal")');assert(w.document.querySelector('#panel').textContent.includes('Seized motors'));
+const noResidents=run('snapshot()');delete noResidents.state.residents;assert.deepEqual(expedition.validateSave(noResidents).state.residents,{});const badResidents=run('snapshot()');badResidents.state.residents.riggs.trades=999;assert.throws(()=>expedition.validateSave(badResidents));
+run('s.pos.set(-126,1.7,-160)');const beforeZ=run('s.pos.z');run('move(0,-1)');assert(run('s.pos.z')<beforeZ,'Open front is walkable');
+for(const leg of [1,2,3]){run(`s.leg=${leg};settlementWorld.update(s,0,"LOW")`);assert.equal(run('settlementWorld.groups.filter(p=>p.g.visible&&p.site.leg!==s.leg).length'),0);}
+console.log('PASS: resident interaction, finite trade, journal, save/reload/migration, malformed stock rejection, walkable interior and settlement Leg culling.');
+run('newExpedition();settings.autosave=false');for(let i=0;i<8;i++){run('changePOV();loop(performance.now()+20)');assert.equal(run('s.mode'),'bike');}run('s.experience.preferred.bike="wide";s.mode="foot";changePOV();loop(performance.now()+20)');assert.equal(run('s.experience.preferred.walking'),'shoulder');assert.equal(run('s.experience.preferred.bike'),'wide');assert(run('walkingBody.visible'));
+run('s.mode="bike";issueDrone("MANUAL");s.experience.preferred.drone="chase";loop(performance.now()+20)');assert.equal(run('s.mode'),'drone');assert(run('scoutMesh.visible'));run('issueDrone("FOLLOW");loop(performance.now()+20)');assert.equal(run('s.mode'),'bike');assert.equal(run('s.experience.preferred.bike'),'wide');
+assert(run('writeSave("manual1")'));run('s.experience=createExperience();restore(getSave("manual1"))');assert.equal(run('s.experience.preferred.drone'),'chase');assert.equal(run('s.experience.preferred.walking'),'shoulder');const oldPOV=run('snapshot()');delete oldPOV.state.experience;assert.equal(expedition.validateSave(oldPOV).state.experience.preferred.bike,'helmet');
+run('open("settings")');assert.equal(w.document.querySelectorAll('[data-pov-state]').length,6);run('settings.reduceMotion=true;loop(performance.now()+20)');assert.equal(run('povCamera.transition'),0);
+console.log('PASS: repeated POV cycles, walking body, drone chase/return, independent view persistence, old-save defaults, settings UI and reduced-motion transitions.');
+// Relay House: traverse actual porch and stair collision geometry, then solve
+// through the same DOM/interaction adapters used by players.
+run('newExpedition();settings.reduceMotion=false;s.mode="foot";s.pos.set(-86,1.7,-55);keys={};');
+function walkTo(x,z){for(let i=0;i<1400;i++){const p=run('s.pos.toArray()'),dx=x-p[0],dz=z-p[2],length=Math.hypot(dx,dz);if(length<.12)return;const step=Math.min(.08,length);run(`move(${dx/length*step},${dz/length*step});update(.02);`);}throw Error('Walking route blocked toward '+x+','+z+' at '+run('s.pos.toArray()'));}
+walkTo(-86,-76);assert(Math.abs(run('s.pos.y')-4.7)<.1,'Porch ramp reaches raised main floor');walkTo(-84,-86);walkTo(-84,-90);walkTo(-90,-90);walkTo(-98,-91.5);walkTo(-98,-103);assert(run('s.pos.y')<2.1,'Stairs descend to cellar');walkTo(-96.5,-103);walkTo(-94,-104);walkTo(-93,-102);
+assert.equal(run('nearest.id'),'toolbox');run('interact()');assert.equal(run('s.inv.fuse'),1);walkTo(-94,-104);walkTo(-96.5,-103);walkTo(-98,-103);walkTo(-98,-91.5);walkTo(-90,-90);walkTo(-84,-90);walkTo(-84,-86);walkTo(-77,-76);assert.equal(run('nearest.id'),'cook');run('interact()');assert(run('s.relayHouse.fuseSeated'));
+// Fixture positions below test machinery adapters after proving the walk route.
+function relayAt(id,mode='foot'){run(`s.mode='${mode}';s.pos.set(...(()=>{const p=RELAY_HOTSPOTS.find(p=>p.id==='${id}');return [p.x,p.y,p.z]})());keys={};s.speed=0;`);if(mode==='drone')run('s.droneSystem.pos=s.pos.toArray()');tick(.02);assert.equal(run('nearest?.id'),id,'Reachable '+id);}
+relayAt('generator');run('interact()');assert(run('s.relayHouse.power'));relayAt('board');run('interact()');relayAt('bunk');run('interact()');relayAt('terminal');run('interact()');assert.equal(run('screen'),'relayTerminal');assert(!run('paused'),'Diegetic terminal leaves world ticking');const elapsed=run('s.elapsed');tick(.1);assert(run('s.elapsed')>elapsed);
+run('relayTerminal.run("login GHOST-147");relayTerminal.run("tune 147.20");relayTerminal.run("exit")');assert(run('s.relayHouse.loggedIn'));
+relayAt('bench');run('interact()');w.document.querySelector('[data-field=craft][data-item=radioCoil]').click();assert.equal(run('s.inv.radioCoil'),1);w.document.querySelector('[data-field=craft][data-item=signalFilter]').click();assert.equal(run('s.inv.signalFilter'),1);run('play()');
+relayAt('radio');run('interact()');assert(run('s.relayHouse.filterInstalled'));run('issueDrone("MANUAL")');relayAt('dish','drone');run('interact()');assert(run('s.relayHouse.dishAligned'));run('issueDrone("HOLD")');relayAt('radio');run('interact()');assert(run('s.relayHouse.discovered'));assert(run('s.towerCode'));assert.equal(run('s.relay'),false,'Original campaign relay flag remains distinct');assert(run('writeSave("manual1")'));run('s.relayHouse=createRelayHouse();restore(getSave("manual1"))');assert(run('s.relayHouse.discovered'));run('open("journal")');assert(w.document.querySelector('#panel').textContent.includes('Someone changed the message'));
+// Roof volume blocks the real simulation below the dish instead of a visual-only slab.
+run('newExpedition();issueDrone("MANUAL");s.droneSystem.pos=[-82,6,-96];s.droneSystem.velocity=[0,12,0];s.pos.fromArray(s.droneSystem.pos);keys[" "]=true;');tick(2);assert(run('s.droneSystem.pos[1]')<8.1,'Cannot fly through the cabin roof');
+const oldHouse=run('snapshot()');delete oldHouse.state.relayHouse;assert.equal(expedition.validateSave(oldHouse).state.relayHouse.discovered,false);
+console.log('PASS: walkable raised porch and cellar stair, real machinery/terminal/crafting/dish adapters, live terminal clock, roof collision, distinct campaign flags and mystery save/reload.');
+// Real controller bridge with fresh polled device objects and DOM selection.
+let stubPads=[];Object.defineProperty(globalThis,'navigator',{configurable:true,value:{getGamepads:()=>stubPads}});globalThis.Event=w.Event;
+const stubPad={index:0,id:'Xbox runtime stub',mapping:'standard',connected:true,axes:[0,0,0,0],buttons:Array.from({length:17},()=>({value:0,pressed:false}))};stubPads=[stubPad];
+run('newExpedition();s.mode="foot";s.pos.set(54,1.7,-94);update(.02);');stubPad.buttons[0]={value:1,pressed:true};run('controller.poll(.02)');assert(run('s.met'),'Xbox A reaches actual interact adapter');stubPad.buttons[0]={value:0,pressed:false};run('controller.poll(.02);play();');
+stubPad.axes[1]=-1;run('controller.poll(.02);update(.02)');assert.equal(run('controller.device'),'gamepad');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'w'}));assert.equal(run('controller.device'),'keyboard','Latest keyboard activity wins');run('keys={};issueDrone("MANUAL")');stubPads=[];run('controller.poll(.02)');assert(run('paused'));assert.equal(run('s.droneSystem.mode'),'HOLD');assert.equal(run('s.mode'),'foot','Rider restored after controller loss');assert(w.document.querySelector('#toast').textContent.includes('Controller lost'));
+console.log('PASS: Xbox A interaction, last-device ownership, mid-FPV disconnect HOLD/pause and stationary rider restoration.');
+// v7.6: new modules through real menu, settings, simulation and save adapters.
+run('newExpedition();s.inv.steel=7;s.battery=38;s.pos.set(7,1.7,-40);s.yaw=.4;');
+const held=JSON.parse(run('JSON.stringify(snapshot())'));const autoBefore=w.localStorage.getItem('gridrunner.save.auto');
+run("open('flightyard')");assert.equal(w.document.querySelectorAll('[data-yard-drone]').length,4);w.document.querySelector('[data-yard-drone=cargo]').click();w.document.querySelector('[data-yard-job=cargo]').click();assert.equal(run('s.droneType'),'cargo');assert.equal(run('s.mode'),'drone');assert(run('flightSession'));assert.equal(run('writeSave("auto",true)'),false);assert.equal(w.localStorage.getItem('gridrunner.save.auto'),autoBefore);
+tick(.2);run('s.droneSystem.pos=[170,4,52];s.droneSystem.speed=0;interact()');assert(run('flightSession.carrying'));run('s.droneSystem.pos=[104,4,84];s.droneSystem.speed=0;interact()');assert(run('flightSession.complete'));
+const cargoBest=Number(w.localStorage.getItem('gridrunner.flightBest.cargo.cargo'));assert(cargoBest>0);assert.equal(cargoBest,run('flightSession.elapsed'));run('flightSession.elapsed+=10;interact()');assert.equal(Number(w.localStorage.getItem('gridrunner.flightBest.cargo.cargo')),cargoBest,'Repeated delivery cannot overwrite best time');
+run('leaveFlightYard()');assert.equal(run('s.inv.steel'),7);assert.equal(run('s.battery'),38);assert.deepEqual(Array.from(run('s.pos.toArray()')),held.state.pos);assert.equal(run('s.yaw'),held.state.yaw);
+run("action('scan');const discoveredBefore=s.discoveries.length;action('scanHUD');hud()");assert.equal(w.document.querySelector('#scanTags').innerHTML,'');assert.equal(run('s.discoveries.length'),run('discoveredBefore'));assert.equal(w.document.querySelector('#scanToggle').getAttribute('aria-pressed'),'false');run("action('scanHUD');action('nightVision');loop(performance.now()+20)");assert(w.document.body.classList.contains('night-vision'));
+run("settings.nightVision=false;settings.weather='blackout';applySettings();loop(performance.now()+20)");assert.equal(run('sun.intensity'),0);assert.equal(run('scene.environmentIntensity'),0);assert(run('atmosphere.hemi.every(h=>h.intensity===0)'));run("settings.nightVision=true;loop(performance.now()+20)");assert(run('sun.intensity')>0);assert(run('scene.environmentIntensity')>0);
+run("settings.nightVision=false;settings.weather='rain';settings.movingSun=true;applySettings();loop(performance.now()+20)");assert(run('atmosphere.rain.visible'));const sunBefore=Array.from(run('sun.position.toArray()'));run('s.elapsed+=80;loop(performance.now()+20)');assert.notDeepEqual(Array.from(run('sun.position.toArray()')),sunBefore);
+for(const type of ['scout','engineer','cargo','relay']){run(`s.droneType='${type}'`);assert(run('writeSave("manual2")'));assert.equal(run('getSave("manual2").state.droneType'),type);}
+run("open('locations')");assert.equal(w.document.querySelectorAll('[data-location]').length,3);assert(!w.document.querySelector('#panel').textContent.includes('undefined'));
+console.log('PASS: four-airframe hangar, cargo attach/drop, campaign restoration and autosave isolation, scan hide/preserved discoveries, true blackout/vision, moving sun/rain and four class save round-trips.');

@@ -1,3 +1,14 @@
+import {fleetCards} from './dist/drone-fleet.js';
+import * as relay from './dist/relay-house.js';
+import * as relayWorldModule from './dist/relay-world.js';
+import * as relayUI from './dist/relay-ui.js';
+import {machineSettings} from './dist/control-settings.js';
+import {drawInstruments} from './dist/instruments.js';
+import {ControllerBridge} from './dist/controller-bridge.js';
+import * as experience from './dist/experience.js';
+import {CameraManager} from './dist/camera-manager.js';
+import * as settlements from './dist/settlements.js';
+import * as survival from './dist/survival.js';
 import {createDrone,DRONE_CLASSES} from './dist/drone-system.js';
 import {PRESETS} from './dist/immersion.js';
 import {leg3Defaults,leg3Sites,objective3,antennaCorrect,endingCost} from './dist/leg3.js';
@@ -19,11 +30,11 @@ assert.equal(generationStep('fuel',{fuel:0,reserve:20,daylight:true,stopped:true
 const g=generationStep('fuel',{fuel:.01,reserve:39.99,daylight:true,stopped:true},100);assert(g.gain<=.010001);assert(g.fuelUsed<=.01);
 const src=fs.readFileSync('./dist/game.js','utf8');
 const memory=new Map(),nodes=new Map();function node(sel){if(!nodes.has(sel))nodes.set(sel,{innerHTML:'',dataset:{},style:{},textContent:'',setAttribute(){},insertAdjacentHTML(where,text){this.innerHTML=where==='afterbegin'?text+this.innerHTML:this.innerHTML+text;},querySelector(){return {focus(){}};}});return nodes.get(sel);}
-const ctx=vm.createContext({T,createDrone,DRONE_CLASSES,PRESETS,mobile:false,augmentV7Panel(){},releaseDroneView(){},leg3Defaults,leg3Sites,objective3,antennaCorrect,endingCost,sound:{event(){},setLevels(){},start(){},pause(){}},leg2Defaults,leg2Sites,leg2Objective,phaseInput,hydroAvailable,SAVE_VERSION,validateSave,generationStep,console,Date,Math,JSON,Number,Blob,setTimeout,URL,performance,localStorage:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,v)},$ :node,document:{body:{classList:{toggle(){}}}},clamp:(v,a,b)=>Math.max(a,Math.min(b,v)),settings:null,bike:{position:new T.Vector3(1,0,3),rotation:{}},trailer:{position:new T.Vector3(2,0,5),rotation:{}},droneOrigin:null,crates:Array.from({length:4},()=>({done:false,mesh:{visible:true}})),enemies:[[15,-575],[138,-704]].map(home=>({home,x:home[0],z:home[1],hp:75,mesh:{position:new T.Vector3(),rotation:new T.Euler()}})),hud(){},toast(){},radio(){},play(){},screen:'start',nearest:null,keys:{},drawMap(){},cargo:()=>0,cargoLimit:()=>40,recipes:[],can:()=>false,dist:()=>20,weights:{},scene:{},renderer:{},camera:{},time:0});
+const ctx=vm.createContext({fleetCards,flightSession:null,campaignReturn:null,augmentFlightPanel(){},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,augmentFieldPanel(){},fieldJob:null,activeField:null,T,createDrone,DRONE_CLASSES,PRESETS,mobile:false,augmentV7Panel(){},releaseDroneView(){},leg3Defaults,leg3Sites,objective3,antennaCorrect,endingCost,sound:{event(){},setLevels(){},start(){},pause(){}},leg2Defaults,leg2Sites,leg2Objective,phaseInput,hydroAvailable,SAVE_VERSION,validateSave,generationStep,console,Date,Math,JSON,Number,Blob,setTimeout,URL,performance,localStorage:{getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,v)},$ :node,document:{body:{style:{setProperty(){}},classList:{toggle(){}}}},clamp:(v,a,b)=>Math.max(a,Math.min(b,v)),settings:null,bike:{position:new T.Vector3(1,0,3),rotation:{}},trailer:{position:new T.Vector3(2,0,5),rotation:{}},droneOrigin:null,crates:Array.from({length:4},()=>({done:false,mesh:{visible:true}})),enemies:[[15,-575],[138,-704]].map(home=>({home,x:home[0],z:home[1],hp:75,mesh:{position:new T.Vector3(),rotation:new T.Euler()}})),hud(){},toast(){},radio(){},play(){},screen:'start',nearest:null,keys:{},drawMap(){},cargo:()=>0,cargoLimit:()=>40,recipes:[],can:()=>false,dist:()=>20,weights:{},scene:{},renderer:{},camera:{},time:0});
 vm.runInContext(src.slice(src.indexOf('const initial='),src.indexOf(';let stickX')).replace('const initial=','globalThis.initial='),ctx);
 vm.runInContext('s=initial()',ctx);
 vm.runInContext(src.slice(src.indexOf('function renderLegacyPanel()'),src.indexOf("$('#panel').addEventListener('click'")),ctx);
-vm.runInContext(src.slice(src.indexOf('const defaults='),src.lastIndexOf("$('#panel').addEventListener('click'")),ctx);
+vm.runInContext(src.slice(src.indexOf('const defaults='),src.indexOf("$('#panel').addEventListener('click'",src.indexOf('const defaults='))),ctx);
 vm.runInContext("started=true;s.inv.wire=4;s.met=true;s.generator='fuel';crates[1].done=true;enemies[0].hp=0;s.mode='drone';s.droneSystem.mode='MANUAL';droneOrigin={pos:new T.Vector3(4,2,8),yaw:.5,mode:'bike'};",ctx);
 const record=vm.runInContext('snapshot()',ctx);validateSave(record);
 vm.runInContext("s.battery=0;s.inv.wire=0;crates[1].done=false;enemies[0].hp=75;restore(JSON.parse(JSON.stringify("+JSON.stringify(record)+")))",ctx);

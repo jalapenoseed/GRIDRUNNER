@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {ITEMS,createField,validateField,transfer,salvage,fabricate,mass,ENERGY} from './dist/survival.js';
+import {generationStep} from './dist/expedition.js';
+const a=createField(12),b=createField(12);assert.deepEqual(a,b);assert.equal(a.world.length,144);validateField(JSON.parse(JSON.stringify(a)));
+let from={motor:1},to={};assert(transfer(from,to,'motor',1,3));assert.equal(from.motor,1);assert.equal(transfer(from,to,'motor',1,4),'');assert.equal(from.motor,0);assert.equal(mass(to),4);
+assert(salvage(to,'motor',40));to.wrench=1;assert.equal(salvage(to,'motor',40),'');assert.equal(to.copper,3);assert.equal(to.motor,0);
+let inv={steel:2,rubber:1,wrench:1};assert(fabricate(inv,'pickaxe',40,{atTrailer:false,battery:10}).error);assert.equal(inv.steel,2);assert.equal(fabricate(inv,'pickaxe',40,{atTrailer:true,battery:10}).error,'');assert.equal(inv.pickaxe,1);
+let fuel=1,total=0;for(let i=0;i<4;i++){const g=generationStep('fuel',{fuel,reserve:0,stopped:true},1000);fuel-=g.fuelUsed;total+=g.gain;}assert(Math.abs(total*ENERGY.unitKWh-3)<1e-6);assert(fuel<1e-6);
+assert.equal(generationStep('fuel',{fuel:1,reserve:40,stopped:true},20).fuelUsed,0);
+const bad=createField(1);bad.world[0].items.fuel=-1;assert.throws(()=>validateField(bad));
+let fuelSites=0,eligible=0;for(let i=0;i<100;i++)for(const p of createField(i).world)if(p.kind==='container'&&['garage','industrial'].includes(p.table)){eligible++;if(p.items.fuel)fuelSites++;}assert(fuelSites/eligible<.06&&fuelSites>0);
+console.log('PASS: atomic transfers, capacity, tool gates, deterministic loot, malformed saves, rare finite fuel, 3 kWh per liter and full-storage fuel conservation.',Object.keys(ITEMS).length,'item definitions');

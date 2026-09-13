@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {GamepadInput,deadzone} from './dist/gamepad.js';
+const pad={index:0,id:'Xbox test controller',connected:true,mapping:'standard',axes:[0,0,0,0],buttons:Array.from({length:17},()=>({pressed:false,value:0}))};
+const input=new GamepadInput();assert.deepEqual(deadzone(.1,-.08),[0,0]);assert(Math.hypot(...deadzone(1,1))<=1.00001);
+let f=input.poll([null,pad],{},0);assert(f.joined&&!f.lost);assert(!f.active);pad.buttons[0]={pressed:true,value:1};f=input.poll([pad],{},.1);assert.deepEqual(f.actions,['interact']);assert(f.changed&&f.active);assert.deepEqual(input.poll([pad],{},.2).actions,[],'Held A does not repeat');
+pad.buttons[0]={value:0};pad.axes=[.5,-1,.7,-.6];f=input.poll([pad],{},.3);assert(f.move[1]<0&&f.look[0]>0&&f.look[1]<0);assert.deepEqual(f.menu,['up']);assert.deepEqual(input.poll([pad],{},.4).menu,[]);assert.deepEqual(input.poll([pad],{},.8).menu,['up'],'Menu repeat');
+pad.buttons[6]={value:.7};pad.buttons[7]={value:.9};pad.buttons[12]={value:1};f=input.poll([pad],{},.9);assert.equal(f.brake,.7);assert.equal(f.assist,.9);assert.equal(f.vertical,1);
+f=input.poll([],{},1);assert(f.lost);assert.equal(f.move[0],0);assert.equal(f.actions.length,0);assert(!input.poll([],{},1.1).lost,'Disconnect fires once');
+assert(!input.poll([{...pad,mapping:''}],{},1.2).connected,'Unknown mappings do not masquerade as Xbox');assert(!input.poll([pad],{gamepad:false},1.3).connected);
+console.log('PASS: Xbox standard mapping, radial deadzone, analog triggers, edge actions, menu repeat, null slots, disconnect and disabled/unknown devices.');

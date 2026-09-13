@@ -1,0 +1,39 @@
+// Pure content and transactions: no DOM, renderer or browser storage.
+const item=(name,mass,category,value,extra={})=>({name,mass,category,value,stack:999,description:name,...extra});
+export const ITEMS={
+ wire:item('Insulated wire',.3,'material',4),cells:item('Lithium cell',1.2,'material',18),electronics:item('Electronics',.5,'material',9),steel:item('Steel scrap',1.8,'material',2),
+ copper:item('Copper',.4,'material',6),aluminum:item('Aluminum',.3,'material',3),plastic:item('Plastic',.1,'material',1),glass:item('Glass',.3,'material',1),rubber:item('Rubber',.2,'material',2),fabric:item('Fabric',.1,'material',1),magnets:item('Magnets',.2,'material',5),bearings:item('Bearings',.3,'material',4),silicon:item('Silicon',.2,'material',6),
+ screwdriver:item('Screwdriver',.3,'tool',6),pickaxe:item('Pickaxe',2.5,'tool',15),wrench:item('Wrench',.8,'tool',8),cutters:item('Wire cutters',.4,'tool',8),
+ toaster:item('Broken toaster',2.1,'junk',3,{tool:'screwdriver',salvage:{steel:1,copper:1,wire:1}}),laptop:item('Dead laptop',1.8,'junk',12,{tool:'screwdriver',salvage:{electronics:2,cells:1,plastic:1}}),motor:item('Seized motor',4,'junk',9,{tool:'wrench',salvage:{copper:3,magnets:2,bearings:1}}),panel:item('Cracked solar panel',3.2,'junk',7,{tool:'screwdriver',salvage:{aluminum:2,glass:2,silicon:1}}),
+ bottle:item('Empty bottle',.2,'junk',0,{salvage:{glass:1}}),rag:item('Oily rag',.1,'junk',0,{salvage:{fabric:1}}),can:item('Crushed can',.1,'junk',0,{salvage:{aluminum:1}}),wrapper:item('Food wrapper',.01,'junk',0,{salvage:{plastic:1}}),tire:item('Ruined tire',3,'junk',1,{tool:'cutters',salvage:{rubber:3}}),
+ fuel:item('Generator fuel · 1 L',.8,'energy',80,{energyKWh:3}),
+ fuse:item('Protected ceramic fuse',.08,'component',5,{essential:true,description:'A replacement for the cabin kitchen circuit.'}),
+ radioCoil:item('Wound radio coil',.25,'component',8,{description:'Copper windings and insulation for a carrier filter.'}),
+ signalFilter:item('147 MHz signal filter',.65,'equipment',22,{essential:true,description:'Suppresses interference at the Relay House radio rack.'}),
+ fieldCell:item('Sealed reserve cell',1.4,'energy',25,{description:'A rechargeable assembly. Use in Fieldwork to recover 12 bike points.'}),
+ patchKit:item('Field repair kit',.5,'equipment',12,{description:'Use in Fieldwork to restore 25 bike hull.'}),
+};
+export const FIELD_RECIPES={
+ wire:{name:'Strip copper into wire',inputs:{copper:1,plastic:1},output:{wire:2},tool:'cutters',station:'field',energy:0},
+ pickaxe:{name:'Assemble pickaxe',inputs:{steel:2,rubber:1},output:{pickaxe:1},tool:'wrench',station:'trailer',energy:1},
+ cutters:{name:'Repair wire cutters',inputs:{steel:1,rubber:1},output:{cutters:1},tool:'screwdriver',station:'field',energy:0},
+ cells:{name:'Rebuild lithium cell',inputs:{electronics:2,copper:1},output:{cells:1},tool:'screwdriver',station:'trailer',energy:3},
+ fuse:{name:'Replace protected fuse',inputs:{copper:1,glass:1},output:{fuse:1},tool:'screwdriver',station:'field',energy:0,knowledge:'service'},
+ radioCoil:{name:'Wind carrier coil',inputs:{copper:2,plastic:1},output:{radioCoil:1},tool:'screwdriver',station:'field',energy:0,knowledge:'schematic'},
+ signalFilter:{name:'Assemble signal filter',inputs:{radioCoil:1,electronics:1,wire:1},output:{signalFilter:1},tool:'screwdriver',station:'workbench',energy:2,knowledge:'schematic'},
+ fieldCell:{name:'Seal reserve cell',inputs:{cells:1,wire:1,rubber:1},output:{fieldCell:1},tool:'screwdriver',station:'trailer',energy:1,knowledge:'schematic'},
+ patchKit:{name:'Assemble field repair kit',inputs:{steel:1,fabric:2,rubber:1},output:{patchKit:1},tool:'wrench',station:'field',energy:0},
+};
+export const LOOT={household:['wrapper','bottle','rag','can','toaster'],garage:['can','rag','tire','motor','wrench','cutters'],electrical:['screwdriver','wire','electronics','panel','laptop','cells'],industrial:['steel','bearings','motor','copper','aluminum']};
+export const ENERGY={unitKWh:.02,bikeKWh:2,trailerKWh:.8,generatorKW:12,fuelKWhPerLiter:3,secondsPerGameHour:300};
+export function rng(seed){let n=seed>>>0;return ()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};}
+export const mass=inv=>Object.entries(inv).reduce((n,[id,q])=>n+(ITEMS[id]?.mass||0)*q,0);
+export function validateInventory(inv){if(!inv||typeof inv!=='object'||Array.isArray(inv)||Object.keys(inv).length>Object.keys(ITEMS).length)throw Error('Invalid inventory');for(const [id,q]of Object.entries(inv))if(!Object.hasOwn(ITEMS,id)||!Number.isInteger(q)||q<0||q>99999)throw Error('Invalid item stack');return inv;}
+export function transfer(from,to,id,count,capacity){if(!Object.hasOwn(ITEMS,id)||!Number.isInteger(count)||count<1||(from[id]||0)<count)return 'Item unavailable';if(mass(to)+ITEMS[id].mass*count>capacity+1e-8)return 'Storage weight limit reached';if((to[id]||0)+count>ITEMS[id].stack)return 'Stack limit reached';from[id]-=count;to[id]=(to[id]||0)+count;return '';}
+export function transform(inv,inputs,output,capacity){if(Object.entries(inputs).some(([k,v])=>(inv[k]||0)<v))return 'Missing materials';const next={...inv};for(const [k,v]of Object.entries(inputs))next[k]-=v;for(const [k,v]of Object.entries(output))next[k]=(next[k]||0)+v;if(mass(next)>capacity)return 'Make room for the output';if(Object.entries(next).some(([k,v])=>v>ITEMS[k].stack))return 'Output stack full';Object.assign(inv,next);return '';}
+export function salvage(inv,id,capacity){const d=ITEMS[id];if(!d?.salvage)return 'This item cannot be salvaged';if(d.tool&&!(inv[d.tool]>0))return 'Requires '+ITEMS[d.tool].name;return transform(inv,{[id]:1},d.salvage,capacity);}
+export function fabricate(inv,id,capacity,{atTrailer,atWorkbench=false,powered=false,battery,known=[]}){const r=FIELD_RECIPES[id];if(!r)return {error:'Unknown recipe'};if(r.knowledge&&!known.includes(r.knowledge))return {error:'Find the '+r.knowledge+' notes at Relay House'};if(!(inv[r.tool]>0))return {error:'Requires '+ITEMS[r.tool].name};if(r.station==='trailer'&&!atTrailer)return {error:'Work at your trailer'};if(r.station==='workbench'&&(!atWorkbench||!powered))return {error:'Work at the powered Relay House bench'};if(battery<r.energy)return {error:'Insufficient bike power'};const error=transform(inv,r.inputs,r.output,capacity);return {error,energy:error?0:r.energy};}
+export function createField(seed=Math.floor(Math.random()*4294967296)){const random=rng(seed),world=[];for(let leg=1;leg<=3;leg++)for(let i=0;i<48;i++){const table=Object.keys(LOOT)[i%4],node=i%6===5,items={};if(!node){for(let j=0;j<2+Math.floor(random()*4);j++){const id=LOOT[table][Math.floor(random()*LOOT[table].length)];items[id]=(items[id]||0)+1;}if(['garage','industrial'].includes(table)&&random()<.035)items.fuel=random()<.1?5:1;}
+world.push({id:`field-${leg}-${i}`,leg,x:(i%2?1:-1)*(18+(i%4)*11),z:10-(leg-1)*1600-i*30,kind:node?'node':'container',table,items,left:node?4:0,resource:Math.floor(i/6)%2?'steel':'copper',seen:false});}
+return {version:1,seed,storage:{bike:{},trailer:{}},world,fuelTrades:0};}
+export function validateField(field){if(!field)return createField(1047);if(field.version!==1||!Number.isInteger(field.seed)||field.seed<0||field.seed>4294967295||!Number.isInteger(field.fuelTrades)||field.fuelTrades<0||field.fuelTrades>2)throw Error('Invalid field state');for(const id of ['bike','trailer']){validateInventory(field.storage?.[id]);if(mass(field.storage[id])>(id==='bike'?12:60)+1e-6)throw Error('Storage overloaded');}if(!Array.isArray(field.world)||field.world.length!==144)throw Error('Invalid field entities');const expected=createField(field.seed).world;for(let i=0;i<expected.length;i++){const p=field.world[i],e=expected[i];if(!p||['id','leg','x','z','kind','table','resource'].some(k=>p[k]!==e[k])||!Number.isInteger(p.left)||p.left<0||p.left>4||typeof p.seen!=='boolean')throw Error('Invalid field entity');validateInventory(p.items);}return field;}

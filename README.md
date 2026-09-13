@@ -1,3 +1,37 @@
+# GRIDRUNNER v7.6 — Flight Yard
+
+[Play GRIDRUNNER](https://jalapenoseed.github.io/GRIDRUNNER/)
+
+Four reference-pack drones, Flight Yard missions, scan HUD toggle, night vision, moving sun/weather and a settlement/NPC pass. **G** hangar · **K** scan overlay · **N** night vision · **O** atmosphere. Xbox **View + X/Y** toggles scan / night vision.
+
+[Changes and controls](CHANGELOG-v7.6.md) · [Validation](QA-v7.6.md)
+
+# GRIDRUNNER v7.5 — The Relay House
+
+[Play GRIDRUNNER](https://jalapenoseed.github.io/GRIDRUNNER/)
+
+Rebuilt bike cockpit, attitude-based drone flight, Xbox controls, field-terminal menus, audio improvements, reused equipment assets and a complete 3D mystery compound. Follow the service track west near the opening road. **J** journal · **I** pack · **M** map. Flight mode and controller settings are in Settings.
+
+[Changes, controls and puzzle route](CHANGELOG-v7.5.md) · [Validation and device checks](QA-v7.5.md)
+
+# GRIDRUNNER v7.4 — Perspectives
+
+Play: https://jalapenoseed.github.io/GRIDRUNNER/
+
+Press H or tap the view badge to cycle cameras. See [PERSPECTIVES-v7.4.md](PERSPECTIVES-v7.4.md) for controls, architecture, validation and limitations.
+
+# GRIDRUNNER v7.3 — Settlements
+
+Play: https://charltonty.github.io/GRIDRUNNER/
+
+See [SETTLEMENTS-v7.3.md](SETTLEMENTS-v7.3.md) for new buildings, NPCs, audio, styling, tests and limitations.
+
+# GRIDRUNNER v7.2 — Fieldwork
+
+Play: https://charltonty.github.io/GRIDRUNNER/
+
+See [FIELDWORK-GUIDE.md](FIELDWORK-GUIDE.md) for changes, controls, architecture, content examples, tests and known limitations. This is the first playable foundations pass from the Compact Work Handoff.
+
 # GRIDRUNNER v7 — Ghost Signal, Legs 1–3
 
 An in-place upgrade of the supplied GRIDRUNNER prototype. Complete editable browser source is in `dist/`; no production compilation is required.
@@ -34,6 +68,6 @@ The left touch joystick, right-side look drag, rise/descend buttons and pedal to
 
 ## Release status
 
-This v7 candidate passed the included logic and DOM integration tests. The available test browser could not create a WebGL context, so GPU rendering, manual campaign playthrough and frame-rate certification are pending. The live v6 game has not been replaced. Read `QA-v7.md`, `CHANGELOG-v7.md` and `DEVELOPER-GUIDE.md`.
+This v7 candidate passed the included logic and DOM integration tests. The available test browser could not create a WebGL context, so GPU rendering, manual campaign playthrough and frame-rate certification are pending. The v7 game is live at https://gridrunner.goodyartist.chatgpt.site. GitHub Pages setup is described in GITHUB-PAGES.md. Read `QA-v7.md`, `CHANGELOG-v7.md` and `DEVELOPER-GUIDE.md`.
 
-The source ZIP includes the untouched canonical archive under `original/`. Its SHA-256 is recorded in `QA-v7.md`.
+The original source archive is preserved separately; its SHA-256 is recorded in QA-v7.md.

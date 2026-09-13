@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import {createRelayHouse,useRelay,terminalCommand,validateRelayHouse,relayObjective} from './dist/relay-house.js';
+import {fabricate} from './dist/survival.js';
+const r=createRelayHouse(),inv={wrench:1,screwdriver:1};
+const use=(id,mode='foot')=>useRelay(r,id,{mode,inv,capacity:40});
+use('generator','drone');assert(!r.generatorFixed,'Drone cannot perform hands-on repair');
+use('dish','drone');assert(!r.dishAligned,'Power gate');
+use('cook');assert(!r.fuseSeated);use('toolbox');assert.equal(inv.fuse,1);use('toolbox');assert.equal(inv.fuse,1,'Toolbox rewards once');
+use('generator');assert(r.generatorFixed&&!r.power);use('cook');assert(r.fuseSeated&&r.power&&r.noteRead);assert.equal(inv.fuse,0);use('cook');assert.equal(inv.fuse,0,'Fuse consumed once');
+terminalCommand(r,'login GHOST-147');assert(!r.loggedIn,'Login requires both clues');use('board');terminalCommand(r,'login wrong');assert(!r.loggedIn);
+terminalCommand(r,'login GHOST-147');assert(r.loggedIn);assert.match(terminalCommand(r,'list'),/operator.log/);terminalCommand(r,'read filter.sch');assert(r.schematicRead);
+const options={atTrailer:false,atWorkbench:true,powered:true,battery:20,known:r.evidence};
+const before=JSON.stringify(inv);assert(fabricate(inv,'signalFilter',40,options).error);assert.equal(JSON.stringify(inv),before,'Failed fabrication is atomic');
+assert.equal(fabricate(inv,'radioCoil',40,options).error,'');assert.equal(inv.radioCoil,1);
+assert(fabricate(inv,'signalFilter',40,{...options,atWorkbench:false}).error);assert(fabricate(inv,'signalFilter',40,{...options,powered:false}).error);assert(fabricate(inv,'signalFilter',40,{...options,battery:0}).error);
+assert.equal(fabricate(inv,'signalFilter',40,options).error,'');assert.equal(inv.signalFilter,1);assert.equal(inv.radioCoil,0);use('radio');assert(r.filterInstalled&&!r.discovered);assert.equal(inv.signalFilter,0);
+use('dish');assert(!r.dishAligned,'Rider cannot align dish');use('dish','drone');assert(r.dishAligned);use('radio');assert(!r.discovered,'Frequency gate');
+terminalCommand(r,'tune 104.7');assert.equal(r.frequency,0);terminalCommand(r,'tune 147.20');assert.equal(r.frequency,147.2);assert(use('radio').discovery);assert(r.radioTuned&&r.discovered);assert(!use('radio').discovery,'Discovery only once');
+assert.match(relayObjective(r),/token/);assert.equal(terminalCommand(r,'exit'),'EXIT');assert.match(terminalCommand(r,'dump'),/tower/);
+const restored=validateRelayHouse(JSON.parse(JSON.stringify(r)));assert.deepEqual(restored,r);assert.deepEqual(validateRelayHouse(undefined),createRelayHouse());
+for(const mutate of [v=>v.evidence.push('<script>'),v=>v.selected='__proto__',v=>v.frequency=Infinity,v=>v.power=false,v=>v.noteRead=false,v=>v.version=2]){const broken=structuredClone(r);mutate(broken);assert.throws(()=>validateRelayHouse(broken));}
+console.log('PASS: complete Relay House repair, item use, two-clue account, fabrication stations/knowledge/energy, drone-only dish, three-way carrier gate, repeat protection and save validation.');

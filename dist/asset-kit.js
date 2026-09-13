@@ -1,0 +1,11 @@
+import * as T from './three.js';
+import {GLTFLoader} from './GLTFLoader.js';
+import {mergeGeometries} from './BufferGeometryUtils.js';
+// Existing GRIDRUNNER Blender exports. Load only nearby equipment, two at a time.
+export class AssetKit{
+ constructor(enabled=true){this.enabled=enabled;this.queue=[];this.active=0;this.cache=new Map();this.slots=[];this.errors=[];}
+ place(parent,file,position,height,proxy,rotation=0){const slot=new T.Group();slot.position.set(...position);slot.rotation.y=rotation;parent.add(slot);if(proxy)slot.add(proxy);const record={slot,file,height,proxy,loaded:false,requested:false};this.slots.push(record);return slot;}
+ update(visible,quality){for(const r of this.slots){if(r.model)r.model.visible=quality!=='LOW';if(r.proxy)r.proxy.visible=!r.model||quality==='LOW';if(this.enabled&&visible&&quality!=='LOW'&&!r.requested){r.requested=true;this.queue.push(r);}}this.pump();}
+ pump(){while(this.active<2&&this.queue.length){const r=this.queue.shift();this.active++;let promise=this.cache.get(r.file);if(!promise){promise=new GLTFLoader().loadAsync('./assets/kit/'+r.file).then(gltf=>this.batch(gltf.scene));this.cache.set(r.file,promise);}promise.then(template=>{const model=template.clone(true),bounds=new T.Box3().setFromObject(model),size=new T.Vector3(),center=new T.Vector3();bounds.getSize(size);bounds.getCenter(center);const scale=r.height/Math.max(.01,size.y);model.scale.setScalar(scale);model.position.set(-center.x*scale,-bounds.min.y*scale,-center.z*scale);r.slot.add(model);r.model=model;r.loaded=true;}).catch(()=>{this.errors.push(r.file);}).finally(()=>{this.active--;this.pump();});}}
+ batch(root){root.updateMatrixWorld(true);const groups=new Map();root.traverse(m=>{if(!m.isMesh||Array.isArray(m.material))return;const g=m.geometry.index?m.geometry.toNonIndexed():m.geometry.clone();g.applyMatrix4(m.matrixWorld);if(!groups.has(m.material))groups.set(m.material,[]);groups.get(m.material).push(g);});const result=new T.Group();for(const [material,parts]of groups){const g=mergeGeometries(parts);if(g){const mesh=new T.Mesh(g,material);mesh.castShadow=mesh.receiveShadow=true;result.add(mesh);}parts.forEach(g=>g.dispose());}return result.children.length?result:root;}
+}

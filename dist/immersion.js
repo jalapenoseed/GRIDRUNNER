@@ -40,7 +40,7 @@ export class Immersion{
  feedback(amount=1){this.impact=Math.min(.11,this.impact+amount*.018);}
  update(dt,s,settings,keys,paused){
   if(this.lastLeg!==s.leg)this.apply(settings,s.leg);this.sky.position.copy(this.camera.position);if(!paused)this.phase+=dt;
-  const level=Math.max(0,Math.min(1,settings.cameraMotion)),road=Math.abs(s.pos.x)<12,speed=Math.abs(s.speed),accel=paused?0:(s.speed-this.lastSpeed)/Math.max(.001,dt);this.lastSpeed=s.speed;
+  const level=Math.max(0,Math.min(1,settings.reduceMotion?0:settings.cameraMotion)),road=Math.abs(s.pos.x)<12,speed=Math.abs(s.speed),accel=paused?0:(s.speed-this.lastSpeed)/Math.max(.001,dt);this.lastSpeed=s.speed;
   const damping=1-Math.exp(-dt*(settings.stabilization?7:11)),turn=(keys.d?1:0)-(keys.a?1:0);
   this.lean+=(-turn*Math.min(speed*.0016,.042)-this.lean)*damping;this.pitch+=(Math.max(-.022,Math.min(.022,-accel*.0012))-this.pitch)*damping;
   this.impact*=Math.exp(-dt*8);
@@ -49,7 +49,7 @@ export class Immersion{
    this.camera.position.y+=level*(vibration+Math.sin(this.phase*4)*Math.min(speed,30)*.0005-this.impact);
    this.camera.rotation.x+=level*this.pitch;this.camera.rotation.z=level*this.lean;
   }
-  const fov=settings.fov+(s.mode==='bike'?Math.min(speed/30,1)*8*settings.speedFov:0);this.camera.fov+=(fov-this.camera.fov)*(1-Math.exp(-dt*4));this.camera.updateProjectionMatrix();
+  // FOV is owned by CameraManager for every experience profile.
   const x=this.bike.position.x,z=this.bike.position.z,y=heightAt(x,z);this.headlight.position.set(x,y+1.4,z);this.headlight.target.position.set(x-Math.sin(this.bike.rotation.y)*45,y+.3,z-Math.cos(this.bike.rotation.y)*45);this.headlight.visible=this.preset.lights&&settings.headlights;this.headlight.intensity=settings.weather==='night'?110:40;
   this.sun.position.set(x-100,y+190,z-130);this.sun.target.position.set(x,0,z-25);this.droneLight.position.fromArray(s.droneSystem.pos);this.droneLight.visible=this.preset.lights&&s.droneSystem.mode!=='DOCK';
   const a=this.particles.geometry.attributes.position;for(let i=0;i<this.preset.particles;i++){const p=this.particleData[i];if(i<60&&s.mode==='bike'&&speed>4&&!road){const life=(this.phase+i*.07)%1;a.setXYZ(i,s.pos.x+Math.sin(s.yaw)*(4+life*10)+Math.sin(i*37)*life*2,heightAt(s.pos.x,s.pos.z)+.3+life*1.8,s.pos.z+Math.cos(s.yaw)*(4+life*10)+Math.cos(i*23)*life*2);}else a.setXYZ(i,s.pos.x+(p.x+this.phase*2)%90-15,heightAt(s.pos.x,s.pos.z)+(p.y+Math.sin(this.phase+i)*.1),s.pos.z+p.z);}a.needsUpdate=true;this.particles.material.opacity=settings.weather==='sandstorm'?.6:s.mode==='bike'&&speed>8&&!road?.5:.18;

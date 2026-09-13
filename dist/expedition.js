@@ -1,3 +1,7 @@
+import {validateRelayHouse} from './relay-house.js';
+import {migrateExperience} from './experience.js';
+import {residentState} from './settlements.js';
+import {validateInventory,validateField,ENERGY} from './survival.js';
 import {migrateDrone} from './drone-system.js';
 // Portable expedition records. No rendering or browser dependencies.
 export const SAVE_VERSION=1;
@@ -9,9 +13,9 @@ export function pedalStep({battery,stamina,speed,forward,pedaling,road,weight,re
 }
 export function generationStep(mode,{fuel,reserve,daylight,stopped,flowing=false},dt){
  if(!stopped||reserve>=40)return {gain:0,fuelUsed:0};
- const rate=mode==='fuel'&&fuel>0?.65:mode==='solar'&&daylight?.13:mode==='water'&&flowing?.8:0;
- const gain=Math.min(40-reserve,rate*dt,mode==='fuel'?fuel*12:Infinity);
- return {gain,fuelUsed:mode==='fuel'?gain/12:0};
+ const rate=mode==='fuel'&&fuel>0?ENERGY.generatorKW/ENERGY.secondsPerGameHour/ENERGY.unitKWh:mode==='solar'&&daylight?.13:mode==='water'&&flowing?.8:0;
+ const gain=Math.min(40-reserve,rate*dt,mode==='fuel'?fuel*ENERGY.fuelKWhPerLiter/ENERGY.unitKWh:Infinity);
+ return {gain,fuelUsed:mode==='fuel'?gain*ENERGY.unitKWh/ENERGY.fuelKWhPerLiter:0};
 }
 export function validateSave(r){
  const bad=()=>{throw Error('This save is incomplete or belongs to another game version.');};
@@ -27,10 +31,10 @@ export function validateSave(r){
  if(s.puzzleLock!==undefined&&!number(s.puzzleLock,0,60))bad();
  if(s.ending!==undefined&&!['','restore','transmit'].includes(s.ending))bad();
  if(s.phaseStep!==undefined&&(!Number.isInteger(s.phaseStep)||s.phaseStep<0||s.phaseStep>3))bad();
- if(!s.inv||Object.keys(s.inv).length!==4||!['wire','cells','electronics','steel'].every(k=>number(s.inv[k],0,100000)))bad();
+ validateInventory(s.inv);for(const k of ['wire','cells','electronics','steel'])if(s.inv[k]===undefined)s.inv[k]=0;s.field=validateField(s.field);s.residents=residentState(s.residents);s.relayHouse=validateRelayHouse(s.relayHouse);s.experience=migrateExperience(s.experience);
  if(s.powerTarget!==null&&!['ev','solar','grid','line','l2hydro','l3supply'].includes(s.powerTarget))bad();
  if(!number(s.temp,0,1000)||!number(s.chargeHeat,0,200))bad();
- if(!['scout','engineer'].includes(s.droneType)||!['off','fuel','solar','water'].includes(s.generator))bad();
+ if(!['scout','engineer','cargo','relay'].includes(s.droneType)||!['off','fuel','solar','water'].includes(s.generator))bad();
  for(const k of ['trailerAttached','engineerBuilt','controller','interface','upgrade','solar','relay','met','scanned','won','dead','regenBuilt'])if(typeof s[k]!=='boolean')bad();
  if(!Array.isArray(r.crates)||r.crates.length!==4||r.crates.some(x=>typeof x!=='boolean'))bad();
  if(!Array.isArray(r.enemies)||r.enemies.length!==2||r.enemies.some(e=>!number(e.x,-2000,2000)||!number(e.z,-3000,3000)||!number(e.hp,-100,75)))bad();

@@ -1,0 +1,7 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';import {gunzipSync} from 'node:zlib';
+import {GLTFLoader} from './dist/GLTFLoader.js';import * as T from './dist/three.js';
+const manifest=JSON.parse(fs.readFileSync('dist/assets/drones/manifest.json'));
+for(const model of manifest.models){const bytes=gunzipSync(fs.readFileSync('dist/assets/drones/'+model.download));assert.equal(bytes.readUInt32LE(8),bytes.length);const gltf=await new GLTFLoader().parseAsync(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),'');let meshes=0,rotors=0;gltf.scene.traverse(o=>{if(o.userData.rotor&&!o.isMesh)rotors++;if(o.isMesh){meshes++;assert(o.geometry.attributes.normal&&o.geometry.attributes.uv);assert(o.userData.sourceMaterial);}});assert.equal(rotors,4,model.role+' rotor pivots');assert.equal(meshes,19);const size=new T.Box3().setFromObject(gltf.scene).getSize(new T.Vector3());assert(size.x>.5&&size.x<2.1);console.log(model.role,meshes,'meshes',rotors,'rotors',size.toArray().map(n=>n.toFixed(3)).join(' × '));}
+for(const name of fs.readdirSync('dist/assets/drones/textures').filter(n=>n.endsWith('.png'))){const b=fs.readFileSync('dist/assets/drones/textures/'+name);assert.equal(b.readUInt32BE(16),1024);assert.equal(b.readUInt32BE(20),1024);}
+console.log('PASS: all four gzip GLBs parse, UVs/normals/material IDs, metric bounds, separate pivots and 1024px runtime maps.');
