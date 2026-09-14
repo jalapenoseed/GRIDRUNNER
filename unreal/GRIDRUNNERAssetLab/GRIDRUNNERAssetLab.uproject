@@ -4,14 +4,47 @@
   "Category": "Games",
   "Description": "GRIDRUNNER: Ghost Signal playable Unreal prototype and validated asset lab.",
   "Plugins": [
-    { "Name": "PythonScriptPlugin", "Enabled": true },
-    { "Name": "EditorScriptingUtilities", "Enabled": true },
-    { "Name": "GameplayStateTree", "Enabled": true },
+    {
+      "Name": "PythonScriptPlugin",
+      "Enabled": true
+    },
+    {
+      "Name": "EditorScriptingUtilities",
+      "Enabled": true
+    },
+    {
+      "Name": "GameplayStateTree",
+      "Enabled": true
+    },
     {
       "Name": "ModelingToolsEditorMode",
       "Enabled": true,
-      "TargetAllowList": ["Editor"]
+      "TargetAllowList": [
+        "Editor"
+      ]
     },
-    { "Name": "AndroidFileServer", "Enabled": false }
+    {
+      "Name": "AndroidFileServer",
+      "Enabled": false
+    },
+    {
+      "Name": "ChaosVehiclesPlugin",
+      "Enabled": true
+    },
+    {
+      "Name": "Niagara",
+      "Enabled": true
+    },
+    {
+      "Name": "EnhancedInput",
+      "Enabled": true
+    }
+  ],
+  "Modules": [
+    {
+      "Name": "GRIDRUNNERGame",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
   ]
 }

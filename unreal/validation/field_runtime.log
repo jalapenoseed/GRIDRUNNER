@@ -1,0 +1,156 @@
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_BATTERY_VoltageLabel_Mesh_001.SCOUT_BATTERY_VoltageLabel_Mesh_001 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_BOOM_CarbonWeb_Mesh_004.SCOUT_BOOM_CarbonWeb_Mesh_004 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_ROTOR_TwistedBlade_Mesh_012.SCOUT_ROTOR_TwistedBlade_Mesh_012 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_ROTOR_TwistedBlade_Mesh_015.SCOUT_ROTOR_TwistedBlade_Mesh_015 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_ROTOR_TwistedBlade_Mesh_018.SCOUT_ROTOR_TwistedBlade_Mesh_018 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_ROTOR_TwistedBlade_Mesh_021.SCOUT_ROTOR_TwistedBlade_Mesh_021 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_CAMERA_MainOptic_CoatedGlass_Mesh_001.SCOUT_CAMERA_MainOptic_CoatedGlass_Mesh_001 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_CHASSIS_WedgeMonocoque_Mesh_001.SCOUT_CHASSIS_WedgeMonocoque_Mesh_001 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_Cooling_Louver_Mesh_007.SCOUT_Cooling_Louver_Mesh_007 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_ID_Stencilled.SCOUT_ID_Stencilled being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_LIGHT_CyanUtility_Mesh_002.SCOUT_LIGHT_CyanUtility_Mesh_002 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_MOTOR_CopperWindingBand_Mesh_001.SCOUT_MOTOR_CopperWindingBand_Mesh_001 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_SERVICE_SafetyTab_Mesh_002.SCOUT_SERVICE_SafetyTab_Mesh_002 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_SHELL_Fastener_head_Mesh_001.SCOUT_SHELL_Fastener_head_Mesh_001 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_SHELL_Fastener_socket_Mesh_001.SCOUT_SHELL_Fastener_socket_Mesh_001 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_SHELL_Gasket_L_Mesh_001.SCOUT_SHELL_Gasket_L_Mesh_001 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_SHELL_OffWhite_Armor_Mesh_002.SCOUT_SHELL_OffWhite_Armor_Mesh_002 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_SHELL_ServiceSeam_Mesh_002.SCOUT_SHELL_ServiceSeam_Mesh_002 being ready before playing
+[2026.09.14-17.02.59:115][  0]LogStaticMesh: Display: Waiting on static mesh StaticMesh /Game/GRIDRUNNER/Imports/SCOUT/GR_SCOUT_01/StaticMeshes/SCOUT_TOP_Manufacturer.SCOUT_TOP_Manufacturer being ready before playing
+[2026.09.14-17.02.59:555][  0]LogTemp: Display: GR_FIELD_BEGIN Walker=BP_ThirdPersonCharacter_C_0 Bike=GRBikePawn_1 Relays=3
+[2026.09.14-17.03.00:338][  1]LogTemp: Display: GR_BIKE t=0.1 loc=V(X=2600.00, Y=-200.00, Z=120.00) rot=R(0) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=0.0 gear=0 speed=0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.00:338][  1]LogTemp: Display: GR_BIKE_WHEEL 0 contact=0 torque=0.00 brake=0.00 spring=0.00 length=1.00 point=V(0)
+[2026.09.14-17.03.00:338][  1]LogTemp: Display: GR_BIKE_WHEEL 1 contact=0 torque=0.00 brake=0.00 spring=0.00 length=1.00 point=V(0)
+[2026.09.14-17.03.01:359][ 38]LogTemp: Display: GR_BIKE t=1.1 loc=V(X=2601.86, Y=-199.99, Z=6.93) rot=R(P=1.86, Y=-0.00, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=0 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.01:359][ 38]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=25920.21 length=0.94 point=V(X=2710.49, Y=-199.99, Z=-0.50)
+[2026.09.14-17.03.01:359][ 38]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=0.01 spring=24404.49 length=0.94 point=V(X=2527.77, Y=-199.99, Z=-0.50)
+[2026.09.14-17.03.02:372][ 78]LogTemp: Display: GR_BIKE t=2.1 loc=V(X=2601.86, Y=-200.00, Z=6.84) rot=R(P=1.86, Y=-0.00, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=0 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.02:372][ 78]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=33008.53 length=0.93 point=V(X=2710.49, Y=-200.00, Z=-0.50)
+[2026.09.14-17.03.02:372][ 78]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=0.01 spring=31608.96 length=0.94 point=V(X=2527.76, Y=-199.99, Z=-0.50)
+[2026.09.14-17.03.03:378][118]LogTemp: Display: GR_BIKE t=3.1 loc=V(X=2601.86, Y=-200.00, Z=6.85) rot=R(P=1.86, Y=-0.00, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=0 speed=0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.03:378][118]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=32807.30 length=0.93 point=V(X=2710.49, Y=-200.00, Z=-0.50)
+[2026.09.14-17.03.03:378][118]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=0.00 spring=31610.95 length=0.94 point=V(X=2527.77, Y=-199.99, Z=-0.50)
+[2026.09.14-17.03.04:386][158]LogTemp: Display: GR_BIKE t=4.1 loc=V(X=2601.86, Y=-200.00, Z=6.86) rot=R(P=1.86, Y=-0.00, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=0 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.04:386][158]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=32102.05 length=0.94 point=V(X=2710.49, Y=-200.00, Z=-0.50)
+[2026.09.14-17.03.04:386][158]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=0.01 spring=30379.53 length=0.94 point=V(X=2527.76, Y=-199.99, Z=-0.50)
+[2026.09.14-17.03.05:388][198]LogTemp: Display: GR_BIKE t=5.1 loc=V(X=2601.86, Y=-200.00, Z=6.86) rot=R(P=1.86, Y=-0.00, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=0 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.05:388][198]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=33541.03 length=0.94 point=V(X=2710.49, Y=-200.00, Z=-0.50)
+[2026.09.14-17.03.05:388][198]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=0.00 spring=31991.25 length=0.94 point=V(X=2527.76, Y=-199.99, Z=-0.50)
+[2026.09.14-17.03.06:391][238]LogTemp: Display: GR_BIKE t=6.1 loc=V(X=2601.86, Y=-200.00, Z=6.87) rot=R(P=1.86, Y=-0.00, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=0 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.06:392][238]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=31400.79 length=0.94 point=V(X=2710.49, Y=-200.00, Z=-0.50)
+[2026.09.14-17.03.06:392][238]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=0.01 spring=29260.82 length=0.94 point=V(X=2527.76, Y=-199.99, Z=-0.50)
+[2026.09.14-17.03.07:405][278]LogTemp: Display: GR_BIKE t=7.2 loc=V(X=2601.86, Y=-200.00, Z=6.85) rot=R(P=1.86, Y=-0.00, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=0 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.07:405][278]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=33174.94 length=0.93 point=V(X=2710.49, Y=-200.00, Z=-0.50)
+[2026.09.14-17.03.07:405][278]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=0.00 spring=31783.04 length=0.94 point=V(X=2527.77, Y=-199.99, Z=-0.50)
+[2026.09.14-17.03.08:415][318]LogTemp: Display: GR_BIKE t=8.2 loc=V(X=2601.86, Y=-200.00, Z=6.85) rot=R(P=1.86, Y=-0.00, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=0 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.08:415][318]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=33058.39 length=0.94 point=V(X=2710.49, Y=-200.00, Z=-0.50)
+[2026.09.14-17.03.08:415][318]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=0.01 spring=31578.64 length=0.94 point=V(X=2527.77, Y=-199.99, Z=-0.50)
+[2026.09.14-17.03.09:425][358]LogTemp: Display: GR_BIKE t=9.2 loc=V(X=2601.85, Y=-200.00, Z=6.96) rot=R(P=1.85, Y=-0.00, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=0 speed=0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.09:425][358]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=32790.36 length=0.94 point=V(X=2710.49, Y=-200.00, Z=-0.50)
+[2026.09.14-17.03.09:425][358]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=0.00 spring=31340.12 length=0.94 point=V(X=2527.77, Y=-199.99, Z=-0.50)
+[2026.09.14-17.03.10:252][391]LogTemp: Display: GR_SMOKE PASS walking pawn possessed
+[2026.09.14-17.03.10:252][391]LogTemp: Display: GR_SMOKE PASS Chaos bike initialized
+[2026.09.14-17.03.10:252][391]LogTemp: Display: GR_SMOKE PASS three relays loaded
+[2026.09.14-17.03.10:252][391]LogTemp: Display: GR_SMOKE PASS wind ambience playing
+[2026.09.14-17.03.10:252][391]LogTemp: Display: GR_SMOKE PASS relay fault Niagara active
+[2026.09.14-17.03.10:435][398]LogTemp: Display: GR_BIKE t=10.2 loc=V(X=2601.85, Y=-200.00, Z=6.93) rot=R(P=1.85, Y=-0.00, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=0 speed=0.1 mass=190.0 wheelcount=2
+[2026.09.14-17.03.10:436][398]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=33862.62 length=0.94 point=V(X=2710.49, Y=-200.00, Z=-0.50)
+[2026.09.14-17.03.10:436][398]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=0.01 spring=32513.75 length=0.94 point=V(X=2527.77, Y=-199.99, Z=-0.50)
+[2026.09.14-17.03.11:444][437]LogTemp: Display: GR_BIKE t=11.2 loc=V(X=2601.86, Y=-200.00, Z=6.84) rot=R(P=1.86, Y=-0.00, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=0 speed=0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.11:444][437]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=33945.11 length=0.93 point=V(X=2710.49, Y=-200.00, Z=-0.50)
+[2026.09.14-17.03.11:444][437]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=0.01 spring=31810.22 length=0.94 point=V(X=2527.76, Y=-199.99, Z=-0.50)
+[2026.09.14-17.03.12:264][468]LogTemp: Display: GR_SMOKE PASS walking moves through world
+[2026.09.14-17.03.12:264][468]LogTemp: Display: GR_SMOKE PASS bike possessed
+[2026.09.14-17.03.12:467][473]LogTemp: Display: GR_BIKE t=12.2 loc=V(X=2601.99, Y=-200.00, Z=7.11) rot=R(P=1.85, Y=-0.00, R=-0.00) sim=1 valid=1 awake=1 ctrl=GRPlayerController_0 request=1.00 throttle=1.00 brake=0.00 hand=0 rpm=1.0 gear=1 speed=1.2 mass=190.0 wheelcount=2
+[2026.09.14-17.03.12:467][473]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=26150.48 length=0.94 point=V(X=2710.49, Y=-200.00, Z=-0.50)
+[2026.09.14-17.03.12:467][473]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=19.60 brake=0.00 spring=22480.34 length=0.94 point=V(X=2527.77, Y=-199.99, Z=-0.50)
+[2026.09.14-17.03.13:470][511]LogTemp: Display: GR_BIKE t=13.2 loc=V(X=2771.35, Y=-200.02, Z=7.14) rot=R(P=1.98, Y=-0.01, R=-0.00) sim=1 valid=1 awake=1 ctrl=GRPlayerController_0 request=1.00 throttle=1.00 brake=0.00 hand=0 rpm=418.7 gear=1 speed=357.9 mass=190.0 wheelcount=2
+[2026.09.14-17.03.13:470][511]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=19263.82 length=0.96 point=V(X=2861.53, Y=-200.04, Z=-0.50)
+[2026.09.14-17.03.13:470][511]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=360.96 brake=0.00 spring=30777.32 length=0.95 point=V(X=2678.80, Y=-200.00, Z=-0.50)
+[2026.09.14-17.03.14:494][553]LogTemp: Display: GR_BIKE t=14.2 loc=V(X=3362.86, Y=-200.17, Z=7.45) rot=R(P=1.99, Y=-0.02, R=-0.00) sim=1 valid=1 awake=1 ctrl=GRPlayerController_0 request=1.00 throttle=1.00 brake=0.00 hand=0 rpm=1117.5 gear=1 speed=765.2 mass=190.0 wheelcount=2
+[2026.09.14-17.03.14:494][553]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=11870.97 length=0.98 point=V(X=3434.32, Y=-200.19, Z=-0.50)
+[2026.09.14-17.03.14:494][553]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=360.96 brake=0.00 spring=19883.59 length=0.96 point=V(X=3251.58, Y=-200.13, Z=-0.50)
+[2026.09.14-17.03.15:503][600]LogTemp: Display: GR_BIKE t=15.3 loc=V(X=4338.28, Y=-200.44, Z=7.60) rot=R(P=2.02, Y=-0.02, R=-0.00) sim=1 valid=1 awake=1 ctrl=GRPlayerController_0 request=1.00 throttle=1.00 brake=0.00 hand=0 rpm=1761.5 gear=1 speed=1132.9 mass=190.0 wheelcount=2
+[2026.09.14-17.03.15:503][600]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=5291.69 length=0.99 point=V(X=4398.98, Y=-200.46, Z=-0.50)
+[2026.09.14-17.03.15:503][600]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=360.96 brake=0.00 spring=18635.67 length=0.97 point=V(X=4216.24, Y=-200.40, Z=-0.50)
+[2026.09.14-17.03.16:502][646]LogTemp: Display: GR_BIKE t=16.3 loc=V(X=5638.40, Y=-200.83, Z=7.70) rot=R(P=2.04, Y=-0.02, R=-0.00) sim=1 valid=1 awake=1 ctrl=GRPlayerController_0 request=1.00 throttle=1.00 brake=0.00 hand=0 rpm=2316.1 gear=1 speed=1434.5 mass=190.0 wheelcount=2
+[2026.09.14-17.03.16:502][646]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=8395.32 length=0.98 point=V(X=5683.50, Y=-200.85, Z=-0.50)
+[2026.09.14-17.03.16:502][646]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=358.68 brake=0.00 spring=24104.57 length=0.98 point=V(X=5500.77, Y=-200.79, Z=-0.50)
+[2026.09.14-17.03.17:270][681]LogTemp: Display: GR_SMOKE PASS Chaos wheels propel bike
+[2026.09.14-17.03.17:884][682]LogTemp: Display: GR_BIKE t=17.4 loc=V(X=6863.71, Y=-201.22, Z=7.78) rot=R(P=2.05, Y=-0.02, R=-0.00) sim=1 valid=1 awake=1 ctrl=GRPlayerController_0 request=0.00 throttle=0.00 brake=0.03 hand=0 rpm=2668.5 gear=1 speed=1636.3 mass=190.0 wheelcount=2
+[2026.09.14-17.03.17:884][682]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=0.00 spring=3438.89 length=0.98 point=V(X=6909.10, Y=-201.23, Z=-0.50)
+[2026.09.14-17.03.17:884][682]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=336.74 brake=0.00 spring=25311.67 length=0.97 point=V(X=6726.36, Y=-201.18, Z=-0.50)
+[2026.09.14-17.03.18:900][734]LogTemp: Display: GR_BIKE t=18.4 loc=V(X=7845.47, Y=-201.47, Z=7.46) rot=R(P=0.92, Y=0.03, R=-0.06) sim=1 valid=1 awake=1 ctrl=GRPlayerController_0 request=0.00 throttle=0.00 brake=1.00 hand=0 rpm=1292.1 gear=1 speed=269.2 mass=190.0 wheelcount=2
+[2026.09.14-17.03.18:902][734]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=92728.27 length=0.93 point=V(X=7946.06, Y=-201.41, Z=-0.50)
+[2026.09.14-17.03.18:902][734]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1519.74 spring=26685.29 length=0.99 point=V(X=7763.37, Y=-201.52, Z=-0.50)
+[2026.09.14-17.03.19:910][782]LogTemp: Display: GR_BIKE t=19.4 loc=V(X=7868.70, Y=-201.53, Z=6.74) rot=R(P=1.87, Y=0.05, R=-0.01) sim=1 valid=1 awake=1 ctrl=GRPlayerController_0 request=0.00 throttle=0.00 brake=1.00 hand=0 rpm=31.5 gear=1 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.19:910][782]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=34974.98 length=0.93 point=V(X=7977.32, Y=-201.42, Z=-0.50)
+[2026.09.14-17.03.19:910][782]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.00 spring=33848.37 length=0.93 point=V(X=7794.60, Y=-201.59, Z=-0.50)
+[2026.09.14-17.03.20:899][829]LogTemp: Display: GR_SMOKE PASS safe bike dismount
+[2026.09.14-17.03.20:901][829]LogTemp: Display: GR_SMOKE PASS SCOUT possessed
+[2026.09.14-17.03.20:919][830]LogTemp: Display: GR_BIKE t=20.5 loc=V(X=7868.70, Y=-201.54, Z=6.74) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.5 gear=1 speed=0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.20:919][830]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=34858.90 length=0.93 point=V(X=7977.32, Y=-201.43, Z=-0.50)
+[2026.09.14-17.03.20:919][830]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.02 spring=33848.19 length=0.93 point=V(X=7794.60, Y=-201.61, Z=-0.50)
+[2026.09.14-17.03.21:922][881]LogTemp: Display: GR_BIKE t=21.5 loc=V(X=7868.69, Y=-201.54, Z=6.78) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.21:923][881]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=34505.25 length=0.93 point=V(X=7977.32, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.21:923][881]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.02 spring=33743.83 length=0.93 point=V(X=7794.60, Y=-201.61, Z=-0.50)
+[2026.09.14-17.03.22:935][929]LogTemp: Display: GR_BIKE t=22.5 loc=V(X=7868.70, Y=-201.54, Z=6.75) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.22:937][929]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=35279.95 length=0.93 point=V(X=7977.32, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.22:937][929]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.02 spring=34460.15 length=0.93 point=V(X=7794.60, Y=-201.61, Z=-0.50)
+[2026.09.14-17.03.23:905][975]LogTemp: Display: GR_SMOKE PASS SCOUT thrust moves assembly
+[2026.09.14-17.03.23:905][975]LogTemp: Display: GR_SMOKE PASS SCOUT energy consumed
+[2026.09.14-17.03.24:102][976]LogTemp: Display: GR_BIKE t=23.6 loc=V(X=7868.69, Y=-201.54, Z=6.85) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.24:102][976]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=28356.98 length=0.94 point=V(X=7977.32, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.24:102][976]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.02 spring=25896.18 length=0.94 point=V(X=7794.59, Y=-201.61, Z=-0.50)
+[2026.09.14-17.03.24:911][ 16]LogTemp: Display: GR_SCOUT_RETURN_REQUEST pos=V(X=9035.95, Y=-30.56, Z=181.50) home=V(X=7978.54, Y=-31.54, Z=10.50) velocity=V(X=214.87, Y=0.20) parts=19
+[2026.09.14-17.03.24:911][ 16]LogTemp: Display: GR_SMOKE PASS SCOUT return initiated
+[2026.09.14-17.03.24:911][ 16]LogTemp: Display: GR_SCOUT_RETURN sim=0.02 raw=0.02 dt=0.021 pos=V(X=9040.12, Y=-30.55, Z=181.50) target=V(X=7978.54, Y=-31.54, Z=190.50) home=V(X=7978.54, Y=-31.54, Z=10.50) dist=1075.3 speed=191.4 hit=none normal=V(0) penetrating=0 grounded=0 landed=0
+[2026.09.14-17.03.25:110][ 26]LogTemp: Display: GR_BIKE t=24.6 loc=V(X=7868.70, Y=-201.54, Z=6.71) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.25:110][ 26]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=35845.21 length=0.93 point=V(X=7977.33, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.25:110][ 26]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.02 spring=35184.39 length=0.93 point=V(X=7794.60, Y=-201.61, Z=-0.50)
+[2026.09.14-17.03.25:912][ 67]LogTemp: Display: GR_SCOUT_RETURN sim=1.02 raw=1.02 dt=0.020 pos=V(X=8744.58, Y=-30.83, Z=184.64) target=V(X=7978.54, Y=-31.54, Z=190.50) home=V(X=7978.54, Y=-31.54, Z=10.50) dist=785.6 speed=596.0 hit=none normal=V(0) penetrating=0 grounded=0 landed=0
+[2026.09.14-17.03.26:111][ 77]LogTemp: Display: GR_BIKE t=25.6 loc=V(X=7868.70, Y=-201.54, Z=6.71) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.26:111][ 77]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=35577.58 length=0.93 point=V(X=7977.33, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.26:111][ 77]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.02 spring=34729.62 length=0.93 point=V(X=7794.60, Y=-201.61, Z=-0.50)
+[2026.09.14-17.03.26:912][118]LogTemp: Display: GR_SCOUT_RETURN sim=2.02 raw=2.02 dt=0.019 pos=V(X=8126.43, Y=-31.40, Z=189.42) target=V(X=7978.54, Y=-31.54, Z=10.50) home=V(X=7978.54, Y=-31.54, Z=10.50) dist=232.1 speed=474.7 hit=none normal=V(0) penetrating=0 grounded=0 landed=0
+[2026.09.14-17.03.27:130][129]LogTemp: Display: GR_BIKE t=26.7 loc=V(X=7868.70, Y=-201.54, Z=6.72) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.27:130][129]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=35452.42 length=0.93 point=V(X=7977.33, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.27:130][129]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.02 spring=34649.28 length=0.93 point=V(X=7794.60, Y=-201.61, Z=-0.50)
+[2026.09.14-17.03.27:918][169]LogTemp: Display: GR_SCOUT_RETURN sim=3.03 raw=3.03 dt=0.020 pos=V(X=7934.23, Y=-30.93, Z=86.47) target=V(X=7978.54, Y=-31.54, Z=286.29) home=V(X=7978.54, Y=-31.54, Z=10.50) dist=87.9 speed=68.8 hit=BP_ThirdPersonCharacter_C_0/CollisionCylinder normal=V(X=0.99, Y=0.13, Z=-0.00) penetrating=0 grounded=0 landed=0
+[2026.09.14-17.03.28:133][180]LogTemp: Display: GR_BIKE t=27.7 loc=V(X=7868.70, Y=-201.54, Z=6.73) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.28:134][180]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=33802.74 length=0.93 point=V(X=7977.32, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.28:134][180]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.02 spring=32514.14 length=0.93 point=V(X=7794.60, Y=-201.60, Z=-0.50)
+[2026.09.14-17.03.28:919][220]LogTemp: Display: GR_SCOUT_RETURN sim=4.03 raw=4.03 dt=0.019 pos=V(X=7972.09, Y=-30.91, Z=275.21) target=V(X=7978.54, Y=-31.54, Z=10.50) home=V(X=7978.54, Y=-31.54, Z=10.50) dist=264.8 speed=54.7 hit=BP_ThirdPersonCharacter_C_0/CollisionCylinder normal=V(X=0.99, Y=0.13, Z=-0.00) penetrating=0 grounded=0 landed=0
+[2026.09.14-17.03.29:137][231]LogTemp: Display: GR_BIKE t=28.7 loc=V(X=7868.70, Y=-201.54, Z=6.72) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.29:137][231]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=35599.40 length=0.93 point=V(X=7977.32, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.29:137][231]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.02 spring=34716.41 length=0.93 point=V(X=7794.60, Y=-201.60, Z=-0.50)
+[2026.09.14-17.03.29:927][271]LogTemp: Display: GR_SCOUT_RETURN sim=5.04 raw=5.04 dt=0.025 pos=V(X=7982.21, Y=-31.56, Z=88.63) target=V(X=7978.54, Y=-31.54, Z=10.50) home=V(X=7978.54, Y=-31.54, Z=10.50) dist=78.2 speed=201.4 hit=BP_ThirdPersonCharacter_C_0/CollisionCylinder normal=V(X=0.99, Y=0.13, Z=-0.00) penetrating=0 grounded=0 landed=0
+[2026.09.14-17.03.30:154][283]LogTemp: Display: GR_BIKE t=29.7 loc=V(X=7868.70, Y=-201.54, Z=6.71) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.30:154][283]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=36357.98 length=0.93 point=V(X=7977.32, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.30:154][283]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.00 spring=35643.34 length=0.93 point=V(X=7794.60, Y=-201.60, Z=-0.50)
+[2026.09.14-17.03.30:545][303]LogTemp: Display: GR_SCOUT_RETURN sim=5.66 raw=5.66 dt=0.016 pos=V(X=7980.46, Y=-31.61, Z=7.70) target=V(X=7978.54, Y=-31.54, Z=10.50) home=V(X=7978.54, Y=-31.54, Z=10.50) dist=3.4 speed=0.0 hit=StaticMeshActor_26/StaticMeshComponent0 normal=V(Z=1.00) penetrating=0 grounded=1 landed=1
+[2026.09.14-17.03.30:564][304]LogTemp: Display: GR_SMOKE PASS SCOUT return lands
+[2026.09.14-17.03.30:566][304]LogTemp: Display: GR_SMOKE PASS relay and power cell progression
+[2026.09.14-17.03.31:166][339]LogTemp: Display: GR_BIKE t=30.7 loc=V(X=7868.70, Y=-201.54, Z=6.66) rot=R(P=1.88, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.31:166][339]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=36738.04 length=0.93 point=V(X=7977.33, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.31:166][339]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.02 spring=36221.20 length=0.93 point=V(X=7794.60, Y=-201.60, Z=-0.50)
+[2026.09.14-17.03.32:170][398]LogTemp: Display: GR_BIKE t=31.7 loc=V(X=7868.70, Y=-201.54, Z=6.67) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.32:171][398]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=36730.01 length=0.93 point=V(X=7977.33, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.32:171][398]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.00 spring=36360.47 length=0.93 point=V(X=7794.60, Y=-201.60, Z=-0.50)
+[2026.09.14-17.03.33:187][458]LogTemp: Display: GR_BIKE t=32.7 loc=V(X=7868.70, Y=-201.54, Z=6.67) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.33:187][458]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=37115.90 length=0.93 point=V(X=7977.33, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.33:188][458]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.00 spring=36698.21 length=0.93 point=V(X=7794.60, Y=-201.60, Z=-0.50)
+[2026.09.14-17.03.34:202][518]LogTemp: Display: GR_BIKE t=33.7 loc=V(X=7868.70, Y=-201.54, Z=6.67) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=-0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.34:202][518]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=36846.93 length=0.93 point=V(X=7977.33, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.34:202][518]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.00 spring=36450.52 length=0.93 point=V(X=7794.60, Y=-201.60, Z=-0.50)
+[2026.09.14-17.03.35:203][577]LogTemp: Display: GR_BIKE t=34.7 loc=V(X=7868.70, Y=-201.54, Z=6.67) rot=R(P=1.87, Y=0.05, R=-0.00) sim=1 valid=1 awake=1 ctrl=None request=0.00 throttle=0.00 brake=1.00 hand=1 rpm=1.0 gear=1 speed=0.0 mass=190.0 wheelcount=2
+[2026.09.14-17.03.35:203][577]LogTemp: Display: GR_BIKE_WHEEL 0 contact=1 torque=0.00 brake=4500.00 spring=36665.93 length=0.93 point=V(X=7977.33, Y=-201.44, Z=-0.50)
+[2026.09.14-17.03.35:203][577]LogTemp: Display: GR_BIKE_WHEEL 1 contact=1 torque=0.00 brake=1500.02 spring=36314.22 length=0.93 point=V(X=7794.60, Y=-201.60, Z=-0.50)
+[2026.09.14-17.03.35:575][599]LogTemp: Display: GR_SMOKE PASS proximity scan decodes carrier
+[2026.09.14-17.03.35:575][599]LogTemp: Display: GR_SCOUT_RETURN_REQUEST pos=V(X=45410.00, Y=-500.00, Z=169.50) home=V(X=45410.00, Y=-500.00, Z=-1.50) velocity=V(0) parts=19
+[2026.09.14-17.03.35:575][599]LogTemp: Display: GR_SMOKE PASS final relay completes route
+[2026.09.14-17.03.35:580][599]LogTemp: Display: GR_SMOKE PASS progress persists to save
+[2026.09.14-17.03.35:581][599]LogTemp: Display: GR_SCOUT_RETURN sim=0.02 raw=0.02 dt=0.015 pos=V(X=45410.00, Y=-500.00, Z=169.36) target=V(X=45410.00, Y=-500.00, Z=-1.50) home=V(X=45410.00, Y=-500.00, Z=-1.50) dist=170.9 speed=9.3 hit=none normal=V(0) penetrating=0 grounded=0 landed=0
+[2026.09.14-17.03.36:587][650]LogTemp: Display: GR_SCOUT_RETURN sim=1.03 raw=1.03 dt=0.018 pos=V(X=45410.00, Y=-500.00, Z=40.69) target=V(X=45410.00, Y=-500.00, Z=-1.50) home=V(X=45410.00, Y=-500.00, Z=-1.50) dist=42.2 speed=121.0 hit=none normal=V(0) penetrating=0 grounded=0 landed=0
+[2026.09.14-17.03.37:161][683]LogTemp: Display: GR_SCOUT_RETURN sim=1.60 raw=1.60 dt=0.017 pos=V(X=45410.00, Y=-500.00, Z=-4.40) target=V(X=45410.00, Y=-500.00, Z=-1.50) home=V(X=45410.00, Y=-500.00, Z=-1.50) dist=2.9 speed=0.0 hit=StaticMeshActor_62/StaticMeshComponent0 normal=V(Z=1.00) penetrating=0 grounded=1 landed=1
+[2026.09.14-17.03.37:592][708]LogTemp: Display: GR_SMOKE_COMPLETE {

@@ -1,0 +1,1516 @@
+{
+  "source_project": "D:\\UNREAL-GRIDRUNNER-ASSETS\\Projects\\GR_AssetReview",
+  "seeds": [
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYBarrier_Traffic_A01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYBarrier_Barrel_A01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYTrash_TireDestroyed_A01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYSignWarn_Slippery_A01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYTrash_Bag_A01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYTrash_Container_A01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_Sandbags_A01_N1",
+    "/Game/Bike/BikeBP/BikeBP",
+    "/Game/MotoInteractionAnims/Animations/Mounted/Idle/AS_Idle_Riding",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SKM_Manny_Simple",
+    "/Game/Free_Sounds_Pack/cue/Ambient_Wind_Loop_1_Cue",
+    "/Game/Free_Sounds_Pack/cue/Ambient_Birds_Loop_04_Cue",
+    "/Game/Free_Sounds_Pack/cue/Ambient_Rain_Moderate_Loop_1_Cue",
+    "/Game/Sparks_Embers/Niagara/NS_Sparks01",
+    "/Game/Sparks_Embers/Niagara/NS_Sparks08"
+  ],
+  "packages": [
+    "/Game/Bike/Animations/SK_rsg_bike_UE_04_Skeleton_AnimBlueprint",
+    "/Game/Bike/BikeBP/BikeBP",
+    "/Game/Bike/BikeBP/Bike_TorqueCurve",
+    "/Game/Bike/BikeBP/Frontwheel",
+    "/Game/Bike/BikeBP/RearWheel",
+    "/Game/Bike/Input/Actions/IA_Brake",
+    "/Game/Bike/Input/Actions/IA_Handbrake",
+    "/Game/Bike/Input/Actions/IA_LookAround",
+    "/Game/Bike/Input/Actions/IA_Reset",
+    "/Game/Bike/Input/Actions/IA_Steering",
+    "/Game/Bike/Input/Actions/IA_Throttle",
+    "/Game/Bike/Input/Actions/IA_ToggleCamera",
+    "/Game/Bike/Materials/Materials_Clean/M_body_1_Clean",
+    "/Game/Bike/Materials/Materials_Clean/M_body_2_Clean",
+    "/Game/Bike/Models/SK_rsg_bike_UE_04",
+    "/Game/Bike/Models/SK_rsg_bike_UE_04_PhysicsAsset",
+    "/Game/Bike/Models/SK_rsg_bike_UE_04_Skeleton",
+    "/Game/Bike/Texture/Texture_Clean/T_rsg_bike_body_01_clean_ARM",
+    "/Game/Bike/Texture/Texture_Clean/T_rsg_bike_body_01_clean_BC",
+    "/Game/Bike/Texture/Texture_Clean/T_rsg_bike_body_01_clean_N",
+    "/Game/Bike/Texture/Texture_Clean/T_rsg_bike_body_02_clean_ARM",
+    "/Game/Bike/Texture/Texture_Clean/T_rsg_bike_body_02_clean_BC",
+    "/Game/Bike/Texture/Texture_Clean/T_rsg_bike_body_02_clean_N",
+    "/Game/Deko_MatrixDemo/Freeway/Materials/MI_FWYBarrier_Barrel_A_01",
+    "/Game/Deko_MatrixDemo/Freeway/Materials/MI_FWYBarrier_TrafficBarrier_A01",
+    "/Game/Deko_MatrixDemo/Freeway/Materials/MI_FWYSignWarn_D01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Materials/MI_FWYTrash_A01",
+    "/Game/Deko_MatrixDemo/Freeway/Materials/MI_FWYTrash_Tire_A01",
+    "/Game/Deko_MatrixDemo/Freeway/Materials/MI_Sandbags_White_A01",
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYBarrier_Barrel_A01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYBarrier_Traffic_A01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYSignWarn_Slippery_A01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYTrash_Bag_A01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYTrash_Container_A01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYTrash_TireDestroyed_A01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_Sandbags_A01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Textures/T_BLDG_Prop_Lamp_Wall_A01_E",
+    "/Game/Deko_MatrixDemo/Freeway/Textures/T_FWYBarrier_Barrier_A01_M",
+    "/Game/Deko_MatrixDemo/Freeway/Textures/T_FWYBarrier_Barrier_A02_M",
+    "/Game/Deko_MatrixDemo/Freeway/Textures/T_FWYBarrier_Prop_Barrel_A01_M",
+    "/Game/Deko_MatrixDemo/Freeway/Textures/T_FWYSignWarn_D01_N1",
+    "/Game/Deko_MatrixDemo/Freeway/Textures/T_FWYTrash_A01_AORM",
+    "/Game/Deko_MatrixDemo/Freeway/Textures/T_FWYTrash_A01_C",
+    "/Game/Deko_MatrixDemo/Freeway/Textures/T_FWYTrash_A01_N",
+    "/Game/Deko_MatrixDemo/Freeway/Textures/T_FWYTrash_Tire_A01_M",
+    "/Game/Deko_MatrixDemo/Freeway/Textures/T_Sandbags_Group1_A01_AORM",
+    "/Game/Deko_MatrixDemo/Freeway/Textures/T_Sandbags_Group1_A01_N",
+    "/Game/Deko_MatrixDemo/Freeway/Textures/T_Sandbags_GroupA_White_A01_C",
+    "/Game/Deko_MatrixDemo/Freeway/Textures/T_StandingSignAd_A02_M",
+    "/Game/Deko_MatrixDemo/Shared/Material/Masters/MM_Master_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Blend/MLB_MaskTexture_Alpha",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Blend/MLB_MaskTexture_Blue",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Blend/MLB_MaskTexture_Green",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Blend/MLB_MaskTexture_Red",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Functions/MF_Object_UVs",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Corrosion_Rust_02",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Grunge_Dust_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Metal_Forged_Rough_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Metal_Galvanized_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Metal_Sign_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Metal_Sign_04",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Metal_Steel_Worn_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Plastic_Gloss_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Plastic_Rough_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Plastic_Used_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Rubber_Old_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Rubber_Rough_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Sign_Reflector_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Sign_Sticker_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_SimpleColor_Blue_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_SimpleColor_Green_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_SimpleColor_Red_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_SimpleColor_White_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/ML_Master_01",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/ML_SimpleColor",
+    "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/M_MatLayer_Prop_Master_01",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Corrosion_Rust_01_N",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Corrosion_Rust_02_AORM",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Corrosion_Rust_02_C",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_FreewaySign_Green_01_A_01_M",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_FreewaySign_Green_01_A_01_N",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Grunge_Dirt_02_N",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Grunge_Dust_01_AORM",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Grunge_Dust_01_C",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Grunge_Dust_01_N",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Forged_Rough_01_AORM",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Forged_Rough_01_C",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Forged_Rough_01_N",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Galvanized_01_AORM",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Galvanized_01_C",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Sign_01_AORM",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Sign_01_C",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Sign_01_N",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Sign_02_AORM",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Sign_03_C",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Steel_Worn_01_AORM",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Steel_Worn_01_C",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Steel_Worn_01_N",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Metal_Surface_A_N",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Placeholder_01_C",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Placeholder_01_M",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Placeholder_01_N",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Placeholder_02_M",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Plastic_Gloss_01_AORM",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Plastic_Gloss_01_C",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Plastic_Grain_01_N",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Plastic_Micro_02_N",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Plastic_Old_01_AORM",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Plastic_Old_01_C",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Plastic_Rough_01_AORM",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Plastic_Rough_01_C",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Reflector_01a_N",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Roughness_Fill_01_M",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Rubber_Glossy_01_C",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Rubber_Rough_01_AORM",
+    "/Game/Deko_MatrixDemo/Shared/Textures/T_Sign_Sticker_01_N",
+    "/Game/Free_Sounds_Pack/cue/Ambient_Birds_Loop_04_Cue",
+    "/Game/Free_Sounds_Pack/cue/Ambient_Rain_Moderate_Loop_1_Cue",
+    "/Game/Free_Sounds_Pack/cue/Ambient_Wind_Loop_1_Cue",
+    "/Game/Free_Sounds_Pack/wav/Ambient_Birds_Loop_04",
+    "/Game/Free_Sounds_Pack/wav/Ambient_Rain_Moderate_Loop_1",
+    "/Game/Free_Sounds_Pack/wav/Ambient_Wind_Loop_1",
+    "/Game/MotoInteractionAnims/Animations/Mounted/Idle/AS_Idle_Riding",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/CA_Mannequin",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/ChromaticCurve",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/MF_Diffraction",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/MF_logo3layers",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/ML_BaseColorFallOff",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Instances/Manny/MI_Manny_01",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Instances/Manny/MI_Manny_02",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Instances/Quinn/MI_Quinn_01",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Instances/Quinn/MI_Quinn_02",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/M_Mannequin",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SKM_Manny",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SKM_Manny_Simple",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SKM_Quinn",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SK_Mannequin",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/ABP_Manny_PostProcess",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/ABP_Quinn_PostProcess",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/CR_Mannequin_Body",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/CR_Mannequin_Procedural",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/PA_Mannequin",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_calf_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_calf_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_calf_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_calf_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_clavicle_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_clavicle_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_clavicle_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_clavicle_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_foot_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_foot_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_foot_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_foot_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_hand_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_hand_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_hand_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_hand_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_lowerarm_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_lowerarm_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_lowerarm_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_lowerarm_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_thigh_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_thigh_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_thigh_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_thigh_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_upperarm_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_upperarm_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_upperarm_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_upperarm_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_calf_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_calf_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_calf_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_calf_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_clavicle_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_clavicle_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_clavicle_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_clavicle_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_foot_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_foot_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_foot_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_foot_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_hand_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_hand_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_hand_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_hand_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_lowerarm_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_lowerarm_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_lowerarm_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_lowerarm_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_thigh_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_thigh_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_thigh_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_thigh_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_upperarm_l_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_upperarm_l_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_upperarm_r_anim",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_upperarm_r_pose",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_ASAOPMASK_MSK",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_BN",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_CCRCCPlastic_MSK",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_D",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_MSR_MSK",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_N",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_Tan",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_ASAOPMASK_MSK",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_BN",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_CCRCCPlastic_MSK",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_D",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_MSR_MSK",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_N",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_Tan",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01ID_BN",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01ID_D",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01ID_MSR_MSK",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01ID_N",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01ID_Tan",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01_ASAOMASK_MSK",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01_CCRCCPlastic_MSK",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02ID_BN",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02ID_D",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02ID_MSR_MSK",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02ID_N",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02ID_Tan",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02_ASAOMASK_MSK",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02_CCRCCPlastic_MSK",
+    "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Shared/T_UE_Logo_M",
+    "/Game/Sparks_Embers/Materials/M_Props",
+    "/Game/Sparks_Embers/Materials/M_Spark",
+    "/Game/Sparks_Embers/Meshes/SM_Hammer",
+    "/Game/Sparks_Embers/Niagara/NS_Sparks01",
+    "/Game/Sparks_Embers/Niagara/NS_Sparks08"
+  ],
+  "external_dependencies": [
+    "/ControlRig/Controls/DefaultGizmoLibrary",
+    "/ControlRig/Controls/DefaultGizmoLibraryNormalized",
+    "/Engine/Animation/DefaultAnimBoneCompressionSettings",
+    "/Engine/Animation/DefaultAnimCurveCompressionSettings",
+    "/Engine/EditorBlueprintResources/StandardMacros",
+    "/Engine/Functions/Engine_MaterialFunctions01/Texturing/ScaleUVsByCenter",
+    "/Engine/Functions/Engine_MaterialFunctions02/Utility/BreakOutFloat2Components",
+    "/Engine/Functions/MaterialLayerFunctions/MatLayerBlend_Emissive",
+    "/Engine/Functions/MaterialLayerFunctions/MatLayerBlend_NormalBlend",
+    "/Niagara/DynamicInputs/Multiply/Multiply_Float",
+    "/Niagara/DynamicInputs/Multiply/Multiply_LinearColorByFloat",
+    "/Niagara/DynamicInputs/TypeConversions/MakeVector",
+    "/Niagara/DynamicInputs/UniformRange/V2/RandomRangeFloat",
+    "/Niagara/DynamicInputs/ValueFromCurve/FloatFromCurve",
+    "/Niagara/Enums/Angles/ENiagara_AngleInput",
+    "/Niagara/Enums/Collision/SceneDepthCollisionQueryMethod",
+    "/Niagara/Enums/ENiagaraCalculateRadiusOptions",
+    "/Niagara/Enums/ENiagaraChannelCorrelation",
+    "/Niagara/Enums/ENiagaraCollisionRadiusOptions",
+    "/Niagara/Enums/ENiagaraCurlNoiseQuality",
+    "/Niagara/Enums/ENiagaraEmitterLifeCycleMode",
+    "/Niagara/Enums/ENiagaraEmitterScalabilityMode_Limited",
+    "/Niagara/Enums/ENiagaraFrictionMergeType",
+    "/Niagara/Enums/ENiagaraInactiveMode",
+    "/Niagara/Enums/ENiagaraRandomnessEvaluation",
+    "/Niagara/Enums/ENiagaraRandomnessMode",
+    "/Niagara/Enums/ENiagaraRestitutionMergeType",
+    "/Niagara/Enums/ENiagaraScaleColorMode",
+    "/Niagara/Enums/ENiagaraShapeTorusMode",
+    "/Niagara/Enums/ENiagaraSphereDistributionMode",
+    "/Niagara/Enums/ENiagaraSystemInactiveMode",
+    "/Niagara/Enums/ENiagaraTorusDistributionMode",
+    "/Niagara/Enums/ENiagara_AttributeSamplingApplyOutput",
+    "/Niagara/Enums/ENiagara_CPUCollisionType",
+    "/Niagara/Enums/ENiagara_ColorInitializationMode",
+    "/Niagara/Enums/ENiagara_EmitterStateOptions",
+    "/Niagara/Enums/ENiagara_GPUCollisionType",
+    "/Niagara/Enums/ENiagara_InfiniteLoopDuration",
+    "/Niagara/Enums/ENiagara_LifetimeMode",
+    "/Niagara/Enums/ENiagara_MassInitializationMode",
+    "/Niagara/Enums/ENiagara_PositionInitializationMode",
+    "/Niagara/Enums/ENiagara_SizeScaleMode",
+    "/Niagara/Enums/ENiagara_SpriteRotationMode",
+    "/Niagara/Enums/ENiagara_UVFlippingMode",
+    "/Niagara/Enums/Location/ENiagaraRingDiscMode",
+    "/Niagara/Enums/Location/ENiagara_BoxPlaneMode",
+    "/Niagara/Enums/Location/ENiagara_ConeMode",
+    "/Niagara/Enums/Location/ENiagara_CylinderMode",
+    "/Niagara/Enums/Location/ENiagara_LocationShapes",
+    "/Niagara/Enums/Ribbons/ENiagara_UnsetDirectSet",
+    "/Niagara/Enums/Ribbons/ENiagara_UnsetDirectSetRandom",
+    "/Niagara/Enums/SpriteRenderer/ENiagara_ScaleSpriteSize",
+    "/Niagara/Enums/Transforms/ENiagara_OffsetMode",
+    "/Niagara/Enums/Transforms/ENiagara_RotationMode",
+    "/Niagara/Enums/Transforms/ENiagara_ScaleMode",
+    "/Niagara/Enums/Transforms/ENiagara_TransformOrder",
+    "/Niagara/Enums/Transforms/ENiagara_TransformType",
+    "/Niagara/Enums/Utility/ENiagara_VelocityMode",
+    "/Niagara/Modules/Collision/Collision",
+    "/Niagara/Modules/Emitter/EmitterState",
+    "/Niagara/Modules/Emitter/SpawnBurst_Instantaneous",
+    "/Niagara/Modules/Emitter/SpawnRate",
+    "/Niagara/Modules/Solvers/SolveForcesAndVelocity",
+    "/Niagara/Modules/Spawn/Initialization/V2/InitializeParticle",
+    "/Niagara/Modules/Spawn/Location/V2/ShapeLocation",
+    "/Niagara/Modules/Spawn/Velocity/AddVelocity",
+    "/Niagara/Modules/System/SystemState",
+    "/Niagara/Modules/Update/Color/ScaleColor",
+    "/Niagara/Modules/Update/Forces/Drag",
+    "/Niagara/Modules/Update/Forces/GravityForce",
+    "/Niagara/Modules/Update/Forces/V2/CurlNoiseForce",
+    "/Niagara/Modules/Update/Lifetime/ParticleState",
+    "/Niagara/Modules/Update/Size/ScaleSpriteSize",
+    "/Niagara/Modules/Update/Size/ScaleSpriteSizeBySpeed",
+    "/Niagara/ParameterDefinitions/CoreParameters",
+    "/Niagara/ParameterDefinitions/MeshRenderer",
+    "/Niagara/ParameterDefinitions/RibbonRenderer",
+    "/Niagara/VectorFields/Assets/TilingCurl32",
+    "/Script/AnimGraph",
+    "/Script/AnimGraphRuntime",
+    "/Script/AnimationCore",
+    "/Script/AudioEditor",
+    "/Script/ChaosVehicles",
+    "/Script/ChaosVehiclesEditor",
+    "/Script/ControlRig",
+    "/Script/ControlRigDeveloper",
+    "/Script/ControlRigSpline",
+    "/Script/CoreUObject",
+    "/Script/DataHierarchyEditor",
+    "/Script/EnhancedInput",
+    "/Script/InputBlueprintNodes",
+    "/Script/InterchangeEngine",
+    "/Script/NavigationSystem",
+    "/Script/Niagara",
+    "/Script/NiagaraEditor",
+    "/Script/RigVM",
+    "/Script/RigVMDeveloper"
+  ],
+  "files": [
+    {
+      "path": "Bike/Animations/SK_rsg_bike_UE_04_Skeleton_AnimBlueprint.uasset",
+      "sha256": "4436c4c728a9b0d4c9a4c6107bc9f13faf732a90ff075fdf223a2c830088de98",
+      "bytes": 99725
+    },
+    {
+      "path": "Bike/BikeBP/BikeBP.uasset",
+      "sha256": "aac412489ee498d33605288e14c6a5acc21e5be0388b88dc329963eaaf928ab8",
+      "bytes": 250087
+    },
+    {
+      "path": "Bike/BikeBP/Bike_TorqueCurve.uasset",
+      "sha256": "b931188537b1234a60a8eccebe9b7cee65b6e4822beb2c0ee8926da04780ccdc",
+      "bytes": 4751
+    },
+    {
+      "path": "Bike/BikeBP/Frontwheel.uasset",
+      "sha256": "3eff592690e7bbd75edaced2e956ce6ed3ecd9843f94e021c63c98f87e6fe63f",
+      "bytes": 6192
+    },
+    {
+      "path": "Bike/BikeBP/RearWheel.uasset",
+      "sha256": "3489a9c6e0b3923d64aba39d789220601f79e05131e1bd4f462d43f027b6d8a4",
+      "bytes": 6280
+    },
+    {
+      "path": "Bike/Input/Actions/IA_Brake.uasset",
+      "sha256": "e4d5e79aecdec36c4c95412bb305998d3aee2473af12ea58ad6f45a19b67bde7",
+      "bytes": 2085
+    },
+    {
+      "path": "Bike/Input/Actions/IA_Handbrake.uasset",
+      "sha256": "651fd0416d14a5559ac60e57071a84501effd3729387902245d27ece56037452",
+      "bytes": 1909
+    },
+    {
+      "path": "Bike/Input/Actions/IA_LookAround.uasset",
+      "sha256": "ed1eb80aa24ef3247e7d4bd9fa2bb5d0900ba8db182369383981b2a5378ee763",
+      "bytes": 1604
+    },
+    {
+      "path": "Bike/Input/Actions/IA_Reset.uasset",
+      "sha256": "df7b6bbd3a726c725b87af022806e3ff5af678b53074b352ce4be83bd893f1ff",
+      "bytes": 1687
+    },
+    {
+      "path": "Bike/Input/Actions/IA_Steering.uasset",
+      "sha256": "ee16f82dde02205c1797bc0f588fb9c7e5c17737c595a531168724b2fc507737",
+      "bytes": 1594
+    },
+    {
+      "path": "Bike/Input/Actions/IA_Throttle.uasset",
+      "sha256": "ca3177618672d56b9c9497017f3ad45f651d56baf776a031f70270b0cba16191",
+      "bytes": 1594
+    },
+    {
+      "path": "Bike/Input/Actions/IA_ToggleCamera.uasset",
+      "sha256": "334ea32cc91188cc568f4dca13d8037ca2b82747468468a0c93fd2fe631b8780",
+      "bytes": 1722
+    },
+    {
+      "path": "Bike/Materials/Materials_Clean/M_body_1_Clean.uasset",
+      "sha256": "8b321bf864c78c94d2f88af8f65d3c148e9e4ecc1ef2d9e6ce16e04511c74496",
+      "bytes": 19310
+    },
+    {
+      "path": "Bike/Materials/Materials_Clean/M_body_2_Clean.uasset",
+      "sha256": "b0c45a280bd8f679e799321f17d072a80d8461855b75c8650e3118e2d88bbd47",
+      "bytes": 19732
+    },
+    {
+      "path": "Bike/Models/SK_rsg_bike_UE_04.uasset",
+      "sha256": "1ea81732c1a068191f2665572e924e4a7ee2ccbcc0aaee40e5c576198dd94f52",
+      "bytes": 4434682
+    },
+    {
+      "path": "Bike/Models/SK_rsg_bike_UE_04_PhysicsAsset.uasset",
+      "sha256": "22b6a068c8f2e887a999429f3c15b693fd4f912120595aa8d795c04d249f2542",
+      "bytes": 12700
+    },
+    {
+      "path": "Bike/Models/SK_rsg_bike_UE_04_Skeleton.uasset",
+      "sha256": "18d9b120cba84c058c15510decb09e4072d31ea292a3903a512765cdc9a74dfa",
+      "bytes": 4020
+    },
+    {
+      "path": "Bike/Texture/Texture_Clean/T_rsg_bike_body_01_clean_ARM.uasset",
+      "sha256": "e269c8cb8b264a7e86dcc96389fab588e19022193996e17db758e2d1f9715550",
+      "bytes": 18662148
+    },
+    {
+      "path": "Bike/Texture/Texture_Clean/T_rsg_bike_body_01_clean_BC.uasset",
+      "sha256": "1057e5aa34228cab623930f7e4834a80459079722c5f6f141c3377fb68df28c9",
+      "bytes": 14503012
+    },
+    {
+      "path": "Bike/Texture/Texture_Clean/T_rsg_bike_body_01_clean_N.uasset",
+      "sha256": "cfe7e097e2ba65751d1280b3e2aef5b8687681240ccc2185f8a9d659e6010a7b",
+      "bytes": 21460663
+    },
+    {
+      "path": "Bike/Texture/Texture_Clean/T_rsg_bike_body_02_clean_ARM.uasset",
+      "sha256": "4e6493a2b0be7c5ca42a9aac8f43f48a8044e1b43ed01ba316091f35e664f324",
+      "bytes": 24414097
+    },
+    {
+      "path": "Bike/Texture/Texture_Clean/T_rsg_bike_body_02_clean_BC.uasset",
+      "sha256": "ebb3bfb26dc4b2bce6b711cbb8d82c866c02ec5f1d5ea889420cb79e4b039b30",
+      "bytes": 16357223
+    },
+    {
+      "path": "Bike/Texture/Texture_Clean/T_rsg_bike_body_02_clean_N.uasset",
+      "sha256": "7f6a96e48fdcbc6df66dfda77ec6e60b778d724ea8b0084b67712c2fde0c0a8a",
+      "bytes": 22996875
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Materials/MI_FWYBarrier_Barrel_A_01.uasset",
+      "sha256": "47ea1cd4f75e25572c998558abbb9079efb5348750fe7bb87f8f23afe9cdc611",
+      "bytes": 31575
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Materials/MI_FWYBarrier_TrafficBarrier_A01.uasset",
+      "sha256": "715b35c18c98bf114aeeaff7f5dc3a6d8b46b325561e5d5e9515ed2f8872ec60",
+      "bytes": 49212
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Materials/MI_FWYSignWarn_D01_N1.uasset",
+      "sha256": "d866b6e01ef3fd1eaa119d8a5770f4b6afb75a48eb79c9e50a6469df61a57b16",
+      "bytes": 102598
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Materials/MI_FWYTrash_A01.uasset",
+      "sha256": "98ebb40a5a764e73d734c89341846ea832a0d26b2539200212692ee28ffd049c",
+      "bytes": 110279
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Materials/MI_FWYTrash_Tire_A01.uasset",
+      "sha256": "e96166a8fa8234f2cf881e48ee3f264b5fde2fd0aa33bd4e8d473dcf64c26fdf",
+      "bytes": 107901
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Materials/MI_Sandbags_White_A01.uasset",
+      "sha256": "bd98006244e7e7cd499145c3c03d0b9064475cdc41ecdc27b4ccd9b78ea3d5d2",
+      "bytes": 86670
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Meshes/SM_FWYBarrier_Barrel_A01_N1.uasset",
+      "sha256": "910c355cb81196c9f224c0e55d4e9355d07a74bc7ea177c5479d7a9abaed0f3e",
+      "bytes": 1459378
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Meshes/SM_FWYBarrier_Traffic_A01_N1.uasset",
+      "sha256": "f67fcdbb68b73981bd951a80f4bf774e2c8481412b3a0ba0f90f923f40a46e48",
+      "bytes": 6407511
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Meshes/SM_FWYSignWarn_Slippery_A01_N1.uasset",
+      "sha256": "4be13d2c14b12ec79ba457310f2ffd2bf78d0b21044a212f95bf522114505f6c",
+      "bytes": 1126606
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Meshes/SM_FWYTrash_Bag_A01_N1.uasset",
+      "sha256": "0c83e085772f92c04490873f8aa976aaf8aa26c0a6a140a1d0a03a133b2b1ddf",
+      "bytes": 12695170
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Meshes/SM_FWYTrash_Container_A01_N1.uasset",
+      "sha256": "4d2a7774b2cddd7884b0cbc89e3d11ada5ebec020f1d0aad3e08a7938246ae26",
+      "bytes": 765686
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Meshes/SM_FWYTrash_TireDestroyed_A01_N1.uasset",
+      "sha256": "67e01342ec85d5d264a2f3939d602fa95637ef046aa080aa884ab47c8bb959a0",
+      "bytes": 20071578
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Meshes/SM_Sandbags_A01_N1.uasset",
+      "sha256": "3584795aba30ff7a936e3f665d0770c0b031c444a4a75bea947d1928627d8220",
+      "bytes": 3274217
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Textures/T_BLDG_Prop_Lamp_Wall_A01_E.uasset",
+      "sha256": "827b29fe74aa4af2dd870643c8ea49fbf033685ad9212d27dfaa167927237092",
+      "bytes": 3421936
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Textures/T_FWYBarrier_Barrier_A01_M.uasset",
+      "sha256": "02a6da281fe17531e2f8238c655f82b7c20b7fdabeb14ad2382ddda2df0ceb7d",
+      "bytes": 130176
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Textures/T_FWYBarrier_Barrier_A02_M.uasset",
+      "sha256": "27e5e12bf7e69e62be8188830ea5df455b8bdf3ceef9c8f57cf3e05cbba3c1fe",
+      "bytes": 16722149
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Textures/T_FWYBarrier_Prop_Barrel_A01_M.uasset",
+      "sha256": "b9ebbf14d7d9073a3a751c17bdef6101674824ff7ca47af8a97c0f9730b8529a",
+      "bytes": 19567638
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Textures/T_FWYSignWarn_D01_N1.uasset",
+      "sha256": "f12c6e9af4bb4c15a45a8a7c56194b3bab3fa43d39b6609b71d17bc967403de9",
+      "bytes": 15891970
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Textures/T_FWYTrash_A01_AORM.uasset",
+      "sha256": "416876f4b3504361e93bd3b07fdacc46ba26165592ad2e7017838ffa199c0549",
+      "bytes": 26095114
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Textures/T_FWYTrash_A01_C.uasset",
+      "sha256": "68765976292e2686fd30658420cc18eec815eda097241402436c36002e05eb4b",
+      "bytes": 35451269
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Textures/T_FWYTrash_A01_N.uasset",
+      "sha256": "f5c5b5f6c358b0dca2af8d4d44174f626087366075a5ec0c22baf7979c6903bd",
+      "bytes": 17862196
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Textures/T_FWYTrash_Tire_A01_M.uasset",
+      "sha256": "9ea91a028c8acab6f8a2fabca1284d2a2d7f493e7bc319768d88da1b7a84ccf7",
+      "bytes": 10242842
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Textures/T_Sandbags_Group1_A01_AORM.uasset",
+      "sha256": "bff3e311d165e7ec559c1f1278edd8aa2680d7b389482140e753c4d7195b5f9f",
+      "bytes": 21748782
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Textures/T_Sandbags_Group1_A01_N.uasset",
+      "sha256": "d14bcbf42ae5eff3b4d4e3093a47522314a1bed16fa0b38f6243b2614d7e497f",
+      "bytes": 39900573
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Textures/T_Sandbags_GroupA_White_A01_C.uasset",
+      "sha256": "4188ebf3d76f71a3c624b770384e055d77eaddf6406235627f7299869270ad9f",
+      "bytes": 31498101
+    },
+    {
+      "path": "Deko_MatrixDemo/Freeway/Textures/T_StandingSignAd_A02_M.uasset",
+      "sha256": "41d72590d5cb56e6f65df9f5ba3e2c4ebb9d283e9511a7cc7b2743f44c1a9dfa",
+      "bytes": 3938039
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/Masters/MM_Master_01.uasset",
+      "sha256": "55f60791a1ba1459bced400eecc49c9c4bb19d76239fda716ebcdcaa4cbaeed7",
+      "bytes": 21136
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Blend/MLB_MaskTexture_Alpha.uasset",
+      "sha256": "93fff26992a6639721893f80a111d67172c7cae11f9b00ecb9ab4e1409ee619e",
+      "bytes": 66988
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Blend/MLB_MaskTexture_Blue.uasset",
+      "sha256": "0a570438dc50f59901c23022e0628e1755b194a94fb86dd563c2673c731034ab",
+      "bytes": 66984
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Blend/MLB_MaskTexture_Green.uasset",
+      "sha256": "b9ea7f9129e33d4e0e8930e4796c3077739b6d6c8270773bac6e902356aef4e4",
+      "bytes": 66988
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Blend/MLB_MaskTexture_Red.uasset",
+      "sha256": "f03c4aa4def28245c8bdf4227bb1655cf00c5f575803fea7f2f6711acfd0e045",
+      "bytes": 66980
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Functions/MF_Object_UVs.uasset",
+      "sha256": "16a1a54bee808d116ff8e58d4282132e61e8e35f01ef43bab72f0385c635c2f4",
+      "bytes": 52457
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Corrosion_Rust_02.uasset",
+      "sha256": "63cd125577a042975b2ef4cbbc3e92df46f9bb90bda93add4899e733f5e47359",
+      "bytes": 76470
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Grunge_Dust_01.uasset",
+      "sha256": "e4bb13e998313d9989c625afa40fd162450c48f452240dcbb1c332c3c740703f",
+      "bytes": 76875
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Metal_Forged_Rough_01.uasset",
+      "sha256": "5519f79afc9c3f3af3d5adb0d8d82e10687bb01bec62636fa25e244deaacbbff",
+      "bytes": 76497
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Metal_Galvanized_01.uasset",
+      "sha256": "45040fbb63ad47b135be1fa380981337330d388192bd3b2ea97cb95a2f71de36",
+      "bytes": 77828
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Metal_Sign_01.uasset",
+      "sha256": "76977f391096324ca49af5c2b50d877813855fb454737de901355a7c1f4b895c",
+      "bytes": 77776
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Metal_Sign_04.uasset",
+      "sha256": "836c1275db9236d99d997100d01d8efd7d2790d882eeca32bf390a3a71794815",
+      "bytes": 77345
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Metal_Steel_Worn_01.uasset",
+      "sha256": "2bf89627da2ac68034d6c8c3ea1307aa2b461f62ac65db500db4cd4fb4539619",
+      "bytes": 77849
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Plastic_Gloss_01.uasset",
+      "sha256": "4f89dae90ea54f2c46eb6f9d7af7304d464a132af51bb36991c02198ed69d9e3",
+      "bytes": 75513
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Plastic_Rough_01.uasset",
+      "sha256": "65494cb438ea7f5f018947a834b69683fbe790e791bca22efe261107d5611910",
+      "bytes": 76891
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Plastic_Used_01.uasset",
+      "sha256": "af8f1e6ba686a6f2b6726d3fa38195427c3e7d08d56ba43f3707769a352a1e19",
+      "bytes": 77327
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Rubber_Old_01.uasset",
+      "sha256": "670007f90d15a8c0f19fd0d4bb65d1369011663fb9a118f03cefcf2373f1d318",
+      "bytes": 76858
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Rubber_Rough_01.uasset",
+      "sha256": "292b082ab9fbef37502cafb4ea2382f3193973a766eb7d120ee0b59639670b21",
+      "bytes": 76422
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Sign_Reflector_01.uasset",
+      "sha256": "9a10eca4a879a7ba0e2bac4967f7648b8113f2f7e8dda8349e838ebe47f1a5ab",
+      "bytes": 85902
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Sign_Sticker_01.uasset",
+      "sha256": "796bc6c8da50a6e291c1f82db68fb72351021151373f28c255ddb51b728910c2",
+      "bytes": 77788
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_SimpleColor_Blue_01.uasset",
+      "sha256": "c12a518d4a27333042f2ce95df01ad445a0784cc2fa3b2437b725a304bec102d",
+      "bytes": 99786
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_SimpleColor_Green_01.uasset",
+      "sha256": "64fda32a524339a87483e232d2b00f6b2ada8760c9c365141b9e4e2c6ca45536",
+      "bytes": 99790
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_SimpleColor_Red_01.uasset",
+      "sha256": "b51b3632d3b9710839951db942d1528cc042a44409adcba0991a5b4f9c617599",
+      "bytes": 99782
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_SimpleColor_White_01.uasset",
+      "sha256": "0113df1984daf8455fec8d254e4332a25c28ded9fcbb71c45f9c372c65631fa5",
+      "bytes": 99790
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/ML_Master_01.uasset",
+      "sha256": "37edef34fdead5998569848d851a6ba7d7b0ee60268de4a3866523c2642413c7",
+      "bytes": 95199
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/ML_SimpleColor.uasset",
+      "sha256": "d2f71b0320065cea0ed3451f0e456c66bcf685529d07feb0478b14a94960a920",
+      "bytes": 78802
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Material/MaterialLayer/M_MatLayer_Prop_Master_01.uasset",
+      "sha256": "bed723bd9f6bf7e8b9f2f357193eaab46b2c4eca98722c6a8e732797a5caed32",
+      "bytes": 32053
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Corrosion_Rust_01_N.uasset",
+      "sha256": "d2d9410135e25b72c7acd4733206d9efef2dba64f264c076f3158384888e9eb7",
+      "bytes": 35362469
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Corrosion_Rust_02_AORM.uasset",
+      "sha256": "582c1aa1a9a01812c379764b1e82f6717829ef095c233dbe07cb5bbb461ebdcf",
+      "bytes": 25980466
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Corrosion_Rust_02_C.uasset",
+      "sha256": "99990a400abb176a53dbd279ceb9a84a0c50fad438dfe78f81c0ba47247cba5d",
+      "bytes": 36741641
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_FreewaySign_Green_01_A_01_M.uasset",
+      "sha256": "be2fe73b1ccb90f29441e608ff5236c05df2210f01c07b7c76b50083015d5ee9",
+      "bytes": 21926047
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_FreewaySign_Green_01_A_01_N.uasset",
+      "sha256": "99b60c28f4c659826d84b06c67e218a1440ac0c8e429446334e35d337eaa94b4",
+      "bytes": 15618049
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Grunge_Dirt_02_N.uasset",
+      "sha256": "aa629d6157593ed27a885d5b69093a0ecf0d2a2c9111f556fe6a6713d3254b16",
+      "bytes": 23156585
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Grunge_Dust_01_AORM.uasset",
+      "sha256": "00facea494b9e0e119e2fe3b616fafec887105b0b6c4d64362819b92fd27f9dd",
+      "bytes": 29962226
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Grunge_Dust_01_C.uasset",
+      "sha256": "392c48f458fafa79d42dc16c6747cbf96ec1ed7d9a5002171baf97d4b514c195",
+      "bytes": 43202498
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Grunge_Dust_01_N.uasset",
+      "sha256": "9aa434a8d2485fc0ebef7cba4bfa936f216dccd792a3e5e9953ab735c147c6a1",
+      "bytes": 22556593
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Forged_Rough_01_AORM.uasset",
+      "sha256": "1265d51345d1262149b9e421a78431f9a21167620a1ee7767a6d771e0c50d041",
+      "bytes": 24643503
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Forged_Rough_01_C.uasset",
+      "sha256": "d2b6a4b714f8f8656cb535b965bbcd98e655e03ea8533ea23d42ea047103bf59",
+      "bytes": 21555682
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Forged_Rough_01_N.uasset",
+      "sha256": "8aff99ef8d2186545242f85bbd6668f3a09aab1fdffe355f0bf04f7dc5120137",
+      "bytes": 39255798
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Galvanized_01_AORM.uasset",
+      "sha256": "1185b24cdbf10bd7fafaae785bd5b403ac4514cb13796ce361c08eef583b9370",
+      "bytes": 22828800
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Galvanized_01_C.uasset",
+      "sha256": "2c0065878dec7b0eb30809a6e9a17394a00ba551df67fef3dbed4c154af33f50",
+      "bytes": 19542541
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Sign_01_AORM.uasset",
+      "sha256": "259dc12938dc3233866cd864f7b9848f1a4cd32f2899f418af9b353d24ed23aa",
+      "bytes": 19691578
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Sign_01_C.uasset",
+      "sha256": "c4ca8027f977b40fc87d8cff2b34c892562f41d0e3e01cbc1145dc438d2a3984",
+      "bytes": 32420561
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Sign_01_N.uasset",
+      "sha256": "3caf4b6fce538bff749b85dd87eb2ad372aede81246e0de189eb490546b54e3b",
+      "bytes": 9549775
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Sign_02_AORM.uasset",
+      "sha256": "121b24250a639a5af4b42ddc4731a956ca0f1677dbfee452c869a07d25c9b35b",
+      "bytes": 20179120
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Sign_03_C.uasset",
+      "sha256": "0ea8135630e34866b32268c51b6c4cfbcc5f5aa8594ca1d6d0a08f9a1613744f",
+      "bytes": 31348604
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Steel_Worn_01_AORM.uasset",
+      "sha256": "e6e9ff3a0cab3f75d1db2610b8121290de8131ae5436daa202de52acccca4754",
+      "bytes": 17130994
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Steel_Worn_01_C.uasset",
+      "sha256": "228a61a4502257e52ab1a894af91fa70fc13bf932daa2783370371c723c03cf6",
+      "bytes": 35881441
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Steel_Worn_01_N.uasset",
+      "sha256": "519f7eb5ef34ec102ca57ecb27175ebf6d8305b22e72ac59d50d6799ec8a4ef0",
+      "bytes": 676199
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Metal_Surface_A_N.uasset",
+      "sha256": "6f7e9690a494db005efc48fa4c986df814e3236bd34a71bc2e49829be84a8b68",
+      "bytes": 48766842
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Placeholder_01_C.uasset",
+      "sha256": "ff36c04f3d0333c5521f2dcb27feceb33d0d3dcf54a594ce502d70ac7f03d992",
+      "bytes": 6498
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Placeholder_01_M.uasset",
+      "sha256": "c1e3ea71accfa6489dc35959bb6051c5738bda77da2778c6fe8595850e3078e7",
+      "bytes": 6338
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Placeholder_01_N.uasset",
+      "sha256": "643324310b6f09ae716bfe1ea86841a99a0655155fd67e99f6cd3e0372291366",
+      "bytes": 6733
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Placeholder_02_M.uasset",
+      "sha256": "f0289d5c5b5dbc7244e4cdf818e18c9b347adacbc1f12b296be4ee1a068c151e",
+      "bytes": 6374
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Plastic_Gloss_01_AORM.uasset",
+      "sha256": "06458905c135813167732d974e8623a5e862a5283011b2f9cfc75d704155da66",
+      "bytes": 8986600
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Plastic_Gloss_01_C.uasset",
+      "sha256": "4d210d9075904672cedea2723f1e3627d26cdb67e805b7f1fd404f0eea236ec0",
+      "bytes": 8627616
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Plastic_Grain_01_N.uasset",
+      "sha256": "32aadc695e781ab179a1232c3955aa0d8ce99e4e13526386fa440c41aa81674a",
+      "bytes": 40028810
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Plastic_Micro_02_N.uasset",
+      "sha256": "2b8aff05a7e5f8ab8573b7063fdf3ee399cdea7148391a56450b4bdda325ba9d",
+      "bytes": 44674716
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Plastic_Old_01_AORM.uasset",
+      "sha256": "d377dd679a4780616239db62d70ded1b43838924d283a56b292a39fea36e81aa",
+      "bytes": 13345513
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Plastic_Old_01_C.uasset",
+      "sha256": "c2ad2cb73c8c3ee82c4dde6ef8b5ed8e0773fbbb1dbe64764cce4153b9ba81da",
+      "bytes": 25369857
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Plastic_Rough_01_AORM.uasset",
+      "sha256": "45eff50bb89796ad846a1e02b6fcb3fee6d4e34deaff8d42a0f82da8994ae94c",
+      "bytes": 11849
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Plastic_Rough_01_C.uasset",
+      "sha256": "719d16570860547f89c20a5d9f815326a7c524e3a119de79ff36955ede20ea63",
+      "bytes": 21727201
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Reflector_01a_N.uasset",
+      "sha256": "379ca215140010ea83afd4a717522ae0ee9b0582a6cac3a168a9a797bd77a962",
+      "bytes": 23994450
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Roughness_Fill_01_M.uasset",
+      "sha256": "fc8e930c91abae58b4fd8b399cab0717443b735387b00f142ea1326d632b09e8",
+      "bytes": 30915977
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Rubber_Glossy_01_C.uasset",
+      "sha256": "4f776f74a7faeae2562260e9486ba02300057621cb0b0e6d16a395fd71cccf7e",
+      "bytes": 13104183
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Rubber_Rough_01_AORM.uasset",
+      "sha256": "1235f0ca2ea705cb15314463856db4c4b3807dece37aac841dce5ab82c6c08df",
+      "bytes": 15147675
+    },
+    {
+      "path": "Deko_MatrixDemo/Shared/Textures/T_Sign_Sticker_01_N.uasset",
+      "sha256": "fd3b44949f3d1a2fe2ec6aecafa7d7a72d8fb335e8c3d1c6d750af7ab0c5a0b2",
+      "bytes": 4002156
+    },
+    {
+      "path": "Free_Sounds_Pack/cue/Ambient_Birds_Loop_04_Cue.uasset",
+      "sha256": "d1db453e2453f206ce1c7d7754a862d9a48b4162d767c8c4ef49e2b82e7bf97a",
+      "bytes": 4052
+    },
+    {
+      "path": "Free_Sounds_Pack/cue/Ambient_Rain_Moderate_Loop_1_Cue.uasset",
+      "sha256": "e744e2cfd764832afc87a48394fc7433b2951b31d85752f4040b6204d01dfa3d",
+      "bytes": 4102
+    },
+    {
+      "path": "Free_Sounds_Pack/cue/Ambient_Wind_Loop_1_Cue.uasset",
+      "sha256": "5b4e7c278396dfd360b3cedf74c4a4dd02813e744e486e783594f1769e26abb3",
+      "bytes": 4030
+    },
+    {
+      "path": "Free_Sounds_Pack/wav/Ambient_Birds_Loop_04.uasset",
+      "sha256": "9c4ac65b1a4743b753ab5a5cbd5db49756bd716288673eba4c00edce3fa0a3e7",
+      "bytes": 12705324
+    },
+    {
+      "path": "Free_Sounds_Pack/wav/Ambient_Rain_Moderate_Loop_1.uasset",
+      "sha256": "d9fec6deefa38e7fad662637c973e11230257872c30900b4d39f0699c8bf5379",
+      "bytes": 11999228
+    },
+    {
+      "path": "Free_Sounds_Pack/wav/Ambient_Wind_Loop_1.uasset",
+      "sha256": "6e20a5caba8e7ac75518c4f67f5b94bfd4183b44cecd2fe7294bc594cab96d59",
+      "bytes": 17644185
+    },
+    {
+      "path": "MotoInteractionAnims/Animations/Mounted/Idle/AS_Idle_Riding.uasset",
+      "sha256": "c4d05b69089849b94ffe19bf6f12cfea374d6c1373bb09736142dcb8a783d6c3",
+      "bytes": 389493
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/CA_Mannequin.uasset",
+      "sha256": "3f4be0e3b75de87fdf331d5be0bc8aa34629490cac93e8fd9a0236ea5359cba8",
+      "bytes": 4864
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/ChromaticCurve.uasset",
+      "sha256": "3589236d17f781e997fdb4df704f4679d3bcdeef4a9d0b8006e2eef46a24e875",
+      "bytes": 6332
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/MF_Diffraction.uasset",
+      "sha256": "36edc18d62ad4d245f327306526709b5fbc5a68ffc39bbdbf2c3f38e2a9ae171",
+      "bytes": 32261
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/MF_logo3layers.uasset",
+      "sha256": "3147d6263defac3e99cb56f5f34ea6d3954b446b943391e10623535779b941d2",
+      "bytes": 56655
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/ML_BaseColorFallOff.uasset",
+      "sha256": "a7905307631037061bd65fd165a18003d86cf06788c76be64a5ebba6a261d4d9",
+      "bytes": 13463
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Instances/Manny/MI_Manny_01.uasset",
+      "sha256": "bfc66c8f42b0730ebba8ae99f4d8beb5831cbe706a6676e30354c3d857d48237",
+      "bytes": 22032
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Instances/Manny/MI_Manny_02.uasset",
+      "sha256": "302164e7321c1d93438590360521c49276f57fce54192310ca42fd2344ae1db3",
+      "bytes": 25347
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Instances/Quinn/MI_Quinn_01.uasset",
+      "sha256": "aeed2901df85952c73457f5da70f5238cbb595eb2734d84aff94a557e9594163",
+      "bytes": 20109
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Instances/Quinn/MI_Quinn_02.uasset",
+      "sha256": "3dc77f959b6361aa7408ecda3831e8859f6eafed370d00f066df6c82d7fb06ee",
+      "bytes": 25724
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Materials/M_Mannequin.uasset",
+      "sha256": "e7727029efdb74113e3fcc75077ffc8e622d722921847e6fb0de57d658621203",
+      "bytes": 83781
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SKM_Manny.uasset",
+      "sha256": "46cb4131c10e5c1ec6fa751dafa13492ae28a686843d9a19eee790d571fe24d7",
+      "bytes": 34534928
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SKM_Manny_Simple.uasset",
+      "sha256": "95c2b3bcf4ecdd6aaf2061102facfaf4011c31909fe87245adb0aa0a1061fd51",
+      "bytes": 18527524
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SKM_Quinn.uasset",
+      "sha256": "2d817fe17cb70faafc569a31a45a3097d1159cab8dc09ad0980c25660445decb",
+      "bytes": 36495853
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SK_Mannequin.uasset",
+      "sha256": "55fa094941b57b84f6f519746a2d1d2e4ba9f2e84c34558f3b269876020792d7",
+      "bytes": 160796
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/ABP_Manny_PostProcess.uasset",
+      "sha256": "40eae9daeade28650f66880d36d582f872fd5e03b81d15dbefc712b8eeb4707e",
+      "bytes": 464329
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/ABP_Quinn_PostProcess.uasset",
+      "sha256": "9249518c6dc78fab8c232a4538940bb4f8366b613047af9871eaf3d5cca46308",
+      "bytes": 464127
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/CR_Mannequin_Body.uasset",
+      "sha256": "b792a4611f7064d05f01d46b969f2aa7f37a53d9e9d69f9ef2dbbdbb068eec6a",
+      "bytes": 13656297
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/CR_Mannequin_Procedural.uasset",
+      "sha256": "0a582ca4e669a9885f096c12bda041342dac77e01bffb26c8661b7b8333abd1f",
+      "bytes": 2467465
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/PA_Mannequin.uasset",
+      "sha256": "be4c29f860d151817270c6a2c535c882a3ab0dd2ef0faf7eefb4292f8979d3d4",
+      "bytes": 64301
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_calf_l_anim.uasset",
+      "sha256": "8fd73fa126856ee0c5acbcdc8ac4c2bb036b3793c77baff6da5347501e880d9f",
+      "bytes": 141530
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_calf_l_pose.uasset",
+      "sha256": "fe9814f5df76ddb8fee2ec30072f38804fdde35c76e354043580d9050c84d1eb",
+      "bytes": 242028
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_calf_r_anim.uasset",
+      "sha256": "07f9590580cdcfd05a17b2531496aa724b5b6307b7d2515e3cdcf2c3dfede9b0",
+      "bytes": 141540
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_calf_r_pose.uasset",
+      "sha256": "679dfe23b92b975633c9cc718947019d48f042aee0c644915b08a18f11de4779",
+      "bytes": 242028
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_clavicle_l_anim.uasset",
+      "sha256": "3b417753465addde0762f326e18eb2e685220f41c888435536cffc8bb6f569a3",
+      "bytes": 141562
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_clavicle_l_pose.uasset",
+      "sha256": "6670ee154936af10ca861ba2cf305eca4654893e4d5be9643c9b5923558b4160",
+      "bytes": 240330
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_clavicle_r_anim.uasset",
+      "sha256": "ae4916b8756da24e3155e6657b7aca46db6a9a30b37a404793cd8f3cb09aa9ea",
+      "bytes": 141564
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_clavicle_r_pose.uasset",
+      "sha256": "38ac3f6ef27906dcc2357ab4f0dcf0e77d1d5f3b4b180204124e6c6ced7f8c16",
+      "bytes": 240932
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_foot_l_anim.uasset",
+      "sha256": "70486df47fab3d70310fa7b9b90b57d97a890d8825a1695a7aa44fd08e66cb6e",
+      "bytes": 129538
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_foot_l_pose.uasset",
+      "sha256": "dae2e88b64e6551936d79f80c86e34957185f94053227b4c26fe37b2acdd32a5",
+      "bytes": 166842
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_foot_r_anim.uasset",
+      "sha256": "5d174f9fe2d01dc17df618ba6c69414da4e338811c0016f44d3b96aae74c645d",
+      "bytes": 129540
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_foot_r_pose.uasset",
+      "sha256": "1f53c0443289c6a45d45f42651369bde1c21d19f7fa5e7f8f31e3a531ca31355",
+      "bytes": 166842
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_hand_l_anim.uasset",
+      "sha256": "053a1c51e07e0b4286750329af09a4cb084924652cdc4ff3f5b46e111077f2ff",
+      "bytes": 135538
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_hand_l_pose.uasset",
+      "sha256": "e797d9ac79891e66d64dbe27f67ae4a57d12d79a3b60ed630df3b435fbf2a706",
+      "bytes": 203838
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_hand_r_anim.uasset",
+      "sha256": "9e399ec6ae8d4d84995166c1599e8127b4879835842c3568363513ca69f23577",
+      "bytes": 135540
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_hand_r_pose.uasset",
+      "sha256": "1d9ca06b4a1443f38d3cb936e6bc51c3a83a87c4f312342ae6846571b003c6e5",
+      "bytes": 203838
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_lowerarm_l_anim.uasset",
+      "sha256": "0a8da6078c43d832b02dd9b9beaf0cfea6fc67c598500678644665c9e3fa27a0",
+      "bytes": 166037
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_lowerarm_l_pose.uasset",
+      "sha256": "51505c8111a4adde60d28904fe9483ac2d79624d6f6cb8198a6f30a16ff09ddc",
+      "bytes": 396106
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_lowerarm_r_anim.uasset",
+      "sha256": "dab5c3aed1e686edc4f6ea1bec932749de6b0cc4897dc970e9d0f6096f3f52c7",
+      "bytes": 165564
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_lowerarm_r_pose.uasset",
+      "sha256": "1efa7334911d1ebc16055d75888398499034c4f29d56b22dea35fede7ba02b3b",
+      "bytes": 396106
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_thigh_l_anim.uasset",
+      "sha256": "522f1083bcba91e80d14687232938259cb24b8923197a3ae0b0af9e008dd0e55",
+      "bytes": 195546
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_thigh_l_pose.uasset",
+      "sha256": "77eaf7b83c35af0073669bfa20178e0b225180194aaf0237e44877dd8e638bed",
+      "bytes": 592264
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_thigh_r_anim.uasset",
+      "sha256": "bee95b835926a894ace512a0cdcb0fb38962dad4e3352861e1fb7522f91a9155",
+      "bytes": 195548
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_thigh_r_pose.uasset",
+      "sha256": "e11a9c2c9e94daa0965036ff45e84f0128a3d7a4ad29ce942d3f4ffb5581430c",
+      "bytes": 592264
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_upperarm_l_anim.uasset",
+      "sha256": "cd5706130d35eb89d5b730a53d4a37f2fd127f463f3e29482b3751742470d9fe",
+      "bytes": 207564
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_upperarm_l_pose.uasset",
+      "sha256": "09084e4c6fca06459315c15476b1c26e58ee768879996f1351014d5de3a1eca2",
+      "bytes": 675857
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_upperarm_r_anim.uasset",
+      "sha256": "2af80ab8c7ba8ae82aaf65a99c8b96bec76b18e12283542dc2b73781bf97ac5d",
+      "bytes": 207566
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_upperarm_r_pose.uasset",
+      "sha256": "998f317835b498fd414809c4ded6df033ad3028fec36bdd2a6aec65985ccfde0",
+      "bytes": 664419
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_calf_l_anim.uasset",
+      "sha256": "04f2d125f7402f6f50be74ab7d91348b11f28b0f6cbd4fe782d80bb66f4e540b",
+      "bytes": 190108
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_calf_l_pose.uasset",
+      "sha256": "bbf4c24f9db37990904224e29f8d837e0f50b3d0006857db30796c9ab1e8668f",
+      "bytes": 279634
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_calf_r_anim.uasset",
+      "sha256": "95c385fa705c6265179bd913961f187c1860cddc9dcd8d817e1d38599e863db2",
+      "bytes": 190194
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_calf_r_pose.uasset",
+      "sha256": "26151430f984675f962e378653ef9eb8f70e11413a5dc873e9fed79df4d8ba59",
+      "bytes": 279715
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_clavicle_l_anim.uasset",
+      "sha256": "ee1f9a2e41c4ff0290ff78f57600bdce49856ac284c0c374bc99cfc96345412a",
+      "bytes": 184158
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_clavicle_l_pose.uasset",
+      "sha256": "2205d440ab81cd5dceb821a02005259a4b9f9c5e1f4b39f2a516df881f2f00bb",
+      "bytes": 240416
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_clavicle_r_anim.uasset",
+      "sha256": "774ed9a9f5ccc51fdf633cd5944a2749d87f79e779ac704f72ff9e59d57739bc",
+      "bytes": 183812
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_clavicle_r_pose.uasset",
+      "sha256": "711f0a0005efa9739d205e6338701453252592d6a20c76771c245a1b2863cce3",
+      "bytes": 206162
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_foot_l_anim.uasset",
+      "sha256": "807e69d881bdb3e9e731b7c5221d9ef5f94cdd873a638ba0fd523dc23c2b42c6",
+      "bytes": 171786
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_foot_l_pose.uasset",
+      "sha256": "d25d85f408b383b154142106d901c3de1bc029fcef29fe213db606b9cb604872",
+      "bytes": 132305
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_foot_r_anim.uasset",
+      "sha256": "cfd6a8e911972bd443005b60b442c4a6ac70ef0a83d5300637eea20aacb59061",
+      "bytes": 171788
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_foot_r_pose.uasset",
+      "sha256": "95778fc300f092fcfed3d70bdd563d78b5ef4354d8b0dbea2550e582ced5a680",
+      "bytes": 132305
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_hand_l_anim.uasset",
+      "sha256": "a6fe7454ba4cfd62524054d519b3d0f21e15e422779790b5a22b611fff851b67",
+      "bytes": 177786
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_hand_l_pose.uasset",
+      "sha256": "071dddf3c3bbec292dd15b545539719922e579ee0c584ed86250953ba91420dd",
+      "bytes": 169335
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_hand_r_anim.uasset",
+      "sha256": "4cbda158546491cc1ba6450ee7722c44993774cfcaafda6a23738504661b781c",
+      "bytes": 158686
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_hand_r_pose.uasset",
+      "sha256": "cfb35cb4c94a6f5260f27614e32eb3fae8bbe6e1cd4ba724604f039daee23a7b",
+      "bytes": 169335
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_lowerarm_l_anim.uasset",
+      "sha256": "c9a868b0cdcf7ca78b2475c3dbb0679a8b0c17efd86c61f6825cdeba45289cc4",
+      "bytes": 194709
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_lowerarm_l_pose.uasset",
+      "sha256": "a9e4e0cb709320d8a858bab6e208686046b76d26cbd3add85f10ea106460ed98",
+      "bytes": 399711
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_lowerarm_r_anim.uasset",
+      "sha256": "34b3f7e136793d4b54b5e57e9cdd802f4dab9fdeb1b9730242927e3fda623d52",
+      "bytes": 194711
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_lowerarm_r_pose.uasset",
+      "sha256": "7e8e7889fda241062f6af93b259e234861656aadffc8ce565519a875ce80f4e2",
+      "bytes": 399711
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_thigh_l_anim.uasset",
+      "sha256": "7dcb7b5df01444609b714d84356c2c5005ef026ffbeab607d1c42ac2c73736f7",
+      "bytes": 218692
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_thigh_l_pose.uasset",
+      "sha256": "ae0ce3dbbd13ea201630b51897ad60e05dcc915398723d8f3f59f550c240cf6d",
+      "bytes": 557800
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_thigh_r_anim.uasset",
+      "sha256": "4ab0e8921c502c85114a97a8809296ec21da1711b37db0e2917dca4f3f9d61a1",
+      "bytes": 218694
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_thigh_r_pose.uasset",
+      "sha256": "8a3192e3e31ee906d9746035ee7799f7ecabf04652ef018089e3f022a2283028",
+      "bytes": 557800
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_upperarm_l_anim.uasset",
+      "sha256": "e49df54ee31a5a579476813296056ceb6079638105fe7121a093539304e59e83",
+      "bytes": 206710
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_upperarm_l_pose.uasset",
+      "sha256": "438bbf0d1ed7881c9f7f4c694da87c050268ffb946ef63816f1763d46605f5ba",
+      "bytes": 485622
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_upperarm_r_anim.uasset",
+      "sha256": "745658aa58433fe888302054fc4e23727fa6928a86027e96c45c782c08ba4666",
+      "bytes": 206712
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Quinn/Quinn_upperarm_r_pose.uasset",
+      "sha256": "b363a93d3e2f65ad6d57d4beab0e8c5d1c3bb85ebacca9396e4e463e5768e8a5",
+      "bytes": 488632
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_ASAOPMASK_MSK.uasset",
+      "sha256": "8ed3b52fec9ed95ef68c7d988024a5e1311a6ab13656a7f5ce6e450b040146e7",
+      "bytes": 3612631
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_BN.uasset",
+      "sha256": "dddb17a622b547cfb4e5fb1ee2789582a0df6965d8cf53928b0df8c70c7f5c2a",
+      "bytes": 18514194
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_CCRCCPlastic_MSK.uasset",
+      "sha256": "8285de781b55142a8328f1bbda85729e32f75f2db3b378fb070de13d853dc3c5",
+      "bytes": 10271998
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_D.uasset",
+      "sha256": "43534bb34a804ab346ac76e6b9a153e027e6c94c6734c98405ed23b9d262f12b",
+      "bytes": 5740402
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_MSR_MSK.uasset",
+      "sha256": "db5fd4ba5c251fb7d90708722b9ce3386efd2a74a6c5013d2523200da7e0669c",
+      "bytes": 11038210
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_N.uasset",
+      "sha256": "9f8e902f627cecdb56abd381b2e4fb9cedc3bb3f1522e7f54c1d78609844be1f",
+      "bytes": 7198277
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_Tan.uasset",
+      "sha256": "7d62ef5845512937ffbdbd1f27ca663cea490865dd7e3120230b5eee3629f071",
+      "bytes": 1357796
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_ASAOPMASK_MSK.uasset",
+      "sha256": "5b92f3f5b35ca408ad37bd542ab7b3f79da3d48d78e14e9f55912ecfb259a689",
+      "bytes": 8341407
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_BN.uasset",
+      "sha256": "eb25d6226cb17053eb9fd74dfc42b980b9c6b5b59cdc50e3fb38bd43ba02dbed",
+      "bytes": 21139553
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_CCRCCPlastic_MSK.uasset",
+      "sha256": "e177e7eded62aa2f5cb927ef04374b3ae7b2acbd4059d35d58f4112f69831723",
+      "bytes": 13144069
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_D.uasset",
+      "sha256": "2692cf139203dcb661f6177322dddd427adb44a3c53d662d20c9fee87e8db79b",
+      "bytes": 9033570
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_MSR_MSK.uasset",
+      "sha256": "3f303d6b80ad20a66f7e2599324c64ff29d7aaa2459a56f088b4fddab8a3a140",
+      "bytes": 13677636
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_N.uasset",
+      "sha256": "5673a0c6e5ba6e6cbccf1ea8263464ef54451fc04d122ab265140ded6e5542d8",
+      "bytes": 7269361
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_Tan.uasset",
+      "sha256": "bebea8b11b74cdc62b9fdbd487b4e8855ed20d52c270997d8c2835b68baf55e7",
+      "bytes": 2153816
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01ID_BN.uasset",
+      "sha256": "ea0a740de53885fe89cea317ab12b4e50dab2c9ebd30ffd9a08e0ab53de5496b",
+      "bytes": 16106213
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01ID_D.uasset",
+      "sha256": "3b0ea0850d260461051211d7851a10f4fada1d61bb47070bc7b8bd61e89eaa1e",
+      "bytes": 4708622
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01ID_MSR_MSK.uasset",
+      "sha256": "7614a8c7af4982e442ad80134b14978203f4be5ccafa3e9e369b35512313fc9b",
+      "bytes": 11653777
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01ID_N.uasset",
+      "sha256": "54e0c241bfb4156c1252a60e58a9e0f0f006061700bcfc47df62c5f80ff2a1ce",
+      "bytes": 5217773
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01ID_Tan.uasset",
+      "sha256": "7eeb08980fa46831ef6b936b651ba2143772b4440b3988dface6f7c43a82b404",
+      "bytes": 1103620
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01_ASAOMASK_MSK.uasset",
+      "sha256": "bf85d6fb021c006ac91296e0b2bb693af3e50fc963d6008bfea8c352d932501d",
+      "bytes": 5831728
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_01_CCRCCPlastic_MSK.uasset",
+      "sha256": "09ab866d1f83b653dc908e771a96672fddd0ba21157e6e063d55266a6129bc2d",
+      "bytes": 12396408
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02ID_BN.uasset",
+      "sha256": "6425fef2c320b290da00cc7284c460c6c6002e76edf05a72dd3cfa19ad744e67",
+      "bytes": 19703206
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02ID_D.uasset",
+      "sha256": "88a2d4eb7ec231b9c06e95276dd495134b399ea222fbdcec1ec8885830a2e489",
+      "bytes": 6727878
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02ID_MSR_MSK.uasset",
+      "sha256": "dbfbd15021f600b7aab5922a3b5880eb5081f37f6feb9f9803b9afb100f34640",
+      "bytes": 13165472
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02ID_N.uasset",
+      "sha256": "2102e6c0797d17a860943ca1152ff2ba1721d046ffd777466674bd2b2d9c23db",
+      "bytes": 5217773
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02ID_Tan.uasset",
+      "sha256": "53df1233e8590dfa61d5b28b65152043442417ac5e1a0e350496f0c169352ad0",
+      "bytes": 1757046
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02_ASAOMASK_MSK.uasset",
+      "sha256": "96dba64a7fd22fddefaec141f85f65ee915c43e6807450123cbf9dd394814132",
+      "bytes": 6896663
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Quinn/T_Quinn_02_CCRCCPlastic_MSK.uasset",
+      "sha256": "9ba0d51ac3cf36c693c6990b25b86d56d169de30b4ab1fe8532d45d4686a8c6d",
+      "bytes": 13421962
+    },
+    {
+      "path": "MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Shared/T_UE_Logo_M.uasset",
+      "sha256": "b6f33689ca723746d59dc53666c98311f354c84b2b02b4131e077dd3f6eaf5e5",
+      "bytes": 69986
+    },
+    {
+      "path": "Sparks_Embers/Materials/M_Props.uasset",
+      "sha256": "b02885f7efa3791f95a3e0709c1ac2b215ce2ff92e1fae697af6e26074ec30e2",
+      "bytes": 11449
+    },
+    {
+      "path": "Sparks_Embers/Materials/M_Spark.uasset",
+      "sha256": "87bccd544c8e38828d54db70d2638a3a93cc308025cf136778b9960b1931121b",
+      "bytes": 13833
+    },
+    {
+      "path": "Sparks_Embers/Meshes/SM_Hammer.uasset",
+      "sha256": "781e4d4465c001d6af48ac724345b9d0c58971eda397d24bf52b2ba93076d47b",
+      "bytes": 74176
+    },
+    {
+      "path": "Sparks_Embers/Niagara/NS_Sparks01.uasset",
+      "sha256": "2a6c3e321dfa725b45bc19e59805ca53342d6b3d203ba000ae725132a1e35429",
+      "bytes": 822992
+    },
+    {
+      "path": "Sparks_Embers/Niagara/NS_Sparks08.uasset",
+      "sha256": "58e9739270b702e18b30cca297460a1ac02b020fc87357f10ad86d498c621256",
+      "bytes": 882524
+    }
+  ],
+  "total_bytes": 1684575015
+}

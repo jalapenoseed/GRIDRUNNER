@@ -1,0 +1,27 @@
+Using bundled DotNet SDK version: 10.0 win-x64
+Running UnrealBuildTool: dotnet "..\..\Engine\Binaries\DotNET\UnrealBuildTool\UnrealBuildTool.dll" GRIDRUNNERGameEditor Win64 Development D:\GRIDRUNNER-Unreal\unreal\GRIDRUNNERAssetLab\GRIDRUNNERAssetLab.uproject -WaitMutex -NoHotReload -NoUBA -MaxParallelActions=3
+Log file: C:\Users\ty\AppData\Local\UnrealBuildTool\Log.txt
+Executing up to 3 actions based on MaxProcessorCount override
+UbaSessionServer - Disable remote execution (remote sessions will finish current processes)
+Invalidating makefile for GRIDRUNNERGameEditor (DefaultGame.ini modified)
+Building GRIDRUNNERGameEditor...
+===== Toolchain Information =====
+Using ISPC compiler (C:\Program Files\Epic Games\UE_5.8\Engine\Source\ThirdParty\Intel\ISPC\bin\Windows\ispc.exe)
+  Intel(r) Implicit SPMD Program Compiler (Intel(r) ISPC), 1.24.0 (build commit  @ 20250404, LLVM 18.1.2)
+Using Visual Studio 14.44.35228 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Tools\MSVC\14.44.35207) and Windows 10.0.22621.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+=================================
+Using Unreal Build Accelerator local executor to run 4 action(s)
+  CPU 6 physical cores, 12 logical cores
+  Memory 31.87 GB physical, 13.14 GB/33.87 GB committed
+  UBA Storage capacity 40 GB
+[1/4] Compile [x64] GRBikePawn.cpp [NoUba]
+[2/4] Link [x64] UnrealEditor-GRIDRUNNERGame.lib [NoUba]
+[3/4] Link [x64] UnrealEditor-GRIDRUNNERGame.dll [NoUba]
+[4/4] WriteMetadata GRIDRUNNERGameEditor.target [NoUba]
+
+Total time in Unreal Build Accelerator local executor: 7.73 seconds
+Output binary: C:\Program Files\Epic Games\UE_5.8\Engine\Binaries\Win64\UnrealEditor.exe
+
+Result: Succeeded
+Total execution time: 10.16 seconds
+Trace written to file C:\Users\ty\AppData\Local\UnrealBuildTool\Trace.uba with size 4.2kb

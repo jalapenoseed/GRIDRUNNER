@@ -1,92 +1,108 @@
-# GRIDRUNNER — Unreal
+# GRIDRUNNER - Unreal
 
-Open `unreal/Launch-GhostSignal.cmd` on Windows, or open
+The current Windows milestone is **Ghost Signal Field Slice**. From this folder,
+run `Launch-FieldSlice.cmd`, or open
 `GRIDRUNNERAssetLab/GRIDRUNNERAssetLab.uproject` in Unreal Engine 5.8.
-The saved startup map is `/Game/GRIDRUNNER/Maps/L_GhostSignal_Prototype`.
+The startup map is `/Game/GRIDRUNNER/Maps/L_GhostSignal_FieldSlice`.
 
-Downloaded Fab collections now have a separate [asset library and staging guide](ASSET-LIBRARY.md).
-The Windows hub is `D:\UNREAL-GRIDRUNNER-ASSETS`; open the desktop **GRIDRUNNER Assets** shortcut.
+Read [FIELD-SLICE.md](FIELD-SLICE.md) for controls, the playable route, restoration
+and build commands. [HANDOFF.md](HANDOFF.md) records the latest continuation state.
+Downloaded sources remain in the separate [asset hub](ASSET-LIBRARY.md) at
+`D:\UNREAL-GRIDRUNNER-ASSETS`; [ASSET-STATUS.md](ASSET-STATUS.md) identifies the packs.
 
-## Ghost Signal playable prototype
+## Current field slice
 
-This is the first playable Unreal conversion of the current GRIDRUNNER concept.
-It combines Epic's UE 5.8 Third Person Blueprint template with the approved
-SCOUT and electrical/field assets already imported into the branch.
+The native C++ controller connects walking, a Chaos motorcycle with an electric
+drivetrain model, a mounted Manny idle, and the approved SCOUT assembly. SCOUT's
+19 copied parts retain their materials and relative transforms. Assisted
+pitch/roll/yaw flight includes collision sweeps, energy use and return/landing.
 
-The map is an authored 500 m highway and utility corridor with a relay outpost,
-substation-style yard, debris, power poles, cyan route beacons, broad terrain,
-Hill Country silhouettes and four staged exploration objectives:
+The route now has three interactive stages: restore the service disconnect,
+recover the corridor relay's power cell, then scan and decode the far receiver
+with SCOUT before returning to its terminal. Mission state saves at interactions,
+dismount and normal Escape exit. Restored relays recharge nearby equipment.
 
-1. Restore the relay.
-2. Retrieve the power cell.
-3. Deploy SCOUT.
-4. Trace the ghost signal.
+Selected Freeway props dress the existing corridor, with access openings in the
+guardrails. Niagara fault sparks react to relay restoration. Wind/bird ambience,
+night rain audio, scanner visibility, night vision and day/night controls are
+connected to the running game. Rain audio does not constitute a weather simulation.
 
-These four objectives are currently world markers and labels. Their interaction,
-power-cell inventory, SCOUT deployment and completion logic are not implemented yet.
+The bike still has its imported combustion-enduro exterior. Its battery/motor
+remodel, mount/dismount animation transitions, rider IK, a custom protagonist,
+inventory/crafting, NPCs and the full Three.js gameplay set remain future work.
+Keyboard and Xbox mappings are implemented; physical controller/mobile testing
+and a full graphics/performance pass remain separate from this Windows build.
 
-Controls come from Epic's Enhanced Input template: WASD + mouse + Space,
-Xbox-compatible left/right sticks + A, and touch controls. Run the game with:
+## Validation state
 
-```text
-Launch-GhostSignal.cmd play
-```
+The native `GRIDRUNNERGameEditor` and `GRIDRUNNERGame` Development targets compiled
+in UE 5.8.2. The integration generator saved and reopened the map, preserved the
+approved source fingerprints and resolved 417 checked packages with none missing.
+The generated field map contains 390 actors. Recorded build output is retained in
+[field_editor_build.log](validation/field_editor_build.log) and
+[field_game_build.log](validation/field_game_build.log); map checks are in
+[field_integration.json](validation/field_integration.json).
 
-The validation PC's NVIDIA 531.30 driver is denylisted by UE 5.8. Update it or
-dismiss Unreal's driver warning before the first interactive run. Editor map
-generation, reopen validation and off-screen rendering all completed in 5.8.2.
+The final running-game smoke test passed all 18 checks: walking, Chaos bike
+propulsion, possession/dismount, wind playback, relay Niagara, SCOUT flight,
+energy/return, scanning, relay progression and save persistence. Earlier bike
+obstruction and return-test timing failures were corrected before this pass.
+See [field_runtime_smoke.json](validation/field_runtime_smoke.json) for the result.
 
-[Ghost Signal engine render](validation/ghost_signal_overview.png) ·
-[Gameplay manifest](validation/gameplay.json) ·
-[Capture record](validation/gameplay_capture.json)
+`tools/Field-Workflow.ps1` builds, integrates, verifies, launches or packages the
+milestone. `tools/Restore-FieldAssets.ps1` restores the exact selected vendor and
+installed-engine template dependencies using their SHA-256 manifests. The public
+repository excludes the selected raw vendor and template files; restore those
+dependencies from your licensed sources and matching engine installation first.
 
-`Launch-GhostSignal.cmd build` runs the non-destructive generator. It bootstraps
-from the validated showroom, refuses to duplicate authored content, and can add
-the terrain upgrade to an earlier prototype. `verify` reopens the saved map and
-checks the game mode, character, input, terrain, objectives and electrical
-material. `capture` creates the real Unreal overview shown above.
+The validation PC is a GTX 1050 Ti. Current defaults retain DX12/SM6 but disable
+Lumen GI/reflection rendering and Virtual Shadow Maps, use 75% screen percentage
+and an 1800 MB texture pool. Screenshots are not performance benchmarks.
+Build/package capability and a source game window are not proof of a tested
+standalone packaged executable; completed validation records establish that.
 
-## Unreal Asset Lab
+## Historical Ghost Signal prototype
 
-Open `unreal/Launch-AssetLab.cmd` to inspect the original compact 40 m showroom.
-The saved map is `/Game/GRIDRUNNER/Maps/L_AssetLab_Showcase`.
-It contains the existing SCOUT, pad transformer, workbench and supply crate.
-The scene was generated and imported in UE **5.8.2** using Interchange.
-SCOUT keeps 19 separate mesh actors within its imported hierarchy; placement
-does not combine meshes, recenter pivots or rescale geometry.
+`/Game/GRIDRUNNER/Maps/L_GhostSignal_Prototype` remains the original on-foot
+500 m highway/utility-corridor foundation, combining Epic's third-person template
+with GRIDRUNNER's approved field assets. Its four objective signs were markers;
+the interactive logic is implemented in the newer Field Slice map.
+
+[Original engine overview](validation/ghost_signal_overview.png) -
+[Original map manifest](validation/gameplay.json) -
+[Original capture record](validation/gameplay_capture.json)
+
+`Launch-GhostSignal.cmd` is the historical prototype tool. Use the Field Slice
+launcher for current work. Do not rerun the old generator to update the current
+map: its earlier implementation depended on which map the editor had open.
+
+## Preserved Unreal Asset Lab
+
+The compact 40 m showroom remains at `/Game/GRIDRUNNER/Maps/L_AssetLab_Showcase`.
+It contains the approved SCOUT, pad transformer, workbench and supply crate,
+imported and verified in UE 5.8.2 using Interchange. SCOUT remains a 19-part
+assembly; its source meshes, pivots and material slots were not combined.
 
 | Asset | Imported bounds, cm |
 | --- | --- |
-| SCOUT | 52.10 × 41.73 × 12.39 |
-| Transformer | 205 × 148 × 155.80 |
-| Workbench | 192 × 94.70 × 121 |
-| Crate | 78.60 × 59.41 × 46 |
+| SCOUT | 52.10 x 41.73 x 12.39 |
+| Transformer | 205 x 148 x 155.80 |
+| Workbench | 192 x 94.70 x 121 |
+| Crate | 78.60 x 59.41 x 46 |
 
-SCOUT's separate PBR maps use sRGB albedo and linear metallic, roughness and AO.
-OpenGL normal PNGs use Normalmap compression, linear sampling and a green-channel
-flip. Props retain their embedded glTF atlas materials and metallic/roughness
-channel mapping. Wetness currently adjusts roughness rather than simulating rain.
+SCOUT uses sRGB albedo and linear metallic/roughness/AO. Its OpenGL normal PNGs
+use Normalmap compression, linear sampling and a green-channel flip. Props retain
+their glTF atlas materials and metallic/roughness channels. The historical wet
+variant changes roughness; it does not simulate rain.
 
-[Day/dry](validation/screenshots_final/day_dry.png) ·
-[Day/wet](validation/screenshots_final/day_wet.png) ·
-[Night/dry](validation/screenshots_final/night_dry.png) ·
-[Night/wet](validation/screenshots_final/night_wet.png) ·
-[Overview](validation/screenshots_final/overview_day.png)
+[Day/dry](validation/screenshots_final/day_dry.png) -
+[Day/wet](validation/screenshots_final/day_wet.png) -
+[Night/dry](validation/screenshots_final/night_dry.png) -
+[Night/wet](validation/screenshots_final/night_wet.png) -
+[Showroom overview](validation/screenshots_final/overview_day.png)
 
-DX12/SM6, Lumen GI/reflections and Virtual Shadow Maps are configured. The
-validation PC uses a GTX 1050 Ti, so captures are not performance benchmarks.
+These original showroom captures used Lumen and Virtual Shadow Maps. Those
+settings describe the historical captures, not the current low-end field defaults.
 
-## Scope and next conversion steps
-
-The current branch is a playable on-foot exploration foundation, not a claim
-that every Three.js system has already migrated. The next clean milestones are:
-
-- import the selected rigged electric enduro and motorcycle interaction animset;
-- build Chaos-based e-bike movement, battery, regen and rider IK;
-- convert SCOUT's hierarchy into a possessed flight pawn with pitch/yaw/roll;
-- add runtime scan/night-vision/weather modes and electrical Niagara effects;
-- migrate inventory, crafting, relay puzzles, NPCs, audio and save state;
-- replace prototype terrain/structures with curated Fab and GRIDRUNNER packs.
-
-Keep Blender sources, Three.js and Godot untouched. Commit Unreal work only on
-the `unreal` branch; never force-push or merge it into `main` without approval.
+Keep approved Blender sources, Three.js and Godot unchanged. Commit Unreal work
+only to `unreal`; do not force-push or merge it into `main` without approval.

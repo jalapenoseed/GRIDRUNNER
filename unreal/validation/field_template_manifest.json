@@ -1,0 +1,56 @@
+[
+  {
+    "path": "Characters/Mannequins/Textures/Manny/T_Manny_01_BN.uasset",
+    "source_relative": "Templates/TemplateResources/High/Characters/Content/Mannequins/Textures/Manny/T_Manny_01_BN.uasset",
+    "sha256": "2f623209571ecbd8185b5b463786be033c3284190b4fc7b249e8d1d2ed995fd8",
+    "bytes": 1422785
+  },
+  {
+    "path": "Characters/Mannequins/Textures/Manny/T_Manny_01_D.uasset",
+    "source_relative": "Templates/TemplateResources/High/Characters/Content/Mannequins/Textures/Manny/T_Manny_01_D.uasset",
+    "sha256": "6ae0f4f9908c30ecc9aedf1ebb442e4983e526a7832ec791542064c7853f9999",
+    "bytes": 699555
+  },
+  {
+    "path": "Characters/Mannequins/Textures/Manny/T_Manny_01_MRA.uasset",
+    "source_relative": "Templates/TemplateResources/High/Characters/Content/Mannequins/Textures/Manny/T_Manny_01_MRA.uasset",
+    "sha256": "3e42e888aed8aefff68da7d7dda4f177c5647b19473e4e913f61375c1319abd8",
+    "bytes": 712594
+  },
+  {
+    "path": "Characters/Mannequins/Meshes/SKM_Manny_Simple.uasset",
+    "source_relative": "Templates/TemplateResources/High/Characters/Content/Mannequins/Meshes/SKM_Manny_Simple.uasset",
+    "sha256": "be9f011191ee1887b97cd13bce09886a6066c2fd62c619991070ec142184e1bf",
+    "bytes": 15825101
+  },
+  {
+    "path": "Characters/Mannequins/Textures/Manny/T_Manny_02_BN.uasset",
+    "source_relative": "Templates/TemplateResources/High/Characters/Content/Mannequins/Textures/Manny/T_Manny_02_BN.uasset",
+    "sha256": "c9575d21c9e2872b3358c0efb9e202535ce2efce94c338b9d3bd04cb9831e353",
+    "bytes": 20999487
+  },
+  {
+    "path": "Characters/Mannequins/Textures/Manny/T_Manny_02_D.uasset",
+    "source_relative": "Templates/TemplateResources/High/Characters/Content/Mannequins/Textures/Manny/T_Manny_02_D.uasset",
+    "sha256": "474728713232c6833f55c041548f555bc62c5c49e74082a5d16e68a5ce488cfe",
+    "bytes": 1036712
+  },
+  {
+    "path": "Characters/Mannequins/Textures/Manny/T_Manny_02_MRA.uasset",
+    "source_relative": "Templates/TemplateResources/High/Characters/Content/Mannequins/Textures/Manny/T_Manny_02_MRA.uasset",
+    "sha256": "6697972eaf2dfe201923dba6a302f024b0ef4c4e46b4ecf578178717098e8277",
+    "bytes": 1059559
+  },
+  {
+    "path": "Characters/Mannequins/Materials/Manny/MI_Manny_02_New.uasset",
+    "source_relative": "Templates/TemplateResources/High/Characters/Content/Mannequins/Materials/Manny/MI_Manny_02_New.uasset",
+    "sha256": "26389db06f0b7928b487494bef3320d6b0e6bccd58193bccedd67c2c89132a46",
+    "bytes": 18706
+  },
+  {
+    "path": "Characters/Mannequins/Materials/Manny/MI_Manny_01_New.uasset",
+    "source_relative": "Templates/TemplateResources/High/Characters/Content/Mannequins/Materials/Manny/MI_Manny_01_New.uasset",
+    "sha256": "9f1e4ed382304d020b750c81505140fc1de4d339b0909430adb5380a6bb89b65",
+    "bytes": 17963
+  }
+]

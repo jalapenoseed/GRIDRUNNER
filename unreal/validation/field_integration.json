@@ -1,0 +1,185 @@
+{
+  "approaches": [
+    {
+      "end_x": 1550.0,
+      "original_actor": "Guardrail_00_L",
+      "start_x": 850.0,
+      "width_cm": 700
+    },
+    {
+      "end_x": 15850.0,
+      "original_actor": "Guardrail_03_L",
+      "start_x": 15150.0,
+      "width_cm": 700
+    },
+    {
+      "end_x": 45850.0,
+      "original_actor": "Guardrail_09_L",
+      "start_x": 45150.0,
+      "width_cm": 700
+    }
+  ],
+  "approved_source": {
+    "crate": {
+      "actors": 1,
+      "sha256": "2353c6b3dadb687675153f0f7c81ccb1047480211eb3693ff89406744fefeeab"
+    },
+    "scout": {
+      "actors": 19,
+      "sha256": "0fbf80f53452280b563e4d6b09425d92c77e051586383f64bf5ea641340a59e9"
+    },
+    "transformer": {
+      "actors": 1,
+      "sha256": "cfee33067a3b24f4a8b18d7c72d84b644b0750f8142f28ea0022fd25d80cc317"
+    },
+    "workbench": {
+      "actors": 1,
+      "sha256": "33860549b969497ffb2998131029977acf8129ab2ec0206226820963662bd358"
+    }
+  },
+  "assets": {
+    "bag": {
+      "asset": "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYTrash_Bag_A01_N1",
+      "collision": {
+        "complexity": "<CollisionTraceFlag.CTF_USE_DEFAULT: 0>",
+        "convex_hulls": 4,
+        "simple_shapes": 0
+      }
+    },
+    "barrel": {
+      "asset": "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYBarrier_Barrel_A01_N1",
+      "collision": {
+        "complexity": "<CollisionTraceFlag.CTF_USE_DEFAULT: 0>",
+        "convex_hulls": 0,
+        "simple_shapes": 1
+      }
+    },
+    "barrier": {
+      "asset": "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYBarrier_Traffic_A01_N1",
+      "collision": {
+        "complexity": "<CollisionTraceFlag.CTF_USE_DEFAULT: 0>",
+        "convex_hulls": 0,
+        "simple_shapes": 1
+      }
+    },
+    "container": {
+      "asset": "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYTrash_Container_A01_N1",
+      "collision": {
+        "complexity": "<CollisionTraceFlag.CTF_USE_DEFAULT: 0>",
+        "convex_hulls": 4,
+        "simple_shapes": 0
+      }
+    },
+    "sandbags": {
+      "asset": "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_Sandbags_A01_N1",
+      "collision": {
+        "complexity": "<CollisionTraceFlag.CTF_USE_DEFAULT: 0>",
+        "convex_hulls": 0,
+        "simple_shapes": 1
+      }
+    },
+    "tire": {
+      "asset": "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYTrash_TireDestroyed_A01_N1",
+      "collision": {
+        "complexity": "<CollisionTraceFlag.CTF_USE_DEFAULT: 0>",
+        "convex_hulls": 1,
+        "simple_shapes": 0
+      }
+    },
+    "warning": {
+      "asset": "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FWYSignWarn_Slippery_A01_N1",
+      "collision": {
+        "complexity": "<CollisionTraceFlag.CTF_USE_DEFAULT: 0>",
+        "convex_hulls": 0,
+        "simple_shapes": 1
+      }
+    }
+  },
+  "before_save": {
+    "actor_count": 390,
+    "approved_fingerprints": {
+      "crate": {
+        "actors": 1,
+        "sha256": "2353c6b3dadb687675153f0f7c81ccb1047480211eb3693ff89406744fefeeab"
+      },
+      "scout": {
+        "actors": 19,
+        "sha256": "0fbf80f53452280b563e4d6b09425d92c77e051586383f64bf5ea641340a59e9"
+      },
+      "transformer": {
+        "actors": 1,
+        "sha256": "cfee33067a3b24f4a8b18d7c72d84b644b0750f8142f28ea0022fd25d80cc317"
+      },
+      "workbench": {
+        "actors": 1,
+        "sha256": "33860549b969497ffb2998131029977acf8129ab2ec0206226820963662bd358"
+      }
+    },
+    "dependencies": {
+      "game_packages_checked": 417,
+      "hard_and_soft_references": true,
+      "missing_packages": []
+    },
+    "game_mode": "/Script/GRIDRUNNERGame.GRGameMode",
+    "native_bikes": 1,
+    "native_mesh_assets": 7,
+    "native_prop_actors": 20,
+    "native_relays": 3,
+    "relay_access_gaps": 3,
+    "road_clear_width_cm": 900,
+    "scout_source_actors": 19
+  },
+  "dependencies": {
+    "game_packages_checked": 417,
+    "hard_and_soft_references": true,
+    "missing_packages": []
+  },
+  "engine": "5.8.2-56702186+++UE5+Release-5.8",
+  "errors": [],
+  "integration_version": 2,
+  "map": "/Game/GRIDRUNNER/Maps/L_GhostSignal_FieldSlice",
+  "restored_template_packages": [
+    "/Game/Characters/Mannequins/Materials/Manny/MI_Manny_02_New",
+    "/Game/Characters/Mannequins/Materials/Manny/MI_Manny_01_New"
+  ],
+  "road_marking_fragments": 98,
+  "saved_and_reopened": true,
+  "source_map": "/Game/GRIDRUNNER/Maps/L_GhostSignal_Prototype",
+  "source_map_unchanged": true,
+  "status": "complete",
+  "updated_utc": "2026-09-14T17:00:57.706038+00:00",
+  "verified": {
+    "actor_count": 390,
+    "approved_fingerprints": {
+      "crate": {
+        "actors": 1,
+        "sha256": "2353c6b3dadb687675153f0f7c81ccb1047480211eb3693ff89406744fefeeab"
+      },
+      "scout": {
+        "actors": 19,
+        "sha256": "0fbf80f53452280b563e4d6b09425d92c77e051586383f64bf5ea641340a59e9"
+      },
+      "transformer": {
+        "actors": 1,
+        "sha256": "cfee33067a3b24f4a8b18d7c72d84b644b0750f8142f28ea0022fd25d80cc317"
+      },
+      "workbench": {
+        "actors": 1,
+        "sha256": "33860549b969497ffb2998131029977acf8129ab2ec0206226820963662bd358"
+      }
+    },
+    "dependencies": {
+      "game_packages_checked": 417,
+      "hard_and_soft_references": true,
+      "missing_packages": []
+    },
+    "game_mode": "/Script/GRIDRUNNERGame.GRGameMode",
+    "native_bikes": 1,
+    "native_mesh_assets": 7,
+    "native_prop_actors": 20,
+    "native_relays": 3,
+    "relay_access_gaps": 3,
+    "road_clear_width_cm": 900,
+    "scout_source_actors": 19
+  }
+}

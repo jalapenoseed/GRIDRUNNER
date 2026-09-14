@@ -1,0 +1,25 @@
+{
+	"passed": true,
+	"map": "L_GhostSignal_FieldSlice",
+	"checks_passed": [
+		"walking pawn possessed",
+		"Chaos bike initialized",
+		"three relays loaded",
+		"wind ambience playing",
+		"relay fault Niagara active",
+		"walking moves through world",
+		"bike possessed",
+		"Chaos wheels propel bike",
+		"safe bike dismount",
+		"SCOUT possessed",
+		"SCOUT thrust moves assembly",
+		"SCOUT energy consumed",
+		"SCOUT return initiated",
+		"SCOUT return lands",
+		"relay and power cell progression",
+		"proximity scan decodes carrier",
+		"final relay completes route",
+		"progress persists to save"
+	],
+	"checks_failed": []
+}

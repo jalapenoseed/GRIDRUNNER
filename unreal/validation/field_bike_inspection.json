@@ -1,0 +1,18 @@
+{
+  "bike_class": "<Object '/Game/Bike/BikeBP/BikeBP.BikeBP_C' (0x000001F4A3151C00) Class 'BlueprintGeneratedClass'>",
+  "cdo": "<Object '/Game/Bike/BikeBP/BikeBP.Default__BikeBP_C' (0x000001F497CE1E00) Class 'BikeBP_C'>",
+  "components": [
+    {
+      "class": "SkeletalMeshComponent",
+      "name": "VehicleMesh",
+      "mesh": "<Object '/Game/Bike/Models/SK_rsg_bike_UE_04.SK_rsg_bike_UE_04' (0x000001F4A36F0000) Class 'SkeletalMesh'>"
+    },
+    {
+      "class": "ChaosWheeledVehicleMovementComponent",
+      "name": "VehicleMovementComp",
+      "wheel_setups": "[{}, {}]",
+      "engine_setup": "<Struct 'VehicleEngineConfig' (0x000001F47FFB5000) {}>",
+      "transmission_setup": "<Struct 'VehicleTransmissionConfig' (0x000001F47FFB50D8) {}>"
+    }
+  ]
+}
