@@ -1,0 +1,441 @@
+{
+  "map_reopened": true,
+  "scout_meshes": 19,
+  "assembly": [
+    {
+      "actor": "Static__GR_01_painted_alum",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_01_painted_alum"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F37728290) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_05_rubber",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_05_rubber"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F377281A0) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_Paint_Reference_OffWhite",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_Paint_Reference_OffWhite"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F376EBE90) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_03_black_anodized",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_03_black_anodized"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F376EBEE0) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_07_galvanized",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_07_galvanized"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F376EBC10) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_Optical_Interior",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_Optical_Interior"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F376E8C40) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_Marking_Graphite",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_Marking_Graphite"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F376EAF90) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_02_machined_alum",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_02_machined_alum"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F3770BE90) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_Marking_WarmWhite",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_Marking_WarmWhite"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F3770AEF0) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_Utility_LED_Cyan",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_Utility_LED_Cyan"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F3770AEA0) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_04_weave",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_04_weave"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F37709BE0) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_06_aged_copper",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_06_aged_copper"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F377080B0) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_Optic_ClearCoated_Lens",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_Optic_ClearCoated_Lens"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F37709B90) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_trim",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_trim"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F37709B90) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "Static__GR_Paint_Safety_Ochre",
+      "parent": "EXPORT_SCOUT",
+      "slots": [
+        "MI_GR_Paint_Safety_Ochre"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F37766270) {x: 1.000000, y: 1.000000, z: 1.000000}>"
+    },
+    {
+      "actor": "SCOUT_PIVOT_Rotor__GR_04_weave",
+      "parent": "SCOUT_PIVOT_Rotor_004",
+      "slots": [
+        "MI_GR_04_weave"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F37766310) {x: 0.107973, y: 0.107973, z: 0.107973}>"
+    },
+    {
+      "actor": "SCOUT_PIVOT_Rotor_001__GR_04_weave",
+      "parent": "SCOUT_PIVOT_Rotor_005",
+      "slots": [
+        "MI_GR_04_weave"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F37766360) {x: 0.107973, y: 0.107973, z: 0.107973}>"
+    },
+    {
+      "actor": "SCOUT_PIVOT_Rotor_002__GR_04_weave",
+      "parent": "SCOUT_PIVOT_Rotor_006",
+      "slots": [
+        "MI_GR_04_weave"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F377663B0) {x: 0.107973, y: 0.107973, z: 0.107973}>"
+    },
+    {
+      "actor": "SCOUT_PIVOT_Rotor_003__GR_04_weave",
+      "parent": "SCOUT_PIVOT_Rotor_007",
+      "slots": [
+        "MI_GR_04_weave"
+      ],
+      "scale": "<Struct 'Vector' (0x0000023F37766400) {x: 0.107973, y: 0.107973, z: 0.107973}>"
+    }
+  ],
+  "textures": [
+    {
+      "name": "GR_01_painted_alum_albedo",
+      "srgb": true,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_01_painted_alum_ao",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_01_painted_alum_metal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_01_painted_alum_normal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_NORMALMAP: 1>",
+      "flip_green": true
+    },
+    {
+      "name": "GR_01_painted_alum_rough",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_02_machined_alum_albedo",
+      "srgb": true,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_02_machined_alum_ao",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_02_machined_alum_metal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_02_machined_alum_normal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_NORMALMAP: 1>",
+      "flip_green": true
+    },
+    {
+      "name": "GR_02_machined_alum_rough",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_03_black_anodized_albedo",
+      "srgb": true,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_03_black_anodized_ao",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_03_black_anodized_metal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_03_black_anodized_normal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_NORMALMAP: 1>",
+      "flip_green": true
+    },
+    {
+      "name": "GR_03_black_anodized_rough",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_04_weave_albedo",
+      "srgb": true,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_04_weave_ao",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_04_weave_metal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_04_weave_normal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_NORMALMAP: 1>",
+      "flip_green": true
+    },
+    {
+      "name": "GR_04_weave_rough",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_05_rubber_albedo",
+      "srgb": true,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_05_rubber_ao",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_05_rubber_metal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_05_rubber_normal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_NORMALMAP: 1>",
+      "flip_green": true
+    },
+    {
+      "name": "GR_05_rubber_rough",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_06_aged_copper_albedo",
+      "srgb": true,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_06_aged_copper_ao",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_06_aged_copper_metal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_06_aged_copper_normal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_NORMALMAP: 1>",
+      "flip_green": true
+    },
+    {
+      "name": "GR_06_aged_copper_rough",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_07_galvanized_albedo",
+      "srgb": true,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_07_galvanized_ao",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_07_galvanized_metal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_07_galvanized_normal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_NORMALMAP: 1>",
+      "flip_green": true
+    },
+    {
+      "name": "GR_07_galvanized_rough",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_09_camera_glass_albedo",
+      "srgb": true,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_09_camera_glass_ao",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_09_camera_glass_metal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_09_camera_glass_normal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_NORMALMAP: 1>",
+      "flip_green": true
+    },
+    {
+      "name": "GR_09_camera_glass_rough",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_paint_ochre_albedo",
+      "srgb": true,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_paint_offwhite_albedo",
+      "srgb": true,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_trim_albedo",
+      "srgb": true,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_trim_metal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    },
+    {
+      "name": "GR_trim_normal",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_NORMALMAP: 1>",
+      "flip_green": true
+    },
+    {
+      "name": "GR_trim_rough",
+      "srgb": false,
+      "compression": "<TextureCompressionSettings.TC_DEFAULT: 0>",
+      "flip_green": false
+    }
+  ],
+  "render_settings": {
+    "r.DynamicGlobalIlluminationMethod": 1,
+    "r.ReflectionMethod": 1,
+    "r.Shadow.Virtual.Enable": 1
+  }
+}

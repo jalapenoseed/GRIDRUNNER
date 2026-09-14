@@ -1,0 +1,22 @@
+{
+  "engine": "5.8.2-56702186+++UE5+Release-5.8",
+  "map_reopened": "/Game/GRIDRUNNER/Maps/L_AssetLab_Showcase",
+  "group_actor_counts": {
+    "SCOUT": 24,
+    "Transformer": 3,
+    "Workbench": 3,
+    "Crate": 3
+  },
+  "screenshots": [
+    "day_dry.png",
+    "day_wet.png",
+    "night_dry.png",
+    "night_wet.png",
+    "overview_day.png"
+  ],
+  "resolution": [
+    1280,
+    720
+  ],
+  "wetness_scope": "SCOUT materials and test surfaces"
+}

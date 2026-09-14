@@ -1,0 +1,65 @@
+{
+  "map": "/Game/GRIDRUNNER/Maps/L_AssetLab_Showcase",
+  "imports": [
+    {
+      "source": "drones/GR_SCOUT_01.glb",
+      "actors": 24,
+      "mesh_actors": 19,
+      "dimensions_cm": [
+        52.097171783447266,
+        41.73172378540039,
+        12.387248069047928
+      ],
+      "translation_cm": [
+        0.0,
+        0.0,
+        111.74086382985115
+      ]
+    },
+    {
+      "source": "kit/GR_PadTransformer_01.glb",
+      "actors": 3,
+      "mesh_actors": 1,
+      "dimensions_cm": [
+        205.0,
+        148.0,
+        155.8000030517578
+      ],
+      "translation_cm": [
+        -800.0,
+        1000.0,
+        31.0
+      ]
+    },
+    {
+      "source": "kit/GR_Workbench_02.glb",
+      "actors": 3,
+      "mesh_actors": 1,
+      "dimensions_cm": [
+        192.0,
+        94.69998931884766,
+        121.0
+      ],
+      "translation_cm": [
+        450.0,
+        597.2500190734863,
+        1.0
+      ]
+    },
+    {
+      "source": "kit/GR_SupplyCrate_02.glb",
+      "actors": 3,
+      "mesh_actors": 1,
+      "dimensions_cm": [
+        78.60002136230469,
+        59.40999984741211,
+        46.0
+      ],
+      "translation_cm": [
+        -600.0,
+        399.5950222015381,
+        1.0
+      ]
+    }
+  ]
+}

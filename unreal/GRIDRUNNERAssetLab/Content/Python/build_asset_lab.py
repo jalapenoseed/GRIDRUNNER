@@ -12,7 +12,7 @@ MAT = unreal.MaterialEditingLibrary
 
 def spawn(cls, label, xyz, rotation=(0, 0, 0)):
     actor = unreal.get_editor_subsystem(unreal.EditorActorSubsystem).spawn_actor_from_class(
-        cls, unreal.Vector(*xyz), unreal.Rotator(*rotation))
+        cls, unreal.Vector(*xyz), unreal.Rotator(pitch=rotation[0], yaw=rotation[1], roll=rotation[2]))
     if not actor:
         raise RuntimeError("Could not spawn " + label)
     actor.set_actor_label(label)
@@ -129,14 +129,18 @@ def build():
     sky.light_component.set_intensity(0.7)
     sky.light_component.set_editor_property("real_time_capture", True)
     fog = spawn(unreal.ExponentialHeightFog, "Lab_Fog", (0, 0, 0))
-    fog.get_component_by_class(unreal.ExponentialHeightFogComponent).set_editor_property("volumetric_fog", True)
+    fog_component = fog.get_component_by_class(unreal.ExponentialHeightFogComponent)
+    if hasattr(fog_component, "set_volumetric_fog"):
+        fog_component.set_volumetric_fog(True)
+    else:
+        unreal.log_warning("Volumetric fog setter unavailable; using standard height fog.")
     for label, xyz, color in [
         ("Cyan_Work_Light", (400, -300, 400), (0.15, 0.80, 1.0)),
         ("Amber_Rim_Light", (1200, 700, 400), (1.0, 0.40, 0.12)),
     ]:
         light = spawn(unreal.PointLight, label, xyz)
         light.light_component.set_mobility(unreal.ComponentMobility.MOVABLE)
-        light.light_component.set_intensity(3500.0)
+        light.light_component.set_intensity(35.0)
         light.light_component.set_attenuation_radius(1800.0)
         light.light_component.set_light_color(unreal.LinearColor(*color, 1.0))
     for label, xyz, rotation in [

@@ -2,9 +2,10 @@
   "FileVersion": 3,
   "EngineAssociation": "5.8",
   "Category": "Visualization",
-  "Description": "GRIDRUNNER Unreal Asset Lab: independent, content-only visual starter.",
+  "Description": "GRIDRUNNER Unreal Asset Lab: validated compact asset showcase.",
   "Plugins": [
     { "Name": "PythonScriptPlugin", "Enabled": true },
-    { "Name": "EditorScriptingUtilities", "Enabled": true }
+    { "Name": "EditorScriptingUtilities", "Enabled": true },
+    { "Name": "AndroidFileServer", "Enabled": false }
   ]
 }

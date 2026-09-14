@@ -20,8 +20,10 @@ def apply(name):
         raise RuntimeError("Open the generated L_AssetLab map first")
     sun, sky, pitch, wetness = PRESETS[name]
     selected["Lab_Sun"].light_component.set_intensity(sun)
-    selected["Lab_Sun"].set_actor_rotation(unreal.Rotator(pitch, -30, 0), False)
+    selected["Lab_Sun"].set_actor_rotation(unreal.Rotator(pitch=pitch, yaw=-30, roll=0), False)
     selected["Lab_Sky"].light_component.set_intensity(sky)
+    for label in ("Cyan_Work_Light", "Amber_Rim_Light"):
+        selected[label].light_component.set_intensity(35.0)
     for name in ("PaintedSteel", "Aluminum", "Rubber", "Concrete", "Copper"):
         instance = unreal.EditorAssetLibrary.load_asset("/Game/GRIDRUNNER/Materials/MI_GR_" + name)
         if instance:
