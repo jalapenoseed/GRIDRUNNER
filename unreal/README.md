@@ -4,6 +4,9 @@ Open `unreal/Launch-GhostSignal.cmd` on Windows, or open
 `GRIDRUNNERAssetLab/GRIDRUNNERAssetLab.uproject` in Unreal Engine 5.8.
 The saved startup map is `/Game/GRIDRUNNER/Maps/L_GhostSignal_Prototype`.
 
+Downloaded Fab collections now have a separate [asset library and staging guide](ASSET-LIBRARY.md).
+The Windows hub is `D:\UNREAL-GRIDRUNNER-ASSETS`; open the desktop **GRIDRUNNER Assets** shortcut.
+
 ## Ghost Signal playable prototype
 
 This is the first playable Unreal conversion of the current GRIDRUNNER concept.
@@ -18,6 +21,9 @@ Hill Country silhouettes and four staged exploration objectives:
 2. Retrieve the power cell.
 3. Deploy SCOUT.
 4. Trace the ghost signal.
+
+These four objectives are currently world markers and labels. Their interaction,
+power-cell inventory, SCOUT deployment and completion logic are not implemented yet.
 
 Controls come from Epic's Enhanced Input template: WASD + mouse + Space,
 Xbox-compatible left/right sticks + A, and touch controls. Run the game with:

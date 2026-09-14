@@ -1,0 +1,20 @@
+[
+  {
+    "package": "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/CR_Mannequin_BasicFootIK",
+    "vm_recompiled": true,
+    "class_resolved": true,
+    "saved": true
+  },
+  {
+    "package": "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/CR_Mannequin_Body",
+    "vm_recompiled": true,
+    "class_resolved": true,
+    "saved": true
+  },
+  {
+    "package": "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/CR_Mannequin_Procedural",
+    "vm_recompiled": true,
+    "class_resolved": true,
+    "saved": true
+  }
+]

@@ -1,0 +1,449 @@
+{
+  "project": "D:/UNREAL-GRIDRUNNER-ASSETS/Projects/GR_AssetReview/",
+  "packs": [
+    {
+      "root": "/Game/Bike",
+      "assets": 58,
+      "classes": {
+        "AnimBlueprint": 1,
+        "Blueprint": 6,
+        "WidgetBlueprint": 1,
+        "CurveFloat": 1,
+        "InputMappingContext": 2,
+        "InputAction": 7,
+        "MaterialFunction": 1,
+        "MaterialInstanceConstant": 5,
+        "Material": 7,
+        "StaticMesh": 6,
+        "Texture2D": 13,
+        "World": 1,
+        "ObjectRedirector": 2,
+        "PhysicalMaterial": 2,
+        "SkeletalMesh": 1,
+        "PhysicsAsset": 1,
+        "Skeleton": 1
+      },
+      "missing_game_dependencies": [],
+      "missing_details": [],
+      "examples": {
+        "AnimBlueprint": [
+          "/Game/Bike/Animations/SK_rsg_bike_UE_04_Skeleton_AnimBlueprint"
+        ],
+        "Blueprint": [
+          "/Game/Bike/BikeBP/BikeBP",
+          "/Game/Bike/BikeBP/BikePlayerController",
+          "/Game/Bike/BikeBP/Bike_GameMode",
+          "/Game/Bike/BikeBP/BP_AssetGuideline_Chaos",
+          "/Game/Bike/BikeBP/Frontwheel",
+          "/Game/Bike/BikeBP/RearWheel"
+        ],
+        "WidgetBlueprint": [
+          "/Game/Bike/BikeBP/BikeUI"
+        ],
+        "CurveFloat": [
+          "/Game/Bike/BikeBP/Bike_TorqueCurve"
+        ],
+        "InputMappingContext": [
+          "/Game/Bike/Input/IMC_Default",
+          "/Game/Bike/Input/IMC_SteeringWheel"
+        ],
+        "InputAction": [
+          "/Game/Bike/Input/Actions/IA_Brake",
+          "/Game/Bike/Input/Actions/IA_Handbrake",
+          "/Game/Bike/Input/Actions/IA_LookAround",
+          "/Game/Bike/Input/Actions/IA_Reset",
+          "/Game/Bike/Input/Actions/IA_Steering",
+          "/Game/Bike/Input/Actions/IA_Throttle",
+          "/Game/Bike/Input/Actions/IA_ToggleCamera"
+        ],
+        "MaterialFunction": [
+          "/Game/Bike/LevelPrototyping/Materials/MF_ProcGrid"
+        ],
+        "MaterialInstanceConstant": [
+          "/Game/Bike/LevelPrototyping/Materials/MI_PrototypeGrid_Gray",
+          "/Game/Bike/LevelPrototyping/Materials/MI_PrototypeGrid_Gray_02",
+          "/Game/Bike/LevelPrototyping/Materials/MI_PrototypeGrid_TopDark",
+          "/Game/Bike/LevelPrototyping/Materials/MI_Solid_Blue",
+          "/Game/Bike/LevelPrototyping/Track/MI_TrackEdge"
+        ],
+        "Material": [
+          "/Game/Bike/LevelPrototyping/Materials/M_PrototypeGrid",
+          "/Game/Bike/LevelPrototyping/Materials/M_Solid",
+          "/Game/Bike/LevelPrototyping/Track/M_Track",
+          "/Game/Bike/Materials/Materials_Clean/M_body_1_Clean",
+          "/Game/Bike/Materials/Materials_Clean/M_body_2_Clean",
+          "/Game/Bike/Materials/Materials_Dirty/M_body_1_Dirty",
+          "/Game/Bike/Materials/Materials_Dirty/M_body_2_Dirty"
+        ],
+        "StaticMesh": [
+          "/Game/Bike/LevelPrototyping/Meshes/SM_ChamferCube",
+          "/Game/Bike/LevelPrototyping/Meshes/SM_Cube",
+          "/Game/Bike/LevelPrototyping/Meshes/SM_Cylinder",
+          "/Game/Bike/LevelPrototyping/Meshes/SM_QuarterCylinder",
+          "/Game/Bike/LevelPrototyping/Meshes/SM_Ramp",
+          "/Game/Bike/LevelPrototyping/Track/SM_Track_10M"
+        ],
+        "Texture2D": [
+          "/Game/Bike/LevelPrototyping/Textures/T_GridChecker_A",
+          "/Game/Bike/Texture/Texture_Clean/T_rsg_bike_body_01_clean_ARM",
+          "/Game/Bike/Texture/Texture_Clean/T_rsg_bike_body_01_clean_BC",
+          "/Game/Bike/Texture/Texture_Clean/T_rsg_bike_body_01_clean_N",
+          "/Game/Bike/Texture/Texture_Clean/T_rsg_bike_body_02_clean_ARM",
+          "/Game/Bike/Texture/Texture_Clean/T_rsg_bike_body_02_clean_BC",
+          "/Game/Bike/Texture/Texture_Clean/T_rsg_bike_body_02_clean_N",
+          "/Game/Bike/Texture/Texture_Dirty/T_rsg_bike_body_01_dirty_ARM"
+        ],
+        "World": [
+          "/Game/Bike/Maps/L_BikeDemoMap"
+        ],
+        "ObjectRedirector": [
+          "/Game/Bike/Materials/PhysicsMaterials/NonSlippery",
+          "/Game/Bike/Materials/PhysicsMaterials/Slippery"
+        ],
+        "PhysicalMaterial": [
+          "/Game/Bike/Materials/PhysicsMaterials/PM_NonSlippery",
+          "/Game/Bike/Materials/PhysicsMaterials/PM_Slippery"
+        ],
+        "SkeletalMesh": [
+          "/Game/Bike/Models/SK_rsg_bike_UE_04"
+        ],
+        "PhysicsAsset": [
+          "/Game/Bike/Models/SK_rsg_bike_UE_04_PhysicsAsset"
+        ],
+        "Skeleton": [
+          "/Game/Bike/Models/SK_rsg_bike_UE_04_Skeleton"
+        ]
+      }
+    },
+    {
+      "root": "/Game/Deko_MatrixDemo",
+      "assets": 452,
+      "classes": {
+        "Blueprint": 1,
+        "World": 2,
+        "MapBuildDataRegistry": 1,
+        "MaterialInstanceConstant": 78,
+        "StaticMesh": 168,
+        "Texture2D": 163,
+        "Material": 3,
+        "MaterialFunctionMaterialLayerBlend": 5,
+        "MaterialFunction": 1,
+        "MaterialFunctionMaterialLayerInstance": 28,
+        "MaterialFunctionMaterialLayer": 2
+      },
+      "missing_game_dependencies": [],
+      "missing_details": [],
+      "examples": {
+        "Blueprint": [
+          "/Game/Deko_MatrixDemo/Freeway/BP/BP_Sign_01a"
+        ],
+        "World": [
+          "/Game/Deko_MatrixDemo/Freeway/Maps/Demonstration",
+          "/Game/Deko_MatrixDemo/Freeway/Maps/Overview"
+        ],
+        "MapBuildDataRegistry": [
+          "/Game/Deko_MatrixDemo/Freeway/Maps/Overview_BuiltData"
+        ],
+        "MaterialInstanceConstant": [
+          "/Game/Deko_MatrixDemo/Freeway/Materials/MI_Billboard_Sign_A01",
+          "/Game/Deko_MatrixDemo/Freeway/Materials/MI_Billboard_Sign_B01",
+          "/Game/Deko_MatrixDemo/Freeway/Materials/MI_Billboard_Sign_C01",
+          "/Game/Deko_MatrixDemo/Freeway/Materials/MI_Billboard_Sign_D01",
+          "/Game/Deko_MatrixDemo/Freeway/Materials/MI_Billboard_Sign_D02",
+          "/Game/Deko_MatrixDemo/Freeway/Materials/MI_FreewaySign_Green_01_A_02",
+          "/Game/Deko_MatrixDemo/Freeway/Materials/MI_FWYBarrier_Barrel_A_01",
+          "/Game/Deko_MatrixDemo/Freeway/Materials/MI_FWYBarrier_SignTrash_A01"
+        ],
+        "StaticMesh": [
+          "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_Billboard_A01_N1",
+          "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_Billboard_A02_N1",
+          "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_Billboard_B01_N1",
+          "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_Billboard_B02_N1",
+          "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_Billboard_C01_N1",
+          "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_Billboard_C02_N1",
+          "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_Billboard_D01_N1",
+          "/Game/Deko_MatrixDemo/Freeway/Meshes/SM_FreewaySign_Frame_A_AnchorLarge_01_N1"
+        ],
+        "Texture2D": [
+          "/Game/Deko_MatrixDemo/Freeway/Textures/T_Billboard_A01_M",
+          "/Game/Deko_MatrixDemo/Freeway/Textures/T_Billboard_Sign_A01_C",
+          "/Game/Deko_MatrixDemo/Freeway/Textures/T_Billboard_Sign_A01_N",
+          "/Game/Deko_MatrixDemo/Freeway/Textures/T_Billboard_Sign_A02_C",
+          "/Game/Deko_MatrixDemo/Freeway/Textures/T_Billboard_Sign_B01_M",
+          "/Game/Deko_MatrixDemo/Freeway/Textures/T_Billboard_Sign_C01_M",
+          "/Game/Deko_MatrixDemo/Freeway/Textures/T_Billboard_Sign_D01_M",
+          "/Game/Deko_MatrixDemo/Freeway/Textures/T_Billboard_Sign_D01_N"
+        ],
+        "Material": [
+          "/Game/Deko_MatrixDemo/Shared/Material/Masters/MM_Master_01",
+          "/Game/Deko_MatrixDemo/Shared/Material/Masters/M_MatLayer_Prop_Master_01",
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/M_MatLayer_Prop_Master_01"
+        ],
+        "MaterialFunctionMaterialLayerBlend": [
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Blend/MLB_MaskTexture_Alpha",
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Blend/MLB_MaskTexture_Blue",
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Blend/MLB_MaskTexture_Green",
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Blend/MLB_MaskTexture_Red",
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Blend/MLB_MaskTexture_UDIM"
+        ],
+        "MaterialFunction": [
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Functions/MF_Object_UVs"
+        ],
+        "MaterialFunctionMaterialLayerInstance": [
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Concrete_03",
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Corrosion_Rust_02",
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Corrosion_Rust_03",
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Grunge_Dirt_02",
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Grunge_Dust_01",
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Metal_Alum_01",
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Metal_Alum_Brushed_01",
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/MLI_Metal_Forged_Rough_01"
+        ],
+        "MaterialFunctionMaterialLayer": [
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/ML_Master_01",
+          "/Game/Deko_MatrixDemo/Shared/Material/MaterialLayer/Layers/ML_SimpleColor"
+        ]
+      }
+    },
+    {
+      "root": "/Game/Free_Sounds_Pack",
+      "assets": 100,
+      "classes": {
+        "SoundCue": 50,
+        "SoundWave": 50
+      },
+      "missing_game_dependencies": [],
+      "missing_details": [],
+      "examples": {
+        "SoundCue": [
+          "/Game/Free_Sounds_Pack/cue/Ambient_Birds_Loop_04_Cue",
+          "/Game/Free_Sounds_Pack/cue/Ambient_Rain_Moderate_Loop_1_Cue",
+          "/Game/Free_Sounds_Pack/cue/Ambient_Water_Stream_Calm_3_Cue",
+          "/Game/Free_Sounds_Pack/cue/Ambient_Wind_Loop_1_Cue",
+          "/Game/Free_Sounds_Pack/cue/Bag_Handle_1-5_Cue",
+          "/Game/Free_Sounds_Pack/cue/Blacksmithing_1-1_Cue",
+          "/Game/Free_Sounds_Pack/cue/Book_Handle_1-5_Cue",
+          "/Game/Free_Sounds_Pack/cue/Book_Page_1-2_Cue"
+        ],
+        "SoundWave": [
+          "/Game/Free_Sounds_Pack/wav/Ambient_Birds_Loop_04",
+          "/Game/Free_Sounds_Pack/wav/Ambient_Rain_Moderate_Loop_1",
+          "/Game/Free_Sounds_Pack/wav/Ambient_Water_Stream_Calm_3",
+          "/Game/Free_Sounds_Pack/wav/Ambient_Wind_Loop_1",
+          "/Game/Free_Sounds_Pack/wav/Bag_Handle_1-5",
+          "/Game/Free_Sounds_Pack/wav/Blacksmithing_1-1",
+          "/Game/Free_Sounds_Pack/wav/Book_Handle_1-5",
+          "/Game/Free_Sounds_Pack/wav/Book_Page_1-2"
+        ]
+      }
+    },
+    {
+      "root": "/Game/MotoInteractionAnims",
+      "assets": 208,
+      "classes": {
+        "AnimSequence": 97,
+        "Material": 4,
+        "SkeletalMesh": 6,
+        "PhysicsAsset": 3,
+        "Skeleton": 3,
+        "AnimBlueprint": 4,
+        "BlendSpace1D": 2,
+        "CurveLinearColorAtlas": 1,
+        "CurveLinearColor": 1,
+        "MaterialFunction": 7,
+        "MaterialInstanceConstant": 5,
+        "SkeletalMeshLODSettings": 1,
+        "ControlRigBlueprint": 3,
+        "IKRigDefinition": 2,
+        "IKRetargeter": 3,
+        "PoseAsset": 28,
+        "Texture2D": 37,
+        "World": 1
+      },
+      "missing_game_dependencies": [],
+      "missing_details": [],
+      "examples": {
+        "AnimSequence": [
+          "/Game/MotoInteractionAnims/Animations/Combat/Pistol/AS_Pistol_Equip",
+          "/Game/MotoInteractionAnims/Animations/Combat/Pistol/AS_Pistol_Hold_Loop",
+          "/Game/MotoInteractionAnims/Animations/Combat/Pistol/AS_Pistol_Point_Back",
+          "/Game/MotoInteractionAnims/Animations/Combat/Pistol/AS_Pistol_Point_Front",
+          "/Game/MotoInteractionAnims/Animations/Combat/Pistol/AS_Pistol_Point_Left",
+          "/Game/MotoInteractionAnims/Animations/Combat/Pistol/AS_Pistol_Point_Right",
+          "/Game/MotoInteractionAnims/Animations/Combat/Pistol/AS_Pistol_Shoot_Back",
+          "/Game/MotoInteractionAnims/Animations/Combat/Pistol/AS_Pistol_Shoot_Front"
+        ],
+        "Material": [
+          "/Game/MotoInteractionAnims/Demo/Bike/Materials/Gray_Mat",
+          "/Game/MotoInteractionAnims/Demo/Bike/Materials/White_Mat",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/M_Mannequin",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequin_UE4/Materials/M_MannequinUE4_Body"
+        ],
+        "SkeletalMesh": [
+          "/Game/MotoInteractionAnims/Demo/Bike/Mesh/SM_Bike",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SKM_Manny",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SKM_Manny_Simple",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SKM_Quinn",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SKM_Quinn_Simple",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequin_UE4/Meshes/SK_Mannequin"
+        ],
+        "PhysicsAsset": [
+          "/Game/MotoInteractionAnims/Demo/Bike/Mesh/SM_Bike_PhysicsAsset",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/PA_Mannequin",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequin_UE4/Meshes/SK_Mannequin_PhysicsAsset"
+        ],
+        "Skeleton": [
+          "/Game/MotoInteractionAnims/Demo/Bike/Mesh/SM_Bike_Skeleton",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/SK_Mannequin",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequin_UE4/Meshes/SK_Mannequin_Skeleton"
+        ],
+        "AnimBlueprint": [
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Animations/ABP_Manny",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Animations/ABP_Quinn",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/ABP_Manny_PostProcess",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/ABP_Quinn_PostProcess"
+        ],
+        "BlendSpace1D": [
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Animations/Manny/BS_MM_WalkRun",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Animations/Quinn/BS_MF_Unarmed_WalkRun"
+        ],
+        "CurveLinearColorAtlas": [
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/CA_Mannequin"
+        ],
+        "CurveLinearColor": [
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/ChromaticCurve"
+        ],
+        "MaterialFunction": [
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/MF_Diffraction",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/MF_logo3layers",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Functions/ML_BaseColorFallOff",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequin_UE4/Materials/Layers/ML_Latex_Black",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequin_UE4/Materials/Layers/ML_ShinyPlastic_Beige",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequin_UE4/Materials/Layers/ML_ShinyPlastic_Beige_Logo",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequin_UE4/Materials/Layers/ML_SoftMetal"
+        ],
+        "MaterialInstanceConstant": [
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Instances/Manny/MI_Manny_01",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Instances/Manny/MI_Manny_02",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Instances/Quinn/MI_Quinn_01",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Materials/Instances/Quinn/MI_Quinn_02",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequin_UE4/Materials/M_MannequinUE4_ChestLogo"
+        ],
+        "SkeletalMeshLODSettings": [
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Meshes/Mannequin_LODSettings"
+        ],
+        "ControlRigBlueprint": [
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/CR_Mannequin_BasicFootIK",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/CR_Mannequin_Body",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/CR_Mannequin_Procedural"
+        ],
+        "IKRigDefinition": [
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/IK_Mannequin",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequin_UE4/Rigs/IK_UE4_Mannequin"
+        ],
+        "IKRetargeter": [
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/RTG_Mannequin",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequin_UE4/Rigs/RTG_UE4Manny_UE5Manny",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequin_UE4/Rigs/RTG_UE5Manny_UE4Manny"
+        ],
+        "PoseAsset": [
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_calf_l_pose",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_calf_r_pose",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_clavicle_l_pose",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_clavicle_r_pose",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_foot_l_pose",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_foot_r_pose",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_hand_l_pose",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Rigs/Poses/Manny/Manny_hand_r_pose"
+        ],
+        "Texture2D": [
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_ASAOPMASK_MSK",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_BN",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_CCRCCPlastic_MSK",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_D",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_MSR_MSK",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_N",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_Tan",
+          "/Game/MotoInteractionAnims/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_ASAOPMASK_MSK"
+        ],
+        "World": [
+          "/Game/MotoInteractionAnims/Maps/Level_MotoInteractionAnims"
+        ]
+      }
+    },
+    {
+      "root": "/Game/Sparks_Embers",
+      "assets": 51,
+      "classes": {
+        "Material": 4,
+        "CurveLinearColorAtlas": 1,
+        "CurveLinearColor": 1,
+        "MaterialFunction": 3,
+        "MaterialInstanceConstant": 3,
+        "Texture2D": 19,
+        "World": 1,
+        "StaticMesh": 9,
+        "NiagaraSystem": 10
+      },
+      "missing_game_dependencies": [],
+      "missing_details": [],
+      "examples": {
+        "Material": [
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Materials/M_Mannequin",
+          "/Game/Sparks_Embers/Materials/M_Ground",
+          "/Game/Sparks_Embers/Materials/M_Props",
+          "/Game/Sparks_Embers/Materials/M_Spark"
+        ],
+        "CurveLinearColorAtlas": [
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Materials/Functions/CA_Mannequin"
+        ],
+        "CurveLinearColor": [
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Materials/Functions/ChromaticCurve"
+        ],
+        "MaterialFunction": [
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Materials/Functions/MF_Diffraction",
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Materials/Functions/MF_logo3layers",
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Materials/Functions/ML_BaseColorFallOff"
+        ],
+        "MaterialInstanceConstant": [
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Materials/Instances/Manny/MI_Manny_01",
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Materials/Instances/Manny/MI_Manny_02",
+          "/Game/Sparks_Embers/Materials/MI_Ground"
+        ],
+        "Texture2D": [
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_ASAOPMASK_MSK",
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_BN",
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_CCRCCPlastic_MSK",
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_D",
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_MSR_MSK",
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_N",
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Textures/Manny/T_Manny_01_Tan",
+          "/Game/Sparks_Embers/Demo/Characters/Mannequins/Textures/Manny/T_Manny_02_ASAOPMASK_MSK"
+        ],
+        "World": [
+          "/Game/Sparks_Embers/Maps/L_Effects"
+        ],
+        "StaticMesh": [
+          "/Game/Sparks_Embers/Meshes/SM_Blacksmith_Base",
+          "/Game/Sparks_Embers/Meshes/SM_Campfire",
+          "/Game/Sparks_Embers/Meshes/SM_Electric_Box_",
+          "/Game/Sparks_Embers/Meshes/SM_Grinding_Weel",
+          "/Game/Sparks_Embers/Meshes/SM_Hammer",
+          "/Game/Sparks_Embers/Meshes/SM_Industrial_Saw",
+          "/Game/Sparks_Embers/Meshes/Sm_Magical_Bowl",
+          "/Game/Sparks_Embers/Meshes/SM_Pipe"
+        ],
+        "NiagaraSystem": [
+          "/Game/Sparks_Embers/Niagara/NS_Embers01",
+          "/Game/Sparks_Embers/Niagara/NS_Embers02",
+          "/Game/Sparks_Embers/Niagara/NS_Sparks01",
+          "/Game/Sparks_Embers/Niagara/NS_Sparks02",
+          "/Game/Sparks_Embers/Niagara/NS_Sparks03",
+          "/Game/Sparks_Embers/Niagara/NS_Sparks04",
+          "/Game/Sparks_Embers/Niagara/NS_Sparks05",
+          "/Game/Sparks_Embers/Niagara/NS_Sparks06"
+        ]
+      }
+    }
+  ]
+}
