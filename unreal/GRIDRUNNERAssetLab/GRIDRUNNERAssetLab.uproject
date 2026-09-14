@@ -1,11 +1,17 @@
 {
   "FileVersion": 3,
   "EngineAssociation": "5.8",
-  "Category": "Visualization",
-  "Description": "GRIDRUNNER Unreal Asset Lab: validated compact asset showcase.",
+  "Category": "Games",
+  "Description": "GRIDRUNNER: Ghost Signal playable Unreal prototype and validated asset lab.",
   "Plugins": [
     { "Name": "PythonScriptPlugin", "Enabled": true },
     { "Name": "EditorScriptingUtilities", "Enabled": true },
+    { "Name": "GameplayStateTree", "Enabled": true },
+    {
+      "Name": "ModelingToolsEditorMode",
+      "Enabled": true,
+      "TargetAllowList": ["Editor"]
+    },
     { "Name": "AndroidFileServer", "Enabled": false }
   ]
 }

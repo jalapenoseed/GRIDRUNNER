@@ -1,21 +1,32 @@
 # GRIDRUNNER Unreal continuation
+
 Repository: `jalapenoseed/GRIDRUNNER`, branch `unreal`.
 Project: `unreal/GRIDRUNNERAssetLab/GRIDRUNNERAssetLab.uproject`.
-Windows checkout: `D:\GRIDRUNNER-Unreal`. Open `unreal/Launch-AssetLab.cmd`.
+Windows checkout: `D:\GRIDRUNNER-Unreal`.
 
-Read README.md and validation/captures.json before continuing.
-The showroom and four existing assets have been generated and saved in UE 5.8.2.
-The startup map is L_AssetLab_Showcase; normal use does not require rerunning generators.
-SCOUT retains its assembled hierarchy and separate mesh parts. Do not rebuild it.
-SCOUT PBR maps are bound explicitly; prop atlas materials come from Interchange.
-Capture outputs are real Unreal renders in validation/screenshots_final.
-The saved scene returns to day/dry after capture.
+Start with `unreal/Launch-GhostSignal.cmd`; the startup map is
+`/Game/GRIDRUNNER/Maps/L_GhostSignal_Prototype`.
+The original verified showroom remains at `L_AssetLab_Showcase`.
 
-Fixes include the fog API, remote-launch environment, SM6 configuration, camera framing and capture callback reentrancy.
-The test PC has a GTX 1050 Ti with driver 531.30. Do not claim benchmarked frame rates or maximum-fidelity hardware rendering.
-Wetness is currently a roughness control for SCOUT and sample surfaces.
-The PC may contain an untracked L_AssetLab partial bootstrap map and first-pass screenshots; preserve them as local diagnostics, and use the saved Showcase map.
+Verified in Unreal 5.8.2:
 
-Continue with bounded material/asset presentation improvements as more approved exports arrive.
-Keep Blender sources, Three.js and Godot untouched. Defer gameplay migration, crafting, quests, NPCs and a large environment.
-Commit only Unreal work on this branch; never force-push or merge it into main.
+- Ghost Signal map generated and saved with 255 actors;
+- 10 highway segments, 16 utility poles and 5 route beacons;
+- 10 broad terrain tiles and 14 distant hill silhouettes;
+- UE third-person character, animation and Enhanced Input assets resolve;
+- keyboard/mouse, Xbox-compatible gamepad and touch mappings are present;
+- SCOUT's 19-part imported assembly and its PBR materials remain intact;
+- playable map reopened and all required actors/assets passed verification;
+- a real 1280×720 engine overview was captured.
+
+The validation PC has an NVIDIA GTX 1050 Ti on driver 531.30. UE 5.8 flags that
+driver as denylisted and pauses interactive game startup at a warning dialog.
+Update to the driver version Unreal recommends or dismiss the warning locally.
+Do not claim packaged-build validation until that interactive gate is cleared.
+
+Next milestone: possessable SCOUT flight and electric-enduro gameplay after the
+chosen Fab bike, rider animations and audio are installed. Preserve assembly,
+pivots, material slots and all Blender originals. Do not replace the approved
+SCOUT mesh. Keep Three.js and Godot untouched.
+
+Commit only Unreal work on this branch. Never force-push or merge into `main`.

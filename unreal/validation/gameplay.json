@@ -1,0 +1,23 @@
+{
+  "engine": "5.8.2-56702186+++UE5+Release-5.8",
+  "map": "/Game/GRIDRUNNER/Maps/L_GhostSignal_Prototype",
+  "game_mode": "/Game/ThirdPerson/Blueprints/BP_ThirdPersonGameMode",
+  "actor_count": 255,
+  "highway_segments": 10,
+  "utility_poles": 16,
+  "route_beacons": 5,
+  "objectives": [
+    "restore relay",
+    "retrieve power cell",
+    "deploy SCOUT",
+    "trace ghost signal"
+  ],
+  "input": [
+    "keyboard/mouse",
+    "Xbox-compatible gamepad",
+    "touch"
+  ],
+  "asset_lab_preserved": true,
+  "terrain_tiles": 10,
+  "hill_silhouettes": 14
+}

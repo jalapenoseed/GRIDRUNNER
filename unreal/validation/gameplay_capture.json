@@ -1,0 +1,9 @@
+{
+  "engine": "5.8.2-56702186+++UE5+Release-5.8",
+  "map": "/Game/GRIDRUNNER/Maps/L_GhostSignal_Prototype",
+  "screenshot": "ghost_signal_overview.png",
+  "resolution": [
+    1280,
+    720
+  ]
+}
