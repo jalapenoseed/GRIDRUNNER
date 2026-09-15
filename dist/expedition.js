@@ -32,6 +32,9 @@ export function validateSave(r){
  if(s.ending!==undefined&&!['','restore','transmit'].includes(s.ending))bad();
  if(s.phaseStep!==undefined&&(!Number.isInteger(s.phaseStep)||s.phaseStep<0||s.phaseStep>3))bad();
  validateInventory(s.inv);for(const k of ['wire','cells','electronics','steel'])if(s.inv[k]===undefined)s.inv[k]=0;s.field=validateField(s.field);s.residents=residentState(s.residents);s.relayHouse=validateRelayHouse(s.relayHouse);s.experience=migrateExperience(s.experience);
+ if(s.airJobs===undefined||typeof s.airJobs!=='object')s.airJobs={inspect:false,cargo:false,repair:false,relay:false};
+ else {const d={inspect:false,cargo:false,repair:false,relay:false};for(const k of Object.keys(d))d[k]=s.airJobs[k]===true;s.airJobs=d;}
+ if(s.airSession!==undefined&&s.airSession!==null&&(typeof s.airSession!=='object'||typeof s.airSession.id!=='string'))s.airSession=null;
  if(s.powerTarget!==null&&!['ev','solar','grid','line','l2hydro','l3supply'].includes(s.powerTarget))bad();
  if(!number(s.temp,0,1000)||!number(s.chargeHeat,0,200))bad();
  if(!['scout','engineer','cargo','relay'].includes(s.droneType)||!['off','fuel','solar','water'].includes(s.generator))bad();
