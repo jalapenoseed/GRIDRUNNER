@@ -53,7 +53,7 @@ export function verifyIntroIntegration({run,tick,w}){
  for(const menu of ['map','journal','inventory','supplies']){run(`open('${menu}')`);assert.equal(run('paused'),false,menu+' must use the same tutorial gate');}
  at(38,-94);run('interact()');assert.equal(run('crates[0].done'),false);
  at(2.5,26);run('keys.w=true');tick(1.4);run('keys={}');key('f');
- assert.equal(run('s.mode'),'bike');assert.equal(run('s.intro.stage'),'yard');saveRoundTrip();
+ assert.equal(run('s.mode'),'bike');assert.equal(run('screen'),'bikeintro');click('[data-brief=next]');click('[data-brief=next]');assert.equal(run('s.intro.stage'),'yard');saveRoundTrip();
  run('open("inventory")');assert.equal(run('screen'),'inventory');resume();
 
  // Practice is independent even midway through onboarding, without advancing it.
@@ -66,7 +66,7 @@ export function verifyIntroIntegration({run,tick,w}){
  assert.equal(w.localStorage.getItem('gridrunner.yardReturn'),null);
  assert(w.document.body.classList.contains('intro-quiet'));
 
- at(38,-94);assert.equal(run('nearest.kind'),'crate');run('interact()');
+ at(38,-94);assert.equal(run('nearest.kind'),'crate');run('interact()');assert.equal(run('screen'),'loot');click('[data-loot=all]');resume();
  assert(run('s.intro.salvaged'));assert(run('crates[0].done'));saveRoundTrip();
  at(54,-94);run('interact()');assert.equal(run('s.met'),false,'Mara waits for the scout');
  key('q');assert.equal(run('s.mode'),'drone');run('keys[" "]=true');tick(1.2);run('keys={}');saveRoundTrip();

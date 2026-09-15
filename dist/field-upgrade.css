@@ -1,0 +1,29 @@
+/* Compact field instruments and world-backed interaction panels. */
+#overlay[data-screen=loot],#overlay[data-screen=bikeintro]{background:#04111655;backdrop-filter:none;align-items:center;justify-content:center;padding:20px;}
+#overlay[data-screen=loot] #panel,#overlay[data-screen=bikeintro] #panel{width:min(540px,100%);max-height:calc(100dvh - 40px);padding:0;border:1px solid #c8d9bc65;border-radius:3px;background:#09191ef2;overflow:auto;box-shadow:0 20px 80px #0007;}
+.lootWindow,.bikeBrief{padding:26px;}.lootWindow h2,.bikeBrief h2{font-family:Georgia,serif;font-size:30px;font-weight:400;line-height:1.1;margin:12px 0 18px;color:#ede9d4;}.lootWindow p,.bikeBrief p{font-size:13px;line-height:1.6;color:#b3c5c3;}.lootRows{display:grid;gap:7px;margin:20px 0;}.lootRows button{display:flex;align-items:center;gap:15px;text-align:left;width:100%;padding:10px;border:1px solid #bbd7bd33;background:#132930;}.lootRows button>span:nth-child(2){flex:1;}.lootRows small{display:block;margin-top:5px;font-size:10px;color:#98b3b1;}.lootRows .itemSymbol{width:48px;height:48px;}.lootRows svg{width:27px;height:27px;}.lootActions,.bikeBrief>div{display:flex;gap:10px;justify-content:space-between;margin-top:22px;}.lootActions button,.bikeBrief button{min-height:44px;}.emptyLoot{padding:30px;text-align:center;}
+#overlay[data-screen=bikeintro]{align-items:flex-end;padding-bottom:35px;}.bikeBrief{border-top:2px solid #b8d995;}
+#fieldControls{position:fixed;right:var(--field-edge,20px);top:58px;display:flex;gap:5px;z-index:15;max-width:calc(100vw - 28px);}
+#fieldControls[hidden],#rfReadout[hidden]{display:none!important;}#fieldControls button{font:9px monospace;letter-spacing:.3px;min-height:36px;padding:5px 9px;background:#061a22c9;border:1px solid #95b7ae50;border-radius:2px;color:#d0ddd2;}
+#rfReadout{position:fixed;top:110px;right:20px;z-index:7;width:250px;padding:12px;border-left:1px solid #76d6c0;background:#061920c9;font:10px/1.8 monospace;color:#91e1ca;pointer-events:none;}#rfReadout span{display:block;}
+body[data-sensor=rf] #world{filter:saturate(.12) contrast(1.13);}body[data-sensor=thermal] #world{filter:none!important;}
+body.interface-ready #joystick{width:80px;height:80px;}body.interface-ready #stick{width:34px;height:34px;left:50%;top:50%;border:1px solid #a5c9c08a;background:#779c9370;}
+body.interface-ready #droneHUD{padding:7px 12px;border-top-width:1px;}body.interface-ready #droneHUD .telemetryGrid b{font-size:15px;}body.interface-ready #droneHUD .droneHeader{font-size:9px;margin-bottom:5px;}
+body.interface-ready[data-mode=drone].scan-hidden #droneHUD{display:block!important;}
+body.interface-ready[data-hud-mode=field]:not(.intro-quiet) #quest,body.interface-ready[data-hud-mode=field] #navigation,body.interface-ready[data-hud-mode=field] #charging{display:none!important;}
+body.interface-ready[data-hud-mode=navigation] #navigation,body.interface-ready[data-hud-mode=navigation] #quest{display:block!important;}
+body.interface-ready[data-hud-mode=systems] #charging{display:block!important;}
+body.interface-ready[data-hud-mode=field] #droneHUD .droneFoot,body.interface-ready[data-hud-mode=field] #flightHelp{display:none!important;}
+body.interface-ready #hud .meter>div{height:2px;}body.interface-ready #opticsBar{bottom:65px;}
+body.menu-open #fieldControls,body.menu-open #rfReadout{visibility:hidden;}
+@media(max-width:600px){#fieldControls{top:61px;left:14px;right:14px;justify-content:flex-end;gap:4px;}#fieldControls button{font-size:8px;padding:4px 6px;min-height:36px;}#rfReadout{top:155px;width:210px;font-size:9px;}body.interface-ready #joystick{width:78px;height:78px;bottom:120px;}body.interface-ready[data-mode=drone] #droneHUD{top:103px;padding:6px 10px;}body.interface-ready #droneHUD .droneHeader{margin-bottom:4px;}body.interface-ready #droneHUD .telemetryGrid b{font-size:12px;}.lootWindow,.bikeBrief{padding:18px;}.lootWindow h2,.bikeBrief h2{font-size:26px;}#overlay[data-screen=bikeintro]{padding:12px;}#overlay[data-screen=loot]{padding:12px;}.lootRows button{gap:10px;}.lootActions button{font-size:10px;}.bikeBrief button{font-size:9px;}}
+@media(max-height:500px) and (orientation:landscape){#fieldControls{top:8px;right:85px;left:auto;}body.interface-ready #joystick{width:72px;height:72px;bottom:64px;}#overlay[data-screen=bikeintro] #panel{width:min(640px,95vw);}.bikeBrief{padding:15px;}.bikeBrief h2{font-size:24px;margin:7px 0;}.bikeBrief p{margin:6px 0;}.bikeBrief>div{margin-top:10px;}}
+body.interface-ready #overlay:is([data-screen=loot],[data-screen=bikeintro]){backdrop-filter:none;background:#04111644;padding:20px;}
+body.interface-ready #overlay[data-screen=bikeintro]{padding-bottom:35px;}
+#panel .lootWindow h2,#panel .bikeBrief h2{font-family:Georgia,serif;font-size:30px;font-weight:400;}
+#panel .lootWindow p,#panel .bikeBrief p{font-size:13px;line-height:1.6;}
+#panel .lootRows button{display:flex;gap:15px;font-size:12px;}
+#panel .lootWindow .eyebrow,#panel .bikeBrief .eyebrow{font-size:10px;}
+body.interface-ready.power-active[data-hud-mode=field] #charging{display:block!important;}
+@media(max-width:600px){body.interface-ready #overlay:is([data-screen=loot],[data-screen=bikeintro]){padding:12px;}#panel .lootWindow h2,#panel .bikeBrief h2{font-size:26px;}#panel .lootActions button,#panel .bikeBrief button{font-size:10px;}}
+@media(max-width:600px){body.interface-ready #fieldVitals{top:17px;right:76px;bottom:auto;gap:5px;}body.interface-ready #fieldVitals .field-vital{min-width:43px;}body.interface-ready #fieldVitals .field-vital b{font-size:14px;}body.interface-ready #fieldVitals .field-vital .atlasIcon{transform:scale(.55);}}

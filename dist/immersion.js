@@ -30,7 +30,7 @@ export class Immersion{
      #include <colorspace_fragment>
     }`
   }));this.sky.frustumCulled=false;this.sky.name='AtmosphereSky';scene.add(this.sky);
-  const lamp=new T.SpotLight(0xd5f5f0,75,100,.42,.7,1.4);this.headlight=lamp;scene.add(lamp,lamp.target);this.droneLight=new T.PointLight(0x61e4e2,9,24,1.6);scene.add(this.droneLight);
+  const lamp=new T.SpotLight(0xd5f5f0,75,100,.42,.7,1.4);this.headlight=lamp;scene.add(lamp,lamp.target);this.droneLight=new T.SpotLight(0xe3fff5,180,100,.5,.65,1.3);scene.add(this.droneLight,this.droneLight.target);
   const fill=new T.HemisphereLight(0x9db5c5,0x3e352e,.5);scene.add(fill);this.fill=fill;
   sun.castShadow=true;sun.shadow.camera.left=-75;sun.shadow.camera.right=75;sun.shadow.camera.top=75;sun.shadow.camera.bottom=-75;sun.shadow.camera.near=1;sun.shadow.camera.far=500;sun.shadow.bias=-.00012;sun.shadow.normalBias=.045;sun.shadow.camera.updateProjectionMatrix();scene.add(sun.target);
   scene.traverse(o=>{if(o.isMesh&&o!==this.sky){o.receiveShadow=true;if(o.geometry?.attributes.position?.count<25000)o.castShadow=true;}});
@@ -83,7 +83,7 @@ export class Immersion{
   }
   // FOV is owned by CameraManager for every experience profile.
   const x=this.bike.position.x,z=this.bike.position.z,y=heightAt(x,z);this.headlight.position.set(x,y+1.4,z);this.headlight.target.position.set(x-Math.sin(this.bike.rotation.y)*45,y+.3,z-Math.cos(this.bike.rotation.y)*45);this.headlight.visible=this.preset.lights&&settings.headlights;this.headlight.intensity=['night','blackout'].includes(settings.weather)?110:40;
-  this.droneLight.position.fromArray(s.droneSystem.pos);this.droneLight.visible=this.preset.lights&&s.droneSystem.mode!=='DOCK';
+  this.droneLight.position.fromArray(s.droneSystem.pos);this.droneLight.visible=settings.droneLamp&&s.droneSystem.mode!=='DOCK';this.droneLight.target.position.copy(this.droneLight.position).add(new T.Vector3(-Math.sin(s.droneSystem.yaw)*10,-3,-Math.cos(s.droneSystem.yaw)*10));
   const a=this.particles.geometry.attributes.position;for(let i=0;i<this.preset.particles;i++){const p=this.particleData[i];if(i<60&&s.mode==='bike'&&speed>4&&!road){const life=(this.phase+i*.07)%1;a.setXYZ(i,s.pos.x+Math.sin(s.yaw)*(4+life*10)+Math.sin(i*37)*life*2,heightAt(s.pos.x,s.pos.z)+.3+life*1.8,s.pos.z+Math.cos(s.yaw)*(4+life*10)+Math.cos(i*23)*life*2);}else a.setXYZ(i,s.pos.x+(p.x+this.phase*2)%90-15,heightAt(s.pos.x,s.pos.z)+(p.y+Math.sin(this.phase+i)*.1),s.pos.z+p.z);}a.needsUpdate=true;this.particles.material.opacity=settings.weather==='sandstorm'?.6:s.mode==='bike'&&speed>8&&!road?.5:.18;
   const sp=this.sparks.geometry.attributes.position;const source=s.harvesting?{x:s.harvesting.x,y:s.harvesting.y,z:s.harvesting.z}:s.leg===3?{x:60,y:3,z:-4310}:{x:155,y:4,z:-765};this.sparks.visible=this.preset.particles>64&&Math.hypot(source.x-s.pos.x,source.z-s.pos.z)<120;for(let i=0;i<36;i++){const life=(this.phase*1.5+i*.071)%1;sp.setXYZ(i,source.x+Math.sin(i*43)*life*2,source.y+life*2-life*life*4,source.z+Math.cos(i*31)*life*2);}sp.needsUpdate=true;
   for(const lens of this.fixtures)lens.material.emissiveIntensity=(s.leg===2&&s.hydroRestored||s.leg===3&&s.leg3Won)?2.5:1.4+Math.sin(this.phase*2)*.3;

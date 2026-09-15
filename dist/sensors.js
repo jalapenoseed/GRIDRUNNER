@@ -1,0 +1,7 @@
+import * as T from './three.js';
+// Simulated thermal rendering uses depth-tested geometry, never through-wall tags.
+export class Sensors{
+ constructor(){this.cold=new WeakMap();this.hot=new T.MeshBasicMaterial({color:0xffa238,toneMapped:false});this.point=new T.Vector3();this.background=new T.Color(0x03081c);}
+ material(m){if(!this.cold.has(m)){const v=m.color?(.2126*m.color.r+.7152*m.color.g+.0722*m.color.b):.3;this.cold.set(m,new T.MeshBasicMaterial({color:new T.Color(.015+v*.05,.035+v*.11,.1+v*.3),alphaMap:m.alphaMap,map:m.map,transparent:m.transparent,opacity:m.opacity,alphaTest:m.alphaTest,side:m.side,depthWrite:m.depthWrite,toneMapped:false}));}return this.cold.get(m);}
+ render(renderer,scene,camera,mode,hotRoots=[]){if(mode!=='thermal'){renderer.render(scene,camera);return;}const hot=new Set();for(const root of hotRoots)root?.traverse(o=>{if(o.isMesh)hot.add(o);});const changes=[],hidden=[],background=scene.background,fog=scene.fog;scene.background=this.background;scene.fog=new T.FogExp2(0x03081c,.0015);scene.traverseVisible(o=>{if(o.isLight)return;if(o.isMesh){if(o.material?.isShaderMaterial){hidden.push(o);o.visible=false;return;}changes.push([o,o.material]);o.material=hot.has(o)?this.hot:Array.isArray(o.material)?o.material.map(m=>this.material(m)):this.material(o.material);}});try{renderer.render(scene,camera);}finally{for(const [o,m]of changes)o.material=m;for(const o of hidden)o.visible=true;scene.background=background;scene.fog=fog;}}
+}
