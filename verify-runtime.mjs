@@ -1,5 +1,8 @@
+import * as fleetTasks from './dist/fleet-tasks.js';
+import * as fleetTaskUI from './dist/fleet-task-ui.js';
 import {GamePhysics} from './dist/physics-world.js';
 import {verifyFlightIntegration} from './verify-flight-integration.mjs';
+import {verifyFleetTaskIntegration} from './verify-fleet-task-integration.mjs';
 import * as droneControls from './dist/drone-controls.js';
 import {AmbientResidents} from './dist/ambient-residents.js';
 import {buildCampRoutes} from './dist/camp-navigation.js';
@@ -43,7 +46,7 @@ w.HTMLCanvasElement.prototype.getContext=()=>context2d;
 w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};w.document.exitPointerLock=()=>{};w.HTMLCanvasElement.prototype.requestPointerLock=()=>Promise.resolve();
 let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={render:{calls:0}};}setPixelRatio(){}setSize(){}render(scene,camera){assert(scene.isScene&&camera.isPerspectiveCamera);frames++;}}
 const ctx=vm.createContext({...onboarding,Sensors,...fieldUpgrade,...squadron,SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
-Object.assign(ctx,droneControls);ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
+Object.assign(ctx,droneControls,fleetTasks,fleetTaskUI);ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\n/gm,'');
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 await run('spatial.ready');await run('ambientResidents.ready');assert.equal(run('spatial.status'),'ready');assert.equal(run('ambientResidents.status'),'ready');
@@ -219,3 +222,4 @@ run('settings.tutorialEnabled=false;newExpedition()');assert.equal(run('s.intro.
 run('settings.graphics="LOW";applySettings()');assert.equal(run('fleet.quality'),'LOW');assert.equal(run('fleet.shouldStream("scout",s)'),false);
 console.log('PASS: four equipment lessons, camera framing/restoration, scout acquisition guide, recorded narration/mute, skip without loot duplication, trailer feature inspector and low-quality streaming gate.');
 verifyFlightIntegration({run,w});
+verifyFleetTaskIntegration({run,tick,w});

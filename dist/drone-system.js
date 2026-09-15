@@ -80,7 +80,7 @@ function coveredReturnPlan(pos,home,solids){
  }
  options.sort((a,b)=>a.length-b.length);return {home:[...home],points:options[0]?.points||[],blocked:!options.length};
 }
-export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',payloadKg=0,terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null}){
+export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',payloadKg=0,terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null,taskTarget=null}){
  dt=clamp(dt,0,.05);const homeVelocity=d.lastHome?home.map((v,i)=>clamp((v-d.lastHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastHome=[...home];const spec=dronePerformance(type,payloadKg),events=[];d.cooldown=Math.max(0,d.cooldown-dt);d.scanCooldown=Math.max(0,d.scanCooldown-dt);
  if(d.mode==='DOCK'){d.pos=[...home];d.velocity=[0,0,0];d.rates=[0,0,0];d.pitch=d.roll=d.thrust=0;d.yaw=wrapAngle(yaw);d.speed=0;d.altitude=home[1]-terrain(home[0],home[2]);d.range=0;d.signal=100;return {battery,events};}
  d.range=distance(d.pos,home);d.altitude=d.pos[1]-terrain(d.pos[0],d.pos[2]);
@@ -100,6 +100,7 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
  else{
   if(d.mode==='HOLD')target.splice(0,3,...d.hold);
   else if(d.mode==='ORBIT'){if(formationOffset)target.splice(0,3,home[0]+formationOffset[0],home[1]+formationOffset[1],home[2]+formationOffset[2]);else{const angle=d.travel*.035;target.splice(0,3,home[0]+Math.sin(angle)*14,home[1]+12,home[2]+Math.cos(angle)*14);}}
+  else if(d.mode==='SCOUT AHEAD'&&taskTarget)target.splice(0,3,...taskTarget);
   else if(d.mode==='FOLLOW'||d.mode==='SCOUT AHEAD'){const ahead=d.mode==='SCOUT AHEAD'?58:0,slot=formationOffset||[4,7,-7];target.splice(0,3,home[0]+slot[0]-Math.sin(yaw)*ahead,home[1]+slot[1]+(d.mode==='SCOUT AHEAD'?10:0),home[2]+slot[2]-Math.cos(yaw)*ahead);}
   else {
    if(!d.returnPlan||distance(d.returnPlan.home,home)>1)d.returnPlan=coveredReturnPlan(d.pos,home,solids)||{home:[...home],open:true};
@@ -111,7 +112,7 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
   // Climb above an obstructing volume before proceeding. Never teleport across it.
   if((d.mode!=='RETURN HOME'||d.returnPlan?.open)&&obstruction(d.pos,target,solids)){let top=12;for(const b of segmentCandidates(solids,d.pos,target))if(b.drone!==false&&obstruction(d.pos,target,[b]))top=Math.max(top,b.maxY??12);target[1]=Math.max(target[1],top+5);if(d.pos[1]<top+3){target[0]=d.pos[0];target[2]=d.pos[2];}}
   const delta=target.map((v,i)=>v-d.pos[i]),horizontal=Math.hypot(delta[0],delta[2]),speed=Math.min(spec.speed,horizontal*1.3,Math.sqrt(2*spec.acceleration*horizontal)*.72);
-  desired=[horizontal?delta[0]/horizontal*speed:0,clamp(delta[1]*1.8,-spec.climb,spec.climb),horizontal?delta[2]/horizontal*speed:0];if(['FOLLOW','SCOUT AHEAD','RETURN HOME'].includes(d.mode)){desired[0]+=homeVelocity[0];desired[2]+=homeVelocity[2];const factor=Math.min(1,spec.speed/Math.max(.001,Math.hypot(desired[0],desired[2])));desired[0]*=factor;desired[2]*=factor;}
+  desired=[horizontal?delta[0]/horizontal*speed:0,clamp(delta[1]*1.8,-spec.climb,spec.climb),horizontal?delta[2]/horizontal*speed:0];if(['FOLLOW','SCOUT AHEAD','RETURN HOME'].includes(d.mode)&&!(d.mode==='SCOUT AHEAD'&&taskTarget)){desired[0]+=homeVelocity[0];desired[2]+=homeVelocity[2];const factor=Math.min(1,spec.speed/Math.max(.001,Math.hypot(desired[0],desired[2])));desired[0]*=factor;desired[2]*=factor;}
  }
  const old=[...d.pos];
  if(!auto&&flight==='acro'){

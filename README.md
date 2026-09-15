@@ -1,6 +1,10 @@
-# GRIDRUNNER v7.17 — Mass & dual-stick flight (`grok`)
+# GRIDRUNNER v7.18 — Autonomous sorties (`grok`)
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
+
+After the opening tutorial, open **Fleet → select an aircraft → Assign survey**, then resume play. The drone flies to a fixed waypoint ahead of the bike, holds steady for five seconds, spends 3% charge to scan actual contacts, and physically returns. Other aircraft can run independent jobs while you ride. Jobs persist in saves; they do not run while paused or while the app is closed.
+
+FPV or HOLD pauses a job; Fleet → Resume continues it. Recall, Cancel or another autonomous command ends it. Battery/signal/damage failures override work and never auto-resume. Task status and optional ownership/waypoint details are inside Fleet, not another HUD overlay. Onboard batteries now have stable ownership IDs; removable packs and multiple same-class aircraft are not implemented yet.
 
 Rapier now resolves rider movement against buildings, terrain grades, rocks, oak trunks, towers, solar hardware, crates and campaign facilities, while sweeping drone hulls through their full movement each tick. Mara and six camp residents retain their Recast routes. All four aircraft can fly Wedge, Trail, Line and Orbit formations or receive squad-wide orders without replacing single-aircraft FPV.
 
@@ -14,7 +18,7 @@ Planning, supplies and equipment use five menu groups. Riding instruments remain
 
 Run `npm ci` and `npm test`. Serve `dist/` for the playable game, or use `npm run dev`. Existing saves migrate; Flight Yard never replaces campaign saves.
 
-[v7.17 changelog and QA](CHANGELOG-v7.17.md) · [Current/new systems roadmap](ROADMAP-2026-09-15.md) · [v7.16 changelog](CHANGELOG-v7.16.md) · [v7.15 engine integration notes](INTEGRATIONS-v7.15.md). The pinned engines are committed under `dist/vendor/`; regenerate with `npm run vendor:engines`. No CDN or runtime package install is required. A source commit does not automatically update the hosted playable build.
+[v7.18 changelog and QA](CHANGELOG-v7.18.md) · [v7.17 flight update](CHANGELOG-v7.17.md) · [Current/new systems roadmap](ROADMAP-2026-09-15.md) · [v7.16 changelog](CHANGELOG-v7.16.md) · [v7.15 engine integration notes](INTEGRATIONS-v7.15.md). The pinned engines are committed under `dist/vendor/`; regenerate with `npm run vendor:engines`. No CDN or runtime package install is required. A source commit does not automatically update the hosted playable build.
 
 [Field Edition changelog](CHANGELOG-v7.10.md) · [Quiet Start](QUIET-START-v7.8.md) · [Previous changelog](CHANGELOG-v7.8.md)
 
