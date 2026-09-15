@@ -1,15 +1,25 @@
 // Drone 2.0: renderer-independent vehicle simulation. Distances are world metres.
 import {solidList,segmentCandidates} from './spatial-index.js';
 export const DRONE_CLASSES = Object.freeze({
- scout: {name:'Scout',speed:38,climb:12,acceleration:13,drag:2.6,range:420,scan:150,drain:.12,abilities:['scan','relay'],available:true},
- engineer: {name:'UTILITY-01',speed:34,climb:10,acceleration:10,drag:2.8,range:340,scan:115,drain:.16,abilities:['scan','relay','perch','security'],available:true},
- cargo: {name:'CARGO-01',speed:26,climb:7,acceleration:7,drag:3,range:320,scan:80,drain:.2,abilities:['scan','transport'],available:true},
- relay: {name:'RELAY-01',speed:30,climb:9,acceleration:9,drag:3.1,range:620,scan:180,drain:.17,abilities:['scan','relay'],available:true},
- interceptor: {name:'Interceptor',speed:48,climb:16,acceleration:19,drag:2.3,range:500,scan:130,drain:.22,abilities:['scan','intercept'],available:false}
+ scout: {name:'Scout',massKg:.95,payloadKg:.3,speed:48,climb:14,acceleration:18,drag:2.6,range:420,scan:150,drain:.12,abilities:['scan','relay'],available:true},
+ engineer: {name:'UTILITY-01',massKg:3.4,payloadKg:2,speed:32,climb:10,acceleration:10,drag:2.8,range:340,scan:115,drain:.16,abilities:['scan','relay','perch','security'],available:true},
+ cargo: {name:'CARGO-01',massKg:8.4,payloadKg:8,speed:26,climb:7,acceleration:7,drag:3,range:320,scan:80,drain:.2,abilities:['scan','transport'],available:true},
+ relay: {name:'RELAY-01',massKg:1.25,payloadKg:.25,speed:44,climb:13,acceleration:16,drag:2.7,range:620,scan:180,drain:.14,abilities:['scan','relay'],available:true},
+ interceptor: {name:'Interceptor',massKg:1.1,payloadKg:0,speed:52,climb:16,acceleration:19,drag:2.3,range:500,scan:130,drain:.22,abilities:['scan','intercept'],available:false}
 });
 export const COMMANDS=['DOCK','FOLLOW','HOLD','SCOUT AHEAD','ORBIT','RETURN HOME'];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
+// Gameplay tuning, not manufacturer specifications. Dry mass includes the
+// aircraft's own battery. Payload is real attached cargo, never rider inventory.
+export function dronePerformance(type='scout',payloadKg=0){
+ const base=DRONE_CLASSES[type]||DRONE_CLASSES.scout;
+ const payload=clamp(Number.isFinite(payloadKg)?payloadKg:0,0,base.payloadKg),massKg=base.massKg+payload,ratio=massKg/base.massKg;
+ return {...base,dryMassKg:base.massKg,massKg,loadKg:payload,
+  speed:base.speed/Math.sqrt(ratio),climb:base.climb/Math.sqrt(ratio),acceleration:base.acceleration/ratio,
+  braking:base.acceleration*1.1/ratio,drag:base.drag/Math.sqrt(ratio),drain:base.drain*ratio**1.35,
+  angularResponse:12/Math.sqrt(massKg),angularRate:2.1/massKg**.2,windResponse:1/Math.sqrt(massKg),loadRatio:ratio};
+}
 export function createDrone(pos=[0,2,15]) {return {version:1,mode:'DOCK',pos:[...pos],velocity:[0,0,0],pitch:0,yaw:0,roll:0,rates:[0,0,0],thrust:0,hp:100,signal:100,range:0,altitude:2,speed:0,travel:0,hold:[...pos],cooldown:0,linkLost:0,reason:'Docked',scanCooldown:0};}
 export function migrateDrone(value,pos,manual=false){
  const d=createDrone(pos);
@@ -70,8 +80,8 @@ function coveredReturnPlan(pos,home,solids){
  }
  options.sort((a,b)=>a.length-b.length);return {home:[...home],points:options[0]?.points||[],blocked:!options.length};
 }
-export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null}){
- dt=clamp(dt,0,.05);const homeVelocity=d.lastHome?home.map((v,i)=>clamp((v-d.lastHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastHome=[...home];const spec=DRONE_CLASSES[type]||DRONE_CLASSES.scout,events=[];d.cooldown=Math.max(0,d.cooldown-dt);d.scanCooldown=Math.max(0,d.scanCooldown-dt);
+export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',payloadKg=0,terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null}){
+ dt=clamp(dt,0,.05);const homeVelocity=d.lastHome?home.map((v,i)=>clamp((v-d.lastHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastHome=[...home];const spec=dronePerformance(type,payloadKg),events=[];d.cooldown=Math.max(0,d.cooldown-dt);d.scanCooldown=Math.max(0,d.scanCooldown-dt);
  if(d.mode==='DOCK'){d.pos=[...home];d.velocity=[0,0,0];d.rates=[0,0,0];d.pitch=d.roll=d.thrust=0;d.yaw=wrapAngle(yaw);d.speed=0;d.altitude=home[1]-terrain(home[0],home[2]);d.range=0;d.signal=100;return {battery,events};}
  d.range=distance(d.pos,home);d.altitude=d.pos[1]-terrain(d.pos[0],d.pos[2]);
  const blocked=obstruction(home,d.pos,solids),effectiveRange=spec.range*(storm?.62:1)*(jammed?.65:1);
@@ -108,20 +118,21 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
   // Simplified vectored-thrust FPV model: nose drive, body-up rotor lift,
   // gravity, angular response and aerodynamic drag. Neutral sticks do not level.
   d.rates??=[0,0,0];
-  for(let i=0;i<3;i++)d.rates[i]+=(clamp(attitude[i]||0,-1,1)*1.8-d.rates[i])*(1-Math.exp(-dt*12));
+  for(let i=0;i<3;i++)d.rates[i]+=(clamp(attitude[i]||0,-1,1)*spec.angularRate-d.rates[i])*(1-Math.exp(-dt*spec.angularResponse));
   d.pitch=clamp(d.pitch+d.rates[0]*dt,-1.48,1.48);d.yaw=wrapAngle(d.yaw+d.rates[1]*dt);d.roll=wrapAngle(d.roll+d.rates[2]*dt);
-  const {nose,up}=droneAxes(d),lift=9.81*clamp(1+input[2]*.95,0,2),drive=input[0]*spec.acceleration;
+  const {nose,up}=droneAxes(d),lift=9.81*clamp(1+input[2]*.95/spec.loadRatio,0,2),drive=input[0]*spec.acceleration;
   d.thrust=Math.hypot(lift,drive)/9.81;
   const airspeed=Math.hypot(...d.velocity),drag=.22+airspeed*.008;
   for(let i=0;i<3;i++)d.velocity[i]+=(nose[i]*drive+up[i]*lift-(i===1?9.81:0)-d.velocity[i]*drag)*dt;
  }else{
   const accelWorld=[0,0,0];
-  for(let i=0;i<3;i++){const accel=i===1?spec.acceleration*.85:spec.acceleration;const change=clamp((desired[i]-d.velocity[i])*spec.drag,-accel,accel);d.velocity[i]+=change*dt;accelWorld[i]=change;}
+  for(let i=0;i<3;i++){const slowing=d.velocity[i]*(desired[i]-d.velocity[i])<0,limit=slowing?spec.braking:spec.acceleration,accel=i===1?limit*.85:limit;const change=clamp((desired[i]-d.velocity[i])*spec.drag,-accel,accel);d.velocity[i]+=change*dt;accelWorld[i]=change;}
   const sy=Math.sin(yaw),cy=Math.cos(yaw),a=1-Math.exp(-dt*6);
   d.yaw=wrapAngle(yaw);d.pitch+= (clamp((accelWorld[0]*sy+accelWorld[2]*cy)/18,-.4,.4)-d.pitch)*a;
   d.roll+=(clamp((-accelWorld[0]*cy+accelWorld[2]*sy)/18,-.4,.4)-d.roll)*a;d.rates=[0,0,0];d.thrust=d.mode==='LANDED'?0:1+Math.max(0,accelWorld[1])/9.81;
  }
- if(d.mode==='MANUAL'&&wind>0){d.velocity[0]+=Math.sin(elapsed*.7)*wind*dt*1.6;d.velocity[2]+=Math.cos(elapsed*.43)*wind*dt*.8;}
+ if(d.mode==='MANUAL'&&wind>0){d.velocity[0]+=Math.sin(elapsed*.7)*wind*dt*1.6*spec.windResponse;d.velocity[2]+=Math.cos(elapsed*.43)*wind*dt*.8*spec.windResponse;}
+ const horizontalSpeed=Math.hypot(d.velocity[0],d.velocity[2]);if(horizontalSpeed>spec.speed){const scale=spec.speed/horizontalSpeed;d.velocity[0]*=scale;d.velocity[2]*=scale;}d.velocity[1]=clamp(d.velocity[1],-spec.climb,spec.climb);
  let proposed=d.pos.map((v,i)=>v+d.velocity[i]*dt);proposed[0]=clamp(proposed[0],-600,600);proposed[2]=clamp(proposed[2],floorZ,230);
  const ground=terrain(proposed[0],proposed[2])+.65;
  const collision=proposed[1]<ground||proposed[1]>200||(solids?.sweepDrone?.(old,proposed)??segmentCandidates(solids,old,proposed,.4).some(b=>b.drone!==false&&obstruction(old,proposed,[{...b,w:b.w+.4,d:b.d+.4,minY:(b.minY??0)-.4,maxY:(b.maxY??12)+.4}])>0));

@@ -1,14 +1,15 @@
+import {dronePerformance} from './drone-system.js';
 import {syncSquad} from './squadron.js';
 import * as T from './three.js';
 import {GLTFLoader} from './GLTFLoader.js';
 import {makeDrone} from './visuals.js';
 export const FLEET=[
- {id:'scout',code:'SCOUT-01',file:'SCOUT',role:'Recon',span:.52,description:'Light scout. Fast survey passes and close optical inspection.'},
+ {id:'scout',code:'SCOUT-01',file:'SCOUT',role:'Recon',span:.52,description:'Ultralight scout. Quick acceleration and fast survey passes; more sensitive to wind.'},
  {id:'cargo',code:'CARGO-01',file:'CARGO',role:'Salvage',span:1.9,description:'Heavy lift frame with a protected cargo cage and recovery clamp.'},
  {id:'engineer',code:'UTILITY-01',file:'UTILITY',role:'Repair',span:.7,description:'Articulated service tools, cable reels and field-maintenance fittings.'},
- {id:'relay',code:'RELAY-01',file:'RELAY',role:'Comms',span:.68,description:'Antenna array and radio modules. Extended link range and stable station keeping.'}
+ {id:'relay',code:'RELAY-01',file:'RELAY',role:'Comms',span:.68,description:'Lightweight, high-speed relay. Extended link range; fast redeployment between signal positions.'}
 ];
-export function fleetCards(selected,{yard=false,engineerBuilt=false,docked=true,squad={}}={}){return `<div class="fleetCards">${FLEET.map(d=>{const locked=d.id==='engineer'&&!engineerBuilt&&!yard;return `<article class="fleetCard ${selected===d.id?'selected':''}"><img src="assets/drones/${d.file.toLowerCase()}.webp" alt="${d.code} Blender source preview" loading="lazy"><div class="fleetInfo"><span>${d.role.toUpperCase()} / ${Math.round(d.span*1000)} mm</span><h3>${d.code}</h3><p>${d.description}</p><p class="aircraftStatus">${squad[d.id]?squad[d.id].system.mode+' · BAT '+Math.round(squad[d.id].battery)+'% · HULL '+Math.round(squad[d.id].system.hp)+'%':'READY'}</p><button data-drone="${d.id}" ${!docked||locked?'disabled':''}>${selected===d.id?'SELECTED':locked?'FIT ENGINEER MODULE':!docked?'DOCK TO CHANGE':'SELECT / COMMAND'}</button></div></article>`;}).join('')}</div>`;}
+export function fleetCards(selected,{yard=false,engineerBuilt=false,docked=true,squad={}}={}){return `<div class="fleetCards">${FLEET.map(d=>{const locked=d.id==='engineer'&&!engineerBuilt&&!yard,perf=dronePerformance(d.id);return `<article class="fleetCard ${selected===d.id?'selected':''}"><img src="assets/drones/${d.file.toLowerCase()}.webp" alt="${d.code} Blender source preview" loading="lazy"><div class="fleetInfo"><span>${d.role.toUpperCase()} / ${Math.round(d.span*1000)} mm</span><h3>${d.code}</h3><p>${d.description}</p><p class="airframeSpecs">${perf.dryMassKg.toFixed(2)} kg · ${perf.speed} m/s<br>${perf.acceleration} m/s² · payload ≤ ${perf.payloadKg} kg</p><p class="aircraftStatus">${squad[d.id]?squad[d.id].system.mode+' · BAT '+Math.round(squad[d.id].battery)+'% · HULL '+Math.round(squad[d.id].system.hp)+'%':'READY'}</p><button data-drone="${d.id}" ${!docked||locked?'disabled':''}>${selected===d.id?'SELECTED':locked?'FIT ENGINEER MODULE':!docked?'DOCK TO CHANGE':'SELECT / COMMAND'}</button></div></article>`;}).join('')}</div>`;}
 const texNames=['01_painted_alum','02_machined_alum','03_black_anodized','04_weave','05_rubber','06_aged_copper','07_galvanized','08_damp_concrete','09_camera_glass'];
 const LOD={high:18,mid:42};
 const idle=()=>new Promise(resolve=>globalThis.requestIdleCallback?requestIdleCallback(resolve,{timeout:500}):setTimeout(resolve,0));

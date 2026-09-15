@@ -1,5 +1,7 @@
 import * as T from './three.js';
 export const YARD={x:160,z:90,home:[160,2,115]};
+export const YARD_CARGO_KG=6;
+export const flightPayload=(session,type)=>session?.carrying&&type==='cargo'?YARD_CARGO_KG:0;
 export const GATES=[[160,9,83],[160,13,52],[136,18,24],[104,12,18],[98,9,57],[126,7,85]];
 export const INSPECTIONS=[[132,9,52],[102,13,52],[122,17,22]];
 export const JOBS={circuit:{name:'Circuit / precision flight',hint:'Fly through the illuminated gates in order.'},inspect:{name:'Scout / inspection',hint:'Hold a steady hover near each amber inspection node.'},cargo:{name:'Cargo / recovery',hint:'Use at PICKUP to attach the crate; deliver it to DROP.'},repair:{name:'Utility / field repair',hint:'Hover by the breaker bank and hold position while the tool works.'},relay:{name:'Relay / uplink',hint:'Climb above the mast and hold a stable relay position.'}};
