@@ -77,7 +77,37 @@ export function makePerson(x,z,c){
 export function heightAt(x,z){const edge=Math.max(0,Math.abs(x)-210);return edge*(.17+.13*Math.sin(z*.005+x*.01)**2)+Math.max(0,edge-75)*(.25+.19*Math.sin(z*.012+x*.019)*Math.cos(x*.017));}
 export function makeTerrain(scene,mobile){const group=new T.Group();scene.add(group);const loader=new T.TextureLoader();const texture=loader.load('./assets/desert-ground.png');texture.wrapS=texture.wrapT=T.RepeatWrapping;texture.repeat.set(130,180);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=4;const geo=new T.PlaneGeometry(3000,7600,mobile?110:180,mobile?150:240);geo.rotateX(-Math.PI/2);geo.translate(0,0,-1500);const a=geo.attributes.position;const colors=[];for(let i=0;i<a.count;i++){const x=a.getX(i),z=a.getZ(i),h=heightAt(x,z);a.setY(i,h-.04);const basin=new T.Color(.79,.73,.63),river=new T.Color(.51,.64,.53),industrial=new T.Color(.47,.49,.5);const c=basin.lerp(river,T.MathUtils.smoothstep(-z,1700,1860)).lerp(industrial,T.MathUtils.smoothstep(-z,3150,3330));c.multiplyScalar(Math.max(.45,1-h*.0008));colors.push(c.r,c.g,c.b);}geo.setAttribute('color',new T.Float32BufferAttribute(colors,3));geo.computeVertexNormals();group.add(new T.Mesh(geo,new T.MeshStandardMaterial({map:texture,roughness:1,vertexColors:true})));
 return group;}
-export function detailWorld(scene){const g=new T.Group();scene.add(g);for(const [x,z]of [[90,-416],[155,-733]]){crate(g,x+3,1,z,1.3,2,1);for(let i=0;i<3;i++)mesh(g,new T.CircleGeometry(.12,10),x+2.7+i*.3,1.4,z+.51,i===0?palette.green:palette.amber,true);rod(g,[x+3,2,z],[x+3,3,z],.03,palette.steel);}
-// Canvas shelter, workbench, portable modules and task light.
-for(const x of [47,61])rod(g,[x,0,-101],[x,4,-101],.055,palette.steel);for(const x of [47,61])rod(g,[x,0,-109],[x,3,-109],.055,palette.steel);const roof=box(g,54,3.6,-105,15,.09,10,0x736550);roof.rotation.x=.12;crate(g,49,1,-102,2,2,1.5);crate(g,57,.5,-102,1.5,1,1);box(g,53,1,-104,3,.13,1,palette.edge);for(const x of [52,54])rod(g,[x,0,-104],[x,1,-104],.04,palette.edge);mesh(g,new T.SphereGeometry(.15,8,6),60,3.7,-102,0xffddb1,true);
+export function makeMaraShelter(solids=[]){
+ const g=new T.Group();g.name='Mara / single clear-span field shelter';
+ // One continuous roof replaces the two intersecting legacy canopies. Mara
+ // stays at the existing tutorial coordinate (54,-94), with over 1.6 m headroom.
+ const roof=box(g,54,3.8,-100,15,.12,21,0x8c846b);roof.rotation.x=-.04;
+ for(const x of [47,61]){
+  rod(g,[x,.02,-90],[x,4.18,-90],.075,palette.steel);
+  rod(g,[x,.02,-110],[x,3.38,-110],.075,palette.steel);
+  rod(g,[x,4.12,-90],[x,3.32,-110],.065,palette.edge);
+  for(const z of [-90,-110])box(g,x,.06,z,.34,.12,.34,palette.edge);
+  for(const z of [-90,-110])solids.push({x,z,w:.32,d:.32,minY:0,maxY:z===-90?4.18:3.38,maraShelter:true});
+ }
+ // Short roof strips track the slope without an invisible solid box filling
+ // the shelter. Walking and jumping still have full clearance beneath it.
+ for(let i=0;i<7;i++){const z=-109+i*3,y=3.8+(z+100)*Math.tan(.04);solids.push({x:54,z,w:7.5,d:1.5,minY:y-.13,maxY:y+.13,maraShelter:true});}
+ rod(g,[47,4.1,-90],[61,4.1,-90],.065,palette.edge);
+ rod(g,[47,3.3,-110],[61,3.3,-110],.065,palette.edge);
+ // The service equipment sits at the rear; the front bay is clear for talk,
+ // walking and parking. Lower silhouettes leave the NPC legible at a glance.
+ crate(g,49,.7,-106,2,1.4,1.5);crate(g,58,.45,-106,1.5,.9,1);
+ box(g,53,1,-104,3,.13,1,palette.edge);
+ for(const x of [51.7,54.3])for(const z of [-104.35,-103.65])rod(g,[x,.02,z],[x,.95,z],.04,palette.edge);
+ box(g,53,1.13,-104.1,.7,.12,.4,palette.tan);
+ box(g,60.35,3.7,-94,.55,.1,.3,palette.edge);
+ mesh(g,new T.SphereGeometry(.09,8,6),60.35,3.62,-94,0xffddb1,true);
+ // Restrained field trim is part of the structure, with no extra floating UI.
+ box(g,54,4.02,-89.96,4,.16,.07,palette.black);
+ box(g,54,4.02,-89.91,2.8,.038,.018,palette.cyan);
+ for(const x of [47,61])box(g,x,2.5,-89.91,.15,.4,.018,palette.amber);
+ g.userData.mara={x:54,z:-94};return combine(g);
+}
+export function detailWorld(scene,solids=[]){const g=new T.Group();scene.add(g);for(const [x,z]of [[90,-416],[155,-733]]){crate(g,x+3,1,z,1.3,2,1);for(let i=0;i<3;i++)mesh(g,new T.CircleGeometry(.12,10),x+2.7+i*.3,1.4,z+.51,i===0?palette.green:palette.amber,true);rod(g,[x+3,2,z],[x+3,3,z],.03,palette.steel);}
+g.add(makeMaraShelter(solids));
 for(const [x,z]of [[-85,-290],[90,-416],[155,-733]]){rod(g,[x+4,0,z+4],[x+4,3.7,z+4],.055,palette.steel);box(g,x+4,3.4,z+4,1.8,.6,.12,0x25383a);mesh(g,new T.SphereGeometry(.14,8,6),x+4,4,z+4,palette.cyan,true);}return combine(g);}
