@@ -9,7 +9,7 @@ export function pedalStep({battery,stamina,speed,forward,pedaling,road,weight,re
  const human=battery<=0||pedaling;
  const effort=human&&forward>0;
  const target=forward>0?(human?(stamina>0?(road?5:3.5)/(1+weight/65):1.2):(road?30:20))*forward:forward<0?-4:0;
- return {target,stamina:Math.max(0,Math.min(100,stamina+dt*(effort?-6*(1+weight/65):9))),human,mode:forward<0&&speed>1&&regen?'REGEN':human?'HUMAN':battery<40?'ASSIST':'FULL'};
+ return {target,stamina:Math.max(0,stamina+dt*(effort?-6*(1+weight/65):9)),human,mode:forward<0&&speed>1&&regen?'REGEN':human?'HUMAN':battery<40?'ASSIST':'FULL'};
 }
 export function generationStep(mode,{fuel,reserve,daylight,stopped,flowing=false},dt){
  if(!stopped||reserve>=40)return {gain:0,fuelUsed:0};
@@ -35,6 +35,14 @@ export function validateSave(r){
  if(s.airJobs===undefined||typeof s.airJobs!=='object')s.airJobs={inspect:false,cargo:false,repair:false,relay:false};
  else {const d={inspect:false,cargo:false,repair:false,relay:false};for(const k of Object.keys(d))d[k]=s.airJobs[k]===true;s.airJobs=d;}
  if(s.airSession!==undefined&&s.airSession!==null&&(typeof s.airSession!=='object'||typeof s.airSession.id!=='string'))s.airSession=null;
+ if(s.intro===undefined||typeof s.intro!=='object')s.intro={stage:'line',mounted:true,salvaged:true,scouted:true,talked:true,launched:true};
+ else {
+  const d={stage:'approach',mounted:false,salvaged:false,scouted:false,talked:false,launched:false};
+  for(const k of Object.keys(d))if(k!=='stage')d[k]=s.intro[k]===true;
+  d.stage=['approach','yard','line'].includes(s.intro.stage)?s.intro.stage:(d.talked?'line':d.mounted?'yard':'approach');
+  if(d.talked)d.stage='line';
+  s.intro=d;
+ }
  if(s.powerTarget!==null&&!['ev','solar','grid','line','l2hydro','l3supply'].includes(s.powerTarget))bad();
  if(!number(s.temp,0,1000)||!number(s.chargeHeat,0,200))bad();
  if(!['scout','engineer','cargo','relay'].includes(s.droneType)||!['off','fuel','solar','water'].includes(s.generator))bad();
