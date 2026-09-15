@@ -124,7 +124,7 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
  if(d.mode==='MANUAL'&&wind>0){d.velocity[0]+=Math.sin(elapsed*.7)*wind*dt*1.6;d.velocity[2]+=Math.cos(elapsed*.43)*wind*dt*.8;}
  let proposed=d.pos.map((v,i)=>v+d.velocity[i]*dt);proposed[0]=clamp(proposed[0],-600,600);proposed[2]=clamp(proposed[2],floorZ,230);
  const ground=terrain(proposed[0],proposed[2])+.65;
- const collision=proposed[1]<ground||proposed[1]>200||segmentCandidates(solids,old,proposed,.4).some(b=>b.drone!==false&&obstruction(old,proposed,[{...b,w:b.w+.4,d:b.d+.4,minY:(b.minY??0)-.4,maxY:(b.maxY??12)+.4}])>0);
+ const collision=proposed[1]<ground||proposed[1]>200||(solids?.sweepDrone?.(old,proposed)??segmentCandidates(solids,old,proposed,.4).some(b=>b.drone!==false&&obstruction(old,proposed,[{...b,w:b.w+.4,d:b.d+.4,minY:(b.minY??0)-.4,maxY:(b.maxY??12)+.4}])>0));
  if(collision){const impact=Math.hypot(...d.velocity);if(d.cooldown===0&&impact>3){d.hp=clamp(d.hp-(impact-3)*1.2,0,100);d.cooldown=.8;events.push('damage');}d.velocity=d.velocity.map(v=>v*-.12);proposed=[...d.pos];proposed[1]=clamp(proposed[1],ground,200);}d.pos=proposed;
  d.speed=distance(d.pos,old)/Math.max(.001,dt);d.travel+=distance(d.pos,old);d.altitude=d.pos[1]-terrain(d.pos[0],d.pos[2]);
  if(d.mode==='RETURN HOME'&&distance(d.pos,home)<1.3&&Math.hypot(...d.velocity.map((v,i)=>v-homeVelocity[i]))<4){d.mode='DOCK';d.pos=[...home];d.velocity=[0,0,0];d.reason='Docked';events.push('dock');}
