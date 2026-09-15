@@ -20,7 +20,7 @@ export function environmentLighting(e){
   bounce:(.025+fill*.45)*diffuse,environment:(.045+fill*.95)*(1-e.rain*.16),exposure:1.12+fill*.08};
 }
 export function environmentSettings(s){return `<div class="sectionHeading"><span>LIGHT & WEATHER</span><b>World settings</b></div>
- <div class="settingsGrid"><label class="settingRow">Scan labels & overlay<input type="checkbox" data-setting="scanOverlay" ${s.scanOverlay?'checked':''}></label><label class="settingRow">Night vision<input type="checkbox" data-setting="nightVision" ${s.nightVision?'checked':''}></label></div>
+ <label class="settingRow">Random weather & time on each load<input type="checkbox" data-setting="randomEnvironment" ${s.randomEnvironment?'checked':''}></label><div class="settingsGrid"><label class="settingRow">Scan labels & overlay<input type="checkbox" data-setting="scanOverlay" ${s.scanOverlay?'checked':''}></label><label class="settingRow">Night vision<input type="checkbox" data-setting="nightVision" ${s.nightVision?'checked':''}></label></div>
  <label class="settingRow">Weather<select data-setting="weather">${WEATHER_OPTIONS.map(([id,label])=>`<option value="${id}" ${s.weather===id?'selected':''}>${label}</option>`).join('')}</select></label>
  <label class="settingRow">Sun time<input type="range" data-setting="sunHour" min="0" max="23.9" step=".1" value="${s.sunHour}"><output>${Number(s.sunHour).toFixed(1)} h</output></label>
  <div class="settingsGrid"><label class="settingRow">Moving sun / day cycle<input type="checkbox" data-setting="movingSun" ${s.movingSun?'checked':''}></label><label class="settingRow">Changing weather<input type="checkbox" data-setting="autoWeather" ${s.autoWeather?'checked':''}></label></div>

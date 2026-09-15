@@ -1,3 +1,6 @@
+import {Sensors} from './dist/sensors.js';
+import * as fieldUpgrade from './dist/field-upgrade.js';
+import * as squadron from './dist/squadron.js';
 import {SurfaceMaterials} from './dist/surface-shaders.js';
 import * as fieldBook from './dist/field-book.js';
 import * as backpack from './dist/backpack.js';
@@ -31,7 +34,7 @@ const context2d=new Proxy({measureText:()=>({width:50}),createLinearGradient:()=
 w.HTMLCanvasElement.prototype.getContext=()=>context2d;
 w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};w.document.exitPointerLock=()=>{};w.HTMLCanvasElement.prototype.requestPointerLock=()=>Promise.resolve();
 let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={render:{calls:0}};}setPixelRatio(){}setSize(){}render(scene,camera){assert(scene.isScene&&camera.isPerspectiveCamera);frames++;}}
-const ctx=vm.createContext({SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
+const ctx=vm.createContext({Sensors,...fieldUpgrade,...squadron,SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\n/gm,'');
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 const tick=(seconds)=>{for(let i=0;i<seconds*50;i++)run('update(.02)');run('hud();loop(performance.now()+20)');};
@@ -46,7 +49,7 @@ for(const preset of ['LOW','MEDIUM','HIGH','ULTRA'])run(`settings.graphics='${pr
 for(const screen of ['start','pause','quick','saves','settings','controls','rig','drones','journal','guide','reference','inventory','map']){run(`open('${screen}')`);assert(!w.document.querySelector('#panel').textContent.includes('undefined'),screen);}
 // Fixture positioning tests the real interaction and mission chain without a manual ride.
 function at(x,y,z){run(`s.pos.set(${x},${y},${z});s.speed=0;keys={};`);tick(.02);}
-run('newCampaign()');at(54,1.7,-94);run('interact();play()');assert(run('s.met'));at(79,1.7,-408);run('interact()');assert(run('s.towerCode'));at(0,1.7,-1435);run('interact()');assert(run('s.won'));run('startLegTwo(false)');assert.equal(run('s.leg'),2);
+run('newCampaign()');at(54,1.7,-94);run('interact();play()');assert(run('s.met'));at(79,1.7,-408);run('interact();takeLoot("all");play()');assert(run('s.towerCode'));at(0,1.7,-1435);run('interact()');assert(run('s.won'));run('startLegTwo(false)');assert.equal(run('s.leg'),2);
 at(45,1.7,-1810);run('interact();play()');assert(run('s.calMet'));run("issueDrone('MANUAL');s.droneSystem.pos=[118,22,-2380];s.pos.set(118,22,-2380)");tick(.02);run('interact()');assert(run('s.intakeCleared'));run("issueDrone('DOCK')");
 at(70,1.7,-2260);run('interact()');assert(run('s.phaseNote'));at(65,1.7,-2355);run("interact();operatePhase('B');operatePhase('A');operatePhase('C');play()");assert(run('s.hydroRestored'));
 run('s.battery=45');at(0,1.7,-3020);run('interact();interact()');assert(run('s.leg2Won'));run('startLegThree(false)');assert.equal(run('s.leg'),3);
@@ -172,3 +175,20 @@ for(const id of ['ride','scout','salvage','explore','controls']){w.document.quer
 run('remap={};storyReadThisSession=false;open("confirmNew")');w.document.querySelector('[data-ui=confirmNew]').click();assert.equal(run('screen'),'prologue');assert.equal(run('paused'),true);
 w.document.querySelector('[data-story-action=skip]').click();assert.equal(run('paused'),false);assert.equal(run('s.intro.stage'),'approach');assert.equal(run('s.elapsed'),0);
 console.log('PASS: opening pages, skip/new expedition, replay without state changes, spoiler-gated story and all manual sections with remapped keys.');
+// Selective legacy and procedural loot must survive real save/restore cycles.
+run('newCampaign();s.pos.set(38,1.7,-94);nearest={kind:"crate",index:0};interact();takeLoot("wire")');
+assert.equal(run('s.inv.wire'),1);assert.equal(run('crates[0].items.wire'),1);assert.equal(run('crates[0].done'),false);
+run('restore(JSON.parse(JSON.stringify(snapshot())));play();nearest={kind:"crate",index:0};interact()');
+assert.equal(run('crates[0].items.wire'),1);assert.equal(w.document.querySelectorAll('[data-loot]').length,3);
+run('takeLoot("all");play()');assert.equal(run('s.inv.wire'),2);assert.equal(run('crates[0].done'),true);
+run('newCampaign();s.pos.set(0,1.7,180);bike.position.set(0,0,180);issueDrone("SCOUT AHEAD")');tick(3);
+run('open("drones")');w.document.querySelector('[data-drone=cargo]').click();run('issueDrone("FOLLOW");play()');tick(3);
+assert.equal(run('s.droneType'),'cargo');assert.equal(run('s.squad.scout.system.mode'),'SCOUT AHEAD');assert.equal(run('s.droneSystem.mode'),'FOLLOW');
+assert(run('s.squad.scout.battery')<100);assert(run('s.drone')<100);assert(run('fleet.meshes.scout.visible&&fleet.meshes.cargo.visible'));
+const scoutPosition=run('JSON.stringify(s.squad.scout.system.pos)');run('restore(JSON.parse(JSON.stringify(snapshot())))');assert.equal(run('JSON.stringify(s.squad.scout.system.pos)'),scoutPosition);
+run('open("drones")');w.document.querySelector('[data-drone=scout]').click();assert.equal(run('s.droneSystem.mode'),'SCOUT AHEAD');run('issueDrone("RETURN HOME");play()');tick(25);
+assert.equal(run('s.droneSystem.mode'),'DOCK');assert.equal(run('s.squad.cargo.system.mode'),'FOLLOW');
+for(const mode of ['visible','night','thermal','rf']){run(`settings.sensorMode='${mode}';settings.nightVision=${mode==='night'};applySettings();loop(performance.now()+40)`);assert.equal(w.document.body.dataset.sensor,mode);}
+run('settings.sensorMode="visible";settings.nightVision=false;applySettings();action("droneLamp");loop(performance.now()+40)');assert.equal(run('settings.droneLamp'),true);
+const rngSettings={randomEnvironment:true};fieldUpgrade.randomEnvironment(rngSettings,()=>0);assert.equal(rngSettings.sunHour,0);fieldUpgrade.randomEnvironment(rngSettings,()=>.999);assert.equal(rngSettings.sunHour,23.9);assert.equal(rngSettings.weather,'sandstorm');
+console.log('PASS: selective loot persistence, two independently flying aircraft, per-aircraft saves and return, sensor rendering/restoration, light toggle, randomized day/night endpoints.');

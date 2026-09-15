@@ -1,0 +1,5 @@
+import {createDrone,migrateDrone} from './drone-system.js';
+export const AIRCRAFT=['scout','cargo','engineer','relay'];
+export function syncSquad(s){s.squad||={};for(const id of AIRCRAFT)s.squad[id]||={system:createDrone(),battery:100};s.squad[s.droneType]={system:s.droneSystem,battery:s.drone};return s.squad;}
+export function selectAircraft(s,id){if(!AIRCRAFT.includes(id))return false;const squad=syncSquad(s);if(id===s.droneType)return true;if(s.droneSystem.mode==='MANUAL'){s.droneSystem.mode='HOLD';s.droneSystem.hold=[...s.droneSystem.pos];s.droneSystem.reason='Holding while another aircraft is selected';}s.droneType=id;s.droneSystem=squad[id].system;s.drone=squad[id].battery;return true;}
+export function validateSquad(s){const source=s.squad||{},out={};for(const id of AIRCRAFT){const r=source[id];if(!r){out[id]={system:createDrone(),battery:100};continue;}if(!Number.isFinite(r.battery)||r.battery<0||r.battery>100)throw Error('Invalid fleet battery');const system=migrateDrone(r.system,[0,2,15]);if(id!==s.droneType&&system.mode==='MANUAL'){system.mode='HOLD';system.hold=[...system.pos];}out[id]={system,battery:r.battery};}s.squad=out;syncSquad(s);return out;}
