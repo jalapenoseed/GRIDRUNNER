@@ -24,7 +24,7 @@ Continues `grok` from 2e950c4, preserving Quiet Start, Flight Yard and existing 
 
 `npm test` passes: all three mission chains, tutorial gates, four airframes, flight practice/campaign isolation, save migration, cargo/crafting, live terminal, controller handling, menus and presets. Geometry checks raycast Mara and resident roofs and inspect 3,227 actual scenery instance transforms. Covered drone returns are checked from five approach directions.
 
-Desktop and 390px menu layouts were inspected with the development-only CPU/HUD diagnostic. That diagnostic is not part of the deployed game. The available preview browser cannot create WebGL, so actual GPU lighting, texture appearance and visual 3D playthrough remain unverified here.
+Recovered and completed on September 15. The complete regression suite passes. Real WebGL2 rendering was checked in Microsoft Edge on the connected PC: main menu, walking in clear daylight, the five-category settings menu, the 390px main menu and Flight Yard menu. No runtime or shader errors were observed. The phone viewport has no horizontal overflow. Full visual chapter playthroughs and a physical Xbox-controller playtest remain unverified. The development-only CPU/HUD diagnostic is not part of the deployed game.
 
 ## Rendering research
 
