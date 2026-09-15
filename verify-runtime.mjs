@@ -1,3 +1,4 @@
+import * as onboarding from './dist/onboarding.js';
 import {Sensors} from './dist/sensors.js';
 import * as fieldUpgrade from './dist/field-upgrade.js';
 import * as squadron from './dist/squadron.js';
@@ -31,10 +32,11 @@ import * as drone from './dist/drone-system.js';import * as immersion from './di
 import * as leg2 from './dist/leg2.js';import * as leg3 from './dist/leg3.js';import * as expedition from './dist/expedition.js';import * as visuals from './dist/visuals.js';import {FieldAudio} from './dist/audio.js';
 const dom=new JSDOM(fs.readFileSync('dist/index.html','utf8'),{url:'http://gridrunner.test/'}),w=dom.window;globalThis.devicePixelRatio=1;globalThis.document=w.document;globalThis.window=w;
 const context2d=new Proxy({measureText:()=>({width:50}),createLinearGradient:()=>({addColorStop(){}})}, {get:(o,k)=>k in o?o[k]:()=>{}});
+const playedNarration=[];w.Audio=class{constructor(src){this.src=src;this.currentTime=0;this.paused=true;}play(){this.paused=false;playedNarration.push(this.src);return Promise.resolve();}pause(){this.paused=true;}};
 w.HTMLCanvasElement.prototype.getContext=()=>context2d;
 w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};w.document.exitPointerLock=()=>{};w.HTMLCanvasElement.prototype.requestPointerLock=()=>Promise.resolve();
 let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={render:{calls:0}};}setPixelRatio(){}setSize(){}render(scene,camera){assert(scene.isScene&&camera.isPerspectiveCamera);frames++;}}
-const ctx=vm.createContext({Sensors,...fieldUpgrade,...squadron,SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
+const ctx=vm.createContext({...onboarding,Sensors,...fieldUpgrade,...squadron,SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\n/gm,'');
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 const tick=(seconds)=>{for(let i=0;i<seconds*50;i++)run('update(.02)');run('hud();loop(performance.now()+20)');};
@@ -80,6 +82,9 @@ assert(run('writeSave("manual1")'));run('s.residents={};restore(getSave("manual1
 const noResidents=run('snapshot()');delete noResidents.state.residents;assert.deepEqual(expedition.validateSave(noResidents).state.residents,{});const badResidents=run('snapshot()');badResidents.state.residents.riggs.trades=999;assert.throws(()=>expedition.validateSave(badResidents));
 run('s.pos.set(-126,1.7,-160)');const beforeZ=run('s.pos.z');run('move(0,-1)');assert(run('s.pos.z')<beforeZ,'Open front is walkable');
 for(const leg of [1,2,3]){run(`s.leg=${leg};settlementWorld.update(s,0,"LOW")`);assert.equal(run('settlementWorld.groups.filter(p=>p.g.visible&&p.site.leg!==s.leg).length'),0);}
+// Crossing Drywell's culling boundary must not change shader light counts.
+const lightCounts=[];for(const z of [15,-25,-600]){run(`s.leg=1;s.pos.set(0,1.7,${z});settlementWorld.update(s,0,'HIGH')`);lightCounts.push(run('(()=>{let n=0;scene.traverseVisible(o=>{if(o.isPointLight)n++;});return n;})()'));}
+assert(lightCounts.every(n=>n===lightCounts[0]),'Settlement culling keeps the visible point-light count stable');
 console.log('PASS: resident interaction, finite trade, journal, save/reload/migration, malformed stock rejection, walkable interior and settlement Leg culling.');
 run('newCampaign();settings.autosave=false');for(let i=0;i<8;i++){run('changePOV();loop(performance.now()+20)');assert.equal(run('s.mode'),'bike');}run('s.experience.preferred.bike="wide";s.mode="foot";changePOV();loop(performance.now()+20)');assert.equal(run('s.experience.preferred.walking'),'shoulder');assert.equal(run('s.experience.preferred.bike'),'wide');assert(run('walkingBody.visible'));
 run('s.mode="bike";issueDrone("MANUAL");s.experience.preferred.drone="chase";loop(performance.now()+20)');assert.equal(run('s.mode'),'drone');assert(run('scoutMesh.visible'));run('issueDrone("FOLLOW");loop(performance.now()+20)');assert.equal(run('s.mode'),'bike');assert.equal(run('s.experience.preferred.bike'),'wide');
@@ -192,3 +197,15 @@ for(const mode of ['visible','night','thermal','rf']){run(`settings.sensorMode='
 run('settings.sensorMode="visible";settings.nightVision=false;applySettings();action("droneLamp");loop(performance.now()+40)');assert.equal(run('settings.droneLamp'),true);
 const rngSettings={randomEnvironment:true};fieldUpgrade.randomEnvironment(rngSettings,()=>0);assert.equal(rngSettings.sunHour,0);fieldUpgrade.randomEnvironment(rngSettings,()=>.999);assert.equal(rngSettings.sunHour,23.9);assert.equal(rngSettings.weather,'sandstorm');
 console.log('PASS: selective loot persistence, two independently flying aircraft, per-aircraft saves and return, sensor rendering/restoration, light toggle, randomized day/night endpoints.');
+// Narration, acquisition, replay and opt-out remain independent of campaign rewards.
+run('settings.tutorialEnabled=true;settings.narration=true;newExpedition();narrator.unlocked=true;s.pos.set(0,1.7,18);action("bike")');
+assert.equal(run('screen'),'bikeintro');run('loop(performance.now()+30)');assert.equal(run('camera.view.enabled'),true);
+for(let i=0;i<4;i++)w.document.querySelector('[data-brief=next]').click();assert(run('s.intro.trailerBriefed'));run('loop(performance.now()+30)');assert.equal(run('camera.view.enabled'),false);
+run('s.mode="foot";s.pos.set(38,1.7,-90);nearest={kind:"crate",index:0};interact();takeLoot("wire")');assert(w.document.querySelector('.scoutAcquisition').textContent.includes('RECOVERED'));
+w.document.querySelector('.lootActions [data-panel=play]').click();assert.equal(run('screen'),'scoutintro');assert(playedNarration.some(url=>url.endsWith('scout-0.wav')));
+w.document.querySelector('[data-tutorial=mute]').click();assert.equal(run('settings.narration'),false);assert.equal(run('narrator.audio'),null);
+w.document.querySelector('[data-tutorial=skip]').click();assert.equal(run('s.intro.stage'),'line');assert.equal(run('s.inv.wire'),1);
+run('open("rig")');w.document.querySelector('[data-rig-focus=cargo]').click();assert(w.document.querySelector('.rigExplanation').textContent.includes('60 kg'));
+run('settings.tutorialEnabled=false;newExpedition()');assert.equal(run('s.intro.stage'),'line');run('open("npc")');assert(w.document.querySelector('.maraDialogue'));assert(w.document.querySelector('.contactPortrait'));
+run('settings.graphics="LOW";applySettings()');assert.equal(run('fleet.quality'),'LOW');assert.equal(run('fleet.shouldStream("scout",s)'),false);
+console.log('PASS: four equipment lessons, camera framing/restoration, scout acquisition guide, recorded narration/mute, skip without loot duplication, trailer feature inspector and low-quality streaming gate.');

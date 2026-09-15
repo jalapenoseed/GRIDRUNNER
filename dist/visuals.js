@@ -71,7 +71,7 @@ export function makePerson(x,z,c){
   const arm=new T.Group();arm.position.set(side*.33,1.66,0);rod(arm,[0,0,0],[side*.08,-.35,.04],.09,c);rod(arm,[side*.08,-.35,.04],[side*.08,-.62,.19],.08,c);mesh(arm,new T.SphereGeometry(.088,8,6),side*.08,-.67,.2,0x282e29);combine(arm);g.add(arm);arms.push(arm);
  }
  head.position.set(0,1.96,0);const face=mesh(head,new T.SphereGeometry(.215,14,10),0,0,0,0x8a745a);face.scale.set(.86,1.08,.9);
- mesh(head,new T.SphereGeometry(.222,12,8,0,Math.PI*2,0,Math.PI*.54),0,.015,-.015,0x485449);box(head,0,.015,.172,.31,.085,.05,0x233e43);box(head,0,-.102,.16,.22,.12,.07,0x51584b);for(const side of [-1,1])mesh(head,new T.SphereGeometry(.045,8,6),side*.21,0,0,0x242c2c);
+ mesh(head,new T.SphereGeometry(.222,12,8,0,Math.PI*2,0,Math.PI*.48),0,.025,-.02,c===0x9ca78b?0x5b4937:0x343b35);if(c===0x855844){box(head,0,.015,.172,.31,.085,.05,0x233e43);box(head,0,-.102,.16,.22,.12,.07,0x51584b);}else{for(const side of [-1,1]){mesh(head,new T.SphereGeometry(.027,7,5),side*.078,.025,.179,0x202d2c);box(head,side*.075,.065,.178,.066,.012,.016,0x413e34);}const nose=mesh(head,new T.SphereGeometry(.043,7,5),0,-.016,.188,0x9e8064);nose.scale.set(.7,1,1);box(head,0,-.1,.173,.083,.015,.014,0x6a4b3b);box(head,0,-.185,.075,.24,.045,.14,0x677165);}for(const side of [-1,1])mesh(head,new T.SphereGeometry(.045,8,6),side*.21,0,0,0x242c2c);
  combine(head);g.add(head);box(g,0,1.44,-.24,.45,.58,.21,0x303b37);box(g,0,1.55,-.36,.28,.13,.03,0xa79668);g.userData.head=head;g.userData.arms=arms;g.position.set(x,0,z);return combine(g);
 }
 export function heightAt(x,z){const edge=Math.max(0,Math.abs(x)-210);return edge*(.17+.13*Math.sin(z*.005+x*.01)**2)+Math.max(0,edge-75)*(.25+.19*Math.sin(z*.012+x*.019)*Math.cos(x*.017));}
