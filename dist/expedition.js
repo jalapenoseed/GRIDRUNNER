@@ -1,3 +1,4 @@
+import {migrateIntro,completedIntro} from './intro.js';
 import {validateRelayHouse} from './relay-house.js';
 import {migrateExperience} from './experience.js';
 import {residentState} from './settlements.js';
@@ -35,14 +36,7 @@ export function validateSave(r){
  if(s.airJobs===undefined||typeof s.airJobs!=='object')s.airJobs={inspect:false,cargo:false,repair:false,relay:false};
  else {const d={inspect:false,cargo:false,repair:false,relay:false};for(const k of Object.keys(d))d[k]=s.airJobs[k]===true;s.airJobs=d;}
  if(s.airSession!==undefined&&s.airSession!==null&&(typeof s.airSession!=='object'||typeof s.airSession.id!=='string'))s.airSession=null;
- if(s.intro===undefined||typeof s.intro!=='object')s.intro={stage:'line',mounted:true,salvaged:true,scouted:true,talked:true,launched:true};
- else {
-  const d={stage:'approach',mounted:false,salvaged:false,scouted:false,talked:false,launched:false};
-  for(const k of Object.keys(d))if(k!=='stage')d[k]=s.intro[k]===true;
-  d.stage=['approach','yard','line'].includes(s.intro.stage)?s.intro.stage:(d.talked?'line':d.mounted?'yard':'approach');
-  if(d.talked)d.stage='line';
-  s.intro=d;
- }
+ s.intro=s.leg>1?completedIntro():migrateIntro(s.intro);
  if(s.powerTarget!==null&&!['ev','solar','grid','line','l2hydro','l3supply'].includes(s.powerTarget))bad();
  if(!number(s.temp,0,1000)||!number(s.chargeHeat,0,200))bad();
  if(!['scout','engineer','cargo','relay'].includes(s.droneType)||!['off','fuel','solar','water'].includes(s.generator))bad();
