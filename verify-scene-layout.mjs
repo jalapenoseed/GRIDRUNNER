@@ -22,7 +22,10 @@ assert(solids.some(b=>b.minY>3&&Math.abs(b.z+94)<2),'Roof has overhead-only coll
 
 // Test the real instanced transforms after all rejection sampling. This catches
 // off-by-one instance counts that otherwise leave a stack at the world origin.
-const environment=new EnvironmentDetail(new T.Scene(),{textures:false});let checked=0;
+const scenerySolids=[],environment=new EnvironmentDetail(new T.Scene(),{textures:false,solids:scenerySolids});let checked=0;
+assert(scenerySolids.filter(b=>b.kind==='tree').length>100,'Generated oak trunks register physical collision');
+assert(scenerySolids.some(b=>b.kind==='rock'),'Large roadside rocks register physical collision');
+assert(scenerySolids.every(b=>Number.isFinite(b.x)&&Number.isFinite(b.z)&&b.w>0&&b.d>0&&b.maxY>b.minY),'Generated collision volumes are valid');
 const matrix=new T.Matrix4(),position=new T.Vector3(),scale=new T.Vector3(),rotation=new T.Quaternion();
 for(const {mesh,max} of environment.batches){
  if(mesh.geometry.type==='CircleGeometry')continue; // Flush road-surface wear.

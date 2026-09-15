@@ -4,7 +4,7 @@ import {placeScenery} from './scene-layout.js';
 
 // Fixed, seeded batches: patchy road verges and groves, with authored paths clear.
 // Crown cards reuse the existing oak cutout; grass is real tapered blade geometry.
-export function roadsideCover(scene,leaf){
+export function roadsideCover(scene,leaf,solids=[]){
  let seed=79010;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
  const dummy=new T.Object3D(),color=new T.Color(),batches=[],time={value:0},wind={value:.1};
  const grass=new T.MeshStandardMaterial({color:0xffffff,side:T.DoubleSide,roughness:1});
@@ -36,6 +36,7 @@ export function roadsideCover(scene,leaf){
   const cards=shrubs.flatMap(p=>[p,{...p,yaw:p.yaw+Math.PI/2}]);
   add('Roadside / scrub clusters',new T.PlaneGeometry(1,1),leaf,cards,leg,(o,p)=>{o.position.set(p.x,heightAt(p.x,p.z)+p.h*.5,p.z);o.scale.set(p.w,p.h,1);o.rotation.set(0,p.yaw,0);},true);
   const trees=Array.from({length:leg===2?82:55},()=>placeScenery(()=>({x:(random()<.5?-1:1)*(34+random()*130),z:start-random()*1500,h:3.3+random()*3.8,yaw:random()*6.283}),p=>p.h*.95+.2)).filter(Boolean);
+  for(const p of trees)solids.push({x:p.x,z:p.z,w:.34,d:.34,minY:heightAt(p.x,p.z),maxY:heightAt(p.x,p.z)+p.h*.82,kind:'tree'});
   const trunk=new T.MeshStandardMaterial({color:0x695e47,roughness:1});
   add('Roadside / oak trunks',new T.CylinderGeometry(.1,.23,1,6),trunk,trees,leg,(o,p)=>{o.position.set(p.x,heightAt(p.x,p.z)+p.h*.4,p.z);o.scale.set(1,p.h*.8,1);o.rotation.set(0,p.yaw,.035);});
   add('Roadside / oak crowns',new T.PlaneGeometry(1,1),leaf,trees.flatMap(p=>[p,{...p,yaw:p.yaw+Math.PI/2}]),leg,(o,p)=>{o.position.set(p.x,heightAt(p.x,p.z)+p.h*.85,p.z);o.scale.set(p.h*1.9,p.h*1.3,1);o.rotation.set(0,p.yaw,0);},true);

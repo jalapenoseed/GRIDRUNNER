@@ -70,7 +70,7 @@ function coveredReturnPlan(pos,home,solids){
  }
  options.sort((a,b)=>a.length-b.length);return {home:[...home],points:options[0]?.points||[],blocked:!options.length};
 }
-export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600}){
+export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null}){
  dt=clamp(dt,0,.05);const homeVelocity=d.lastHome?home.map((v,i)=>clamp((v-d.lastHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastHome=[...home];const spec=DRONE_CLASSES[type]||DRONE_CLASSES.scout,events=[];d.cooldown=Math.max(0,d.cooldown-dt);d.scanCooldown=Math.max(0,d.scanCooldown-dt);
  if(d.mode==='DOCK'){d.pos=[...home];d.velocity=[0,0,0];d.rates=[0,0,0];d.pitch=d.roll=d.thrust=0;d.yaw=wrapAngle(yaw);d.speed=0;d.altitude=home[1]-terrain(home[0],home[2]);d.range=0;d.signal=100;return {battery,events};}
  d.range=distance(d.pos,home);d.altitude=d.pos[1]-terrain(d.pos[0],d.pos[2]);
@@ -89,8 +89,8 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
  }else if(d.mode==='LANDED')desired=[0,d.altitude>.65?-2:0,0];
  else{
   if(d.mode==='HOLD')target.splice(0,3,...d.hold);
-  else if(d.mode==='ORBIT'){const angle=d.travel*.035;target.splice(0,3,home[0]+Math.sin(angle)*14,home[1]+12,home[2]+Math.cos(angle)*14);}
-  else if(d.mode==='FOLLOW'||d.mode==='SCOUT AHEAD'){const ahead=d.mode==='SCOUT AHEAD'?65:7;target.splice(0,3,home[0]-Math.sin(yaw)*ahead+Math.cos(yaw)*4,home[1]+(d.mode==='SCOUT AHEAD'?22:7),home[2]-Math.cos(yaw)*ahead-Math.sin(yaw)*4);}
+  else if(d.mode==='ORBIT'){if(formationOffset)target.splice(0,3,home[0]+formationOffset[0],home[1]+formationOffset[1],home[2]+formationOffset[2]);else{const angle=d.travel*.035;target.splice(0,3,home[0]+Math.sin(angle)*14,home[1]+12,home[2]+Math.cos(angle)*14);}}
+  else if(d.mode==='FOLLOW'||d.mode==='SCOUT AHEAD'){const ahead=d.mode==='SCOUT AHEAD'?58:0,slot=formationOffset||[4,7,-7];target.splice(0,3,home[0]+slot[0]-Math.sin(yaw)*ahead,home[1]+slot[1]+(d.mode==='SCOUT AHEAD'?10:0),home[2]+slot[2]-Math.cos(yaw)*ahead);}
   else {
    if(!d.returnPlan||distance(d.returnPlan.home,home)>1)d.returnPlan=coveredReturnPlan(d.pos,home,solids)||{home:[...home],open:true};
    if(!d.returnPlan.open){
