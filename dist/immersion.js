@@ -50,7 +50,6 @@ export class Immersion{
   for(let leg=1;leg<=3;leg++){
    const start=leg===1?170:leg===2?-1740:-3240,length=leg===1?1730:leg===2?1410:1450;
    batch(new T.IcosahedronGeometry(1,0),leg===2?0x526d54:leg===3?0x4a4748:0x82705a,leg===2?650:440,(o,i)=>{const x=(rand()<.5?-1:1)*(25+rand()*370),z=start-rand()*length;const size=.25+rand()*2;o.position.set(x,heightAt(x,z)+size*.25,z);o.scale.set(size*1.8,size*(leg===2?2:.6),size);o.rotation.set(rand(),rand()*6,rand()*.5);});
-   batch(new T.ConeGeometry(1,3,5),leg===2?0x3c5848:0x6c7050,leg===2?340:140,(o)=>{const x=(rand()<.5?-1:1)*(32+rand()*240),z=start-rand()*length;const size=.3+rand()*(leg===2?3:1);o.position.set(x,heightAt(x,z)+size,z);o.scale.set(size,size,size);o.rotation.set(0,rand()*6,rand()*.1);});
    batch(new T.BoxGeometry(1,1,1),0x232d31,180,(o)=>{const z=start-rand()*length;o.position.set((rand()-.5)*18,.13,z);o.scale.set(.06+rand()*.15,.015,1+rand()*5);o.rotation.set(0,rand()*1.1,0);},.94,false);
    batch(new T.BoxGeometry(1,1,1),leg===3?0x645550:0x6c6857,85,(o)=>{const z=start-rand()*length,x=(rand()<.5?-1:1)*(15+rand()*7);o.position.set(x,.3,z);o.scale.set(.3+rand()*.8,.2+rand()*.5,1+rand()*3);o.rotation.set(rand()*.4,rand()*6,rand()*.2);});
    batch(new T.ConeGeometry(1,1,6),leg===2?0x4a6059:0x625b59,60,(o)=>{const x=(rand()<.5?-1:1)*(650+rand()*450),z=start-rand()*length;o.position.set(x,10,z);o.scale.set(100+rand()*160,70+rand()*180,100+rand()*130);o.rotation.set(0,rand()*6,0);});

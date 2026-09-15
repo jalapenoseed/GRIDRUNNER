@@ -1,3 +1,4 @@
+import {roadsideCover} from './foliage.js';
 import * as T from './three.js';
 import {heightAt} from './visuals.js';
 import {PRESETS} from './immersion.js';
@@ -35,10 +36,11 @@ export class EnvironmentDetail{
    batch(new T.CylinderGeometry(.1,.25,1,7),bark,trees.length,leg,(o,i)=>{const t=trees[i];o.position.set(t.x,heightAt(t.x,t.z)+t.h*.45,t.z);o.scale.set(1,t.h*.9,1);o.rotation.set(0,0,.05);});
    batch(new T.PlaneGeometry(1,1),leaf,trees.length*3,leg,(o,i)=>{const t=trees[Math.floor(i/3)];o.position.set(t.x,heightAt(t.x,t.z)+t.h,t.z);o.scale.set(t.h*2.3,t.h*1.6,1);o.rotation.set(0,(i%3)*Math.PI/3,0);});
   }
+  this.cover=roadsideCover(scene,leaf);this.batches.push(...this.cover.batches);
  }
  load(){if(this.loaded||!this.textures)return;this.loaded=true;const loader=new T.TextureLoader();const set=(material,key,file,srgb=false,repeat=1)=>{loader.load('./assets/kit/'+file,t=>{t.wrapS=t.wrapT=T.RepeatWrapping;t.repeat.set(repeat,repeat);if(srgb)t.colorSpace=T.SRGBColorSpace;t.anisotropy=4;material[key]=t;material.needsUpdate=true;},undefined,()=>{});};
   for(const [id,name]of [['rock','Rock030'],['ground','Ground037'],['wood','Wood051']]){set(this.materials[id],'map',name+'_Color.jpg',true,2);set(this.materials[id],'normalMap',name+'_NormalGL.jpg',false,2);set(this.materials[id],'roughnessMap',name+'_Roughness.jpg',false,2);this.materials[id].normalScale=new T.Vector2(.6,.6);}
   set(this.materials.leaf,'map','oak.png',true);this.materials.leaf.color.setHex(0xc1cab0);
  }
- update(s,settings){const quality=PRESETS[settings.graphics]||PRESETS.HIGH;if(settings.graphics!=='LOW')this.load();for(const b of this.batches){b.mesh.visible=b.leg===s.leg&&!(settings.graphics==='LOW'&&b.mesh.material===this.materials.leaf);b.mesh.count=Math.floor(b.max*quality.clutter);}}
+ update(s,settings){this.cover.update(s,settings);const quality=PRESETS[settings.graphics]||PRESETS.HIGH;if(settings.graphics!=='LOW')this.load();for(const b of this.batches){b.mesh.visible=b.leg===s.leg&&!(settings.graphics==='LOW'&&(b.mesh.material===this.materials.leaf||b.mesh.name==='Roadside / oak trunks'));b.mesh.count=Math.floor(b.max*quality.clutter);}}
 }

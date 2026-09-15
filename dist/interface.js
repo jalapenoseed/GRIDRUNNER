@@ -1,3 +1,4 @@
+import {glyph} from './item-icons.js';
 // Field unit UI: one menu surface, contextual instruments, original supplied atlas.
 // The atlas stays unmodified. Coordinates are icon centers on its 1536 x 1024 plate.
 export const ICONS = Object.freeze({
@@ -15,13 +16,14 @@ export const ICONS = Object.freeze({
 });
 
 export function icon(name, extra='') {
+  if(['inventory','supplies','craft'].includes(name))return glyph({inventory:'Backpack',supplies:'Container',craft:'Hammer'}[name],extra);
   const [x,y]=ICONS[name]||ICONS.objective;
   return `<span class="atlasIcon ${extra}" aria-hidden="true" style="background-position:${-(x-32)*.375}px ${-(y-32)*.375}px"></span>`;
 }
 
 export const MENU_GROUPS = Object.freeze([
   {id:'expedition',label:'Expedition',icon:'compass',target:'quick',pages:[['quick','Field overview','objective'],['journal','Journal','journal'],['saves','Save / load','saves'],['chapters','Chapters','guide']]},
-  {id:'equipment',label:'Equipment',icon:'inventory',target:'inventory',pages:[['inventory','Pack & craft','inventory'],['supplies','Salvage & storage','supplies'],['rig','Bike & trailer','bike']]},
+  {id:'equipment',label:'Equipment',icon:'inventory',target:'inventory',pages:[['inventory','Backpack','inventory'],['workshop','Workshop','craft'],['supplies','Cargo & recovery','supplies'],['rig','Bike & trailer','bike']]},
   {id:'fleet',label:'Drones',icon:'drones',target:'drones',pages:[['drones','Airframes','drones'],['flightyard','Flight Yard','tower']]},
   {id:'world',label:'World',icon:'map',target:'map',pages:[['map','Sector map','map'],['locations','Settlements','camp']]},
   {id:'system',label:'System',icon:'settings',target:'settings',pages:[['settings','Settings','settings'],['environment','Light & weather','day'],['controls','Controls','controls'],['guide','Field manual','guide'],['reference','Reference archive','journal']]}
