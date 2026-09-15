@@ -1,7 +1,7 @@
 import * as T from './three.js';
 import {heightAt} from './visuals.js';
 import {sceneryAllowed} from './scene-layout.js';
-export const PRESETS={LOW:{ratio:1,clutter:.25,particles:64,shadows:0,lights:false},MEDIUM:{ratio:1.25,clutter:.5,particles:180,shadows:0,lights:true},HIGH:{ratio:1.7,clutter:.8,particles:380,shadows:1024,lights:true},ULTRA:{ratio:2,clutter:1,particles:650,shadows:2048,lights:true}};
+export const PRESETS={LOW:{ratio:1,clutter:.25,particles:64,shadows:0,lights:false},MEDIUM:{ratio:1.25,clutter:.5,particles:180,shadows:1024,lights:true},HIGH:{ratio:1.7,clutter:.8,particles:380,shadows:2048,lights:true},ULTRA:{ratio:2,clutter:1,particles:650,shadows:4096,lights:true}};
 const palettes={1:{top:0x354b60,horizon:0xd8aa83,fog:0xa79782,ground:0x4e4035,density:.0013},2:{top:0x283e4e,horizon:0x95b3ab,fog:0x809f96,ground:0x293f37,density:.00165},3:{top:0x121d34,horizon:0x877170,fog:0x555b66,ground:0x302e36,density:.0021}};
 export class Immersion{
  constructor(scene,renderer,camera,sun,bike,drone){
@@ -32,7 +32,7 @@ export class Immersion{
   }));this.sky.frustumCulled=false;this.sky.name='AtmosphereSky';scene.add(this.sky);
   const lamp=new T.SpotLight(0xd5f5f0,75,100,.42,.7,1.4);this.headlight=lamp;scene.add(lamp,lamp.target);this.droneLight=new T.PointLight(0x61e4e2,9,24,1.6);scene.add(this.droneLight);
   const fill=new T.HemisphereLight(0x9db5c5,0x3e352e,.5);scene.add(fill);this.fill=fill;
-  sun.castShadow=true;sun.shadow.camera.left=-75;sun.shadow.camera.right=75;sun.shadow.camera.top=75;sun.shadow.camera.bottom=-75;sun.shadow.camera.near=1;sun.shadow.camera.far=500;sun.shadow.bias=-.0003;sun.shadow.normalBias=.12;scene.add(sun.target);
+  sun.castShadow=true;sun.shadow.camera.left=-75;sun.shadow.camera.right=75;sun.shadow.camera.top=75;sun.shadow.camera.bottom=-75;sun.shadow.camera.near=1;sun.shadow.camera.far=500;sun.shadow.bias=-.00012;sun.shadow.normalBias=.045;sun.shadow.camera.updateProjectionMatrix();scene.add(sun.target);
   scene.traverse(o=>{if(o.isMesh&&o!==this.sky){o.receiveShadow=true;if(o.geometry?.attributes.position?.count<25000)o.castShadow=true;}});
   // Reproducible instancing: vegetation, gravel, road wear and collapsed infrastructure.
   let seed=701;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};const dummy=new T.Object3D();
@@ -63,7 +63,7 @@ export class Immersion{
   this.sparks=new T.Points(new T.BufferGeometry(),new T.PointsMaterial({color:0x8ffff0,size:.2,transparent:true,opacity:.8,depthWrite:false}));this.sparks.geometry.setAttribute('position',new T.BufferAttribute(new Float32Array(36*3),3));scene.add(this.sparks);
  }
  apply(settings,leg=1){
-  const preset=PRESETS[settings.graphics]||PRESETS.MEDIUM;this.preset=preset;this.renderer.setPixelRatio(Math.min(devicePixelRatio,preset.ratio));this.renderer.shadowMap.enabled=!!preset.shadows;
+  const preset=PRESETS[settings.graphics]||PRESETS.MEDIUM;this.preset=preset;this.renderer.setPixelRatio(Math.min(devicePixelRatio,preset.ratio));if(this.renderer.shadowMap.enabled!==!!preset.shadows)this.scene.traverse(o=>{for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[])m.needsUpdate=true;});this.renderer.shadowMap.enabled=!!preset.shadows;
   if(this.sun.shadow.mapSize.x!==(preset.shadows||512)){this.sun.shadow.map?.dispose();this.sun.shadow.map=null;this.sun.shadow.mapSize.setScalar(preset.shadows||512);}
   for(const m of this.instances)m.count=Math.floor(m.userData.maxCount*preset.clutter);this.particles.geometry.setDrawRange(0,preset.particles);
   const p=palettes[leg],night=settings.weather==='night',storm=settings.weather==='sandstorm';this.sky.material.uniforms.top.value.setHex(night?0x040914:p.top);this.sky.material.uniforms.bottom.value.setHex(night?0x1b3445:storm?0x9b8162:p.horizon);

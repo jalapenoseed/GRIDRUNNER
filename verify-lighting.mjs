@@ -11,6 +11,7 @@ const scene=new T.Scene();scene.background=new T.Color();scene.fog=new T.FogExp2
 const renderer={shadowMap:{},setPixelRatio(){}},camera=new T.PerspectiveCamera();camera.position.set(54,1.7,-94);
 const sun=new T.DirectionalLight();scene.add(sun,new T.HemisphereLight());
 const immersion=new Immersion(scene,renderer,camera,sun,new T.Group(),new T.Group());
+assert(Math.abs(sun.shadow.camera.projectionMatrix.elements[0]-2/(sun.shadow.camera.right-sun.shadow.camera.left))<1e-9,'Shadow camera projection must use its configured coverage');
 const detail=new EnvironmentDetail(scene,{textures:false});
 const atmosphere=new Atmosphere(scene,renderer,camera,sun,immersion);
 const state={elapsed:0,leg:1},settings={graphics:'HIGH',weather:'dusk',sunHour:13.5,movingSun:false,scanOverlay:true};

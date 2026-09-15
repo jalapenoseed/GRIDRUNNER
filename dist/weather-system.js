@@ -28,7 +28,7 @@ export function environmentSettings(s){return `<div class="sectionHeading"><span
  <p class="hint">K hides scan labels without losing discoveries. N toggles night vision. Night and Pitch black lock the sun below the horizon. Pitch black removes ambient light; lamps still work. Pause freezes the day. Controller: View + X scan HUD; View + Y night vision.</p>`;}
 export class Atmosphere{
  constructor(scene,renderer,camera,sun,immersion){Object.assign(this,{scene,renderer,camera,sun,immersion});this.hemi=[];scene.traverse(o=>{if(o.isHemisphereLight)this.hemi.push(o);});
-  this.keyDirection=new T.Vector3();this.twilightColor=new T.Color(0xeeb796);
+  this.keyDirection=new T.Vector3();this.shadowAnchor=new T.Vector3();this.shadowRight=new T.Vector3();this.shadowUp=new T.Vector3();this.worldUp=new T.Vector3(0,1,0);this.twilightColor=new T.Color(0xeeb796);
   const geom=new T.BufferGeometry();this.coords=new Float32Array(420*6);geom.setAttribute('position',new T.BufferAttribute(this.coords,3));this.rain=new T.LineSegments(geom,new T.LineBasicMaterial({color:0x90a9b3,transparent:true,opacity:.2,depthWrite:false}));this.rain.frustumCulled=false;scene.add(this.rain);this.phase=0;this.frame=environmentState({sunHour:13.5});
  }
  update(dt,s,settings,paused){
@@ -47,7 +47,12 @@ export class Atmosphere{
   this.sun.intensity=light.sun;this.sun.color.setHex(e.height<=0?0xc2d5f2:e.height<.2?0xffd0a6:0xfff3df);
   // The moon/intensifier illuminates from above when the actual sun is below ground.
   this.keyDirection.copy(dir);if(e.height<=0)this.keyDirection.set(.45,.7,-.55).normalize();
-  const anchor=this.camera.position;this.sun.position.copy(anchor).addScaledVector(this.keyDirection,220);this.sun.target.position.copy(anchor);this.sun.target.updateMatrixWorld();
+  const anchor=this.camera.position;
+  // Quantize the light-space anchor to shadow texels to prevent crawling edges.
+  const stable=this.shadowAnchor.copy(anchor),step=(this.sun.shadow.camera.right-this.sun.shadow.camera.left)/this.sun.shadow.mapSize.x;
+  this.shadowRight.crossVectors(this.keyDirection,this.worldUp).normalize();this.shadowUp.crossVectors(this.shadowRight,this.keyDirection).normalize();
+  for(const axis of [this.shadowRight,this.shadowUp]){const n=stable.dot(axis);stable.addScaledVector(axis,Math.round(n/step)*step-n);}
+  this.sun.position.copy(stable).addScaledVector(this.keyDirection,220);this.sun.target.position.copy(stable);this.sun.target.updateMatrixWorld();
   this.hemi.forEach((h,i)=>{h.intensity=i===0?light.sky:light.bounce;h.color.setHex(e.height<=0?0xa5bdd8:e.rain?0xd6e1e5:0xdcecff);h.groundColor.setHex(e.height<=0?0x5c6774:0xaaa393);});
   this.scene.environmentIntensity=light.environment;this.renderer.toneMappingExposure=light.exposure;
   this.rain.visible=e.rain>0&&!e.black;const count=settings.graphics==='LOW'?70:settings.graphics==='MEDIUM'?180:420;this.rain.geometry.setDrawRange(0,count*2);
