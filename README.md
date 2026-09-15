@@ -1,4 +1,4 @@
-# GRIDRUNNER v7.10 — Field Edition (`grok`)
+# GRIDRUNNER v7.11 — Field Edition (`grok`)
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
 
@@ -11,3 +11,5 @@ Planning, supplies and equipment use five menu groups. Riding instruments remain
 Run `npm ci` and `npm test`. Serve `dist/` for the playable game, or use `npm run dev`. Existing saves migrate; Flight Yard never replaces campaign saves.
 
 [Field Edition changelog](CHANGELOG-v7.10.md) · [Quiet Start](QUIET-START-v7.8.md) · [Previous changelog](CHANGELOG-v7.8.md)
+
+Opening story, handbook and surface rendering notes: [CHANGELOG-v7.11.md](CHANGELOG-v7.11.md).

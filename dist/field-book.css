@@ -1,0 +1,50 @@
+/* Engraved field folios: literary copy, brass rules, restrained signal accents. */
+.field-book{max-width:1000px;margin:0 auto;color:#e4e7db;}
+.folio-heading{position:relative;display:block;padding:0 0 24px;margin:0 0 24px;border-bottom:1px solid #bca57b66;}
+.folio-label{display:block;color:#d5b888;font:12px 'IBM Plex Mono',monospace;letter-spacing:1.6px;line-height:1.7;}
+.folio-heading h2{font-size:42px!important;line-height:1.1;margin:8px 0 10px!important;letter-spacing:.4px;}
+.folio-heading p{font:italic 18px/1.5 Georgia,serif!important;color:#b9c6be!important;margin:0 0 12px!important;}
+.folio-tabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px;}
+.folio-tabs button{display:flex;gap:8px;align-items:center;padding:10px 13px!important;font-size:14px!important;min-height:42px;}
+.folio-tabs button span{font-size:12px;color:#b3b7a8;}
+.folio-tabs button[aria-current]{color:#f4e6c9!important;border-color:#c7a77a!important;background:#c7a77a15!important;}
+.folio-sheet{position:relative;padding:clamp(22px,4vw,44px);border:1px solid #bda77d5e;background:linear-gradient(120deg,#d4bd8910,transparent 48%),#101e22;box-shadow:inset 0 0 0 5px #101e22,inset 0 0 0 6px #bda77d20;}
+.folio-sheet::before,.prologue-page::before{content:'';position:absolute;top:-1px;left:-1px;width:62px;height:5px;background:#cbae78;}
+.folio-kicker{display:flex;justify-content:space-between;gap:20px;font:12px/1.5 'IBM Plex Mono',monospace;letter-spacing:1.4px;color:#a7beb9;}
+.folio-sheet>h2{font-size:34px!important;line-height:1.18;margin:24px 0 12px!important;max-width:660px;}
+.folio-sheet .folio-deck{font:italic 19px/1.6 Georgia,serif!important;color:#d2bc97!important;margin-bottom:30px!important;}
+.folio-sheet h3{font-size:23px!important;line-height:1.3;margin:28px 0 10px!important;color:#e7ddc7;}
+.folio-sheet p,.story-record p{font:16px/1.8 'IBM Plex Mono',monospace!important;color:#c0ccc4!important;max-width:76ch;}
+.folio-sheet b{color:#e5e4d7;}
+.folio-sheet kbd{display:inline-block;min-width:24px;padding:1px 5px;margin:0 3px 2px 0;font:12px/1.6 'IBM Plex Mono',monospace;border:1px solid #82948c66;border-bottom:2px solid #82948c66;color:#e0d5b9;background:#08161a;vertical-align:middle;}
+.folio-note{margin-top:26px;padding:18px 20px;border-left:2px solid #caae80;background:#d2b77f0a;font:italic 18px/1.6 Georgia,serif;color:#d7c5a5;}
+.manual-steps{padding-left:25px;counter-reset:steps;}
+.manual-steps li{padding-left:10px;margin:24px 0;color:#dbbe8f;font-size:18px;}
+.manual-steps li>b{font:600 23px 'Barlow Condensed','Arial Narrow',sans-serif;}
+.folio-signoff{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-top:32px;padding-top:17px;border-top:1px solid #baaa823d;font:12px/1.6 'IBM Plex Mono',monospace;letter-spacing:1px;color:#b1bba9;}
+.manual-key-list{display:grid;grid-template-columns:1fr 1fr;gap:0 25px;margin:25px 0;}
+.manual-key-list>div{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid #8ca29426;font-size:14px;}
+.story-records{border-top:1px solid #9aa88b35;}
+.story-record{display:grid;grid-template-columns:50px 1fr;gap:18px;padding:26px 0;border-bottom:1px solid #9aa88b35;}
+.story-number{font:500 34px 'Barlow Condensed','Arial Narrow',sans-serif;color:#c1a97b;}
+.story-record h3{font-size:28px!important;line-height:1.2;margin:8px 0 12px!important;color:#e5ddc7;}
+.story-record p{margin:0!important;}
+.story-record.is-sealed{opacity:.62;}
+.story-record.is-sealed p{font-size:14px!important;}
+#overlay[data-screen=prologue] .field-shell{max-width:1150px;}
+#overlay[data-screen=prologue] .field-content{padding:clamp(16px,3vw,34px);}
+#overlay[data-screen=prologue] .field-resume,#overlay[data-screen=prologue] .field-link{display:none;}
+.prologue-page{position:relative;display:flex;flex-direction:column;min-height:min(610px,70vh);padding:clamp(22px,4vw,48px);border:1px solid #bba17673;background:radial-gradient(ellipse at 90% 10%,#537d7830,transparent 70%),linear-gradient(130deg,#1a2a2a,#09151b);box-shadow:inset 0 0 0 6px #102024,inset 0 0 0 7px #bca57622;}
+.prologue-copy{max-width:740px;margin:clamp(28px,5vh,55px) 0 32px;animation:folio-arrive .65s ease-out;}
+.prologue-copy h1{font:500 clamp(36px,4.8vw,64px)/1.02 'Barlow Condensed','Arial Narrow',sans-serif!important;letter-spacing:-.3px!important;color:#eee7d5;margin:16px 0 24px!important;}
+.prologue-copy p{font:18px/1.8 Georgia,serif!important;color:#cbd5cb!important;margin:12px 0!important;max-width:65ch;}
+.prologue-copy blockquote{margin:25px 0 0;padding:5px 0 5px 20px;border-left:2px solid #c0a575;font:italic 20px/1.5 Georgia,serif;color:#d5ba8d;}
+.prologue-controls{position:static!important;display:flex!important;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;margin-top:auto;padding:23px 0 0!important;border:0!important;border-top:1px solid #91a7963b!important;background:none!important;transform:none!important;}
+.prologue-controls>div{display:flex;gap:8px;}
+.prologue-controls button{min-height:44px;font-size:14px!important;padding:10px 17px!important;}
+.story-pagination button{color:#9bafa5;background:none!important;padding:8px 12px!important;border:0!important;border-bottom:2px solid transparent!important;}
+.story-pagination button[aria-current]{color:#ead3a6!important;border-bottom-color:#d5b47d!important;}
+@keyframes folio-arrive{from{opacity:0;transform:translateY(9px);}to{opacity:1;transform:translateY(0);}}
+@media(prefers-reduced-motion:reduce){.prologue-copy{animation:none;}}
+body.reduce-motion .prologue-copy,body[data-reduce-motion=true] .prologue-copy{animation:none;}
+@media(max-width:650px){.folio-heading h2{font-size:34px!important;}.folio-tabs{display:grid;grid-template-columns:1fr 1fr;}.folio-tabs button{font-size:13px!important;}.folio-sheet{padding:23px 20px;}.folio-sheet>h2{font-size:29px!important;}.folio-kicker{font-size:11px;letter-spacing:.6px;}.manual-key-list{grid-template-columns:1fr;}.prologue-copy p{font-size:17px!important;line-height:1.7!important;}.prologue-page{min-height:0;}.prologue-controls>div:last-child{margin-left:auto;}.prologue-controls button{padding:10px 12px!important;}.story-record{grid-template-columns:32px 1fr;gap:13px;}.folio-signoff{flex-wrap:wrap;}}

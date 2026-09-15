@@ -1,3 +1,5 @@
+import {SurfaceMaterials} from './dist/surface-shaders.js';
+import * as fieldBook from './dist/field-book.js';
 import * as backpack from './dist/backpack.js';
 import * as fieldInterface from './dist/interface.js';
 import * as sceneLayout from './dist/scene-layout.js';
@@ -29,12 +31,12 @@ const context2d=new Proxy({measureText:()=>({width:50}),createLinearGradient:()=
 w.HTMLCanvasElement.prototype.getContext=()=>context2d;
 w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};w.document.exitPointerLock=()=>{};w.HTMLCanvasElement.prototype.requestPointerLock=()=>Promise.resolve();
 let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={render:{calls:0}};}setPixelRatio(){}setSize(){}render(scene,camera){assert(scene.isScene&&camera.isPerspectiveCamera);frames++;}}
-const ctx=vm.createContext({...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
+const ctx=vm.createContext({SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\n/gm,'');
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 const tick=(seconds)=>{for(let i=0;i<seconds*50;i++)run('update(.02)');run('hud();loop(performance.now()+20)');};
 vm.runInContext(`function newCampaign(){newExpedition();s.intro=completedIntro();s.mode='bike';s.pos.set(bike.position.x,1.7,bike.position.z);hud();}`,ctx);
-assert(w.document.querySelector('#panel').textContent.includes('v7'));
+assert.equal(run('screen'),'prologue');assert.equal(run('started'),false);w.document.querySelector('[data-story-action=next]').click();assert.equal(run('storyPage'),1);w.document.querySelector('[data-story-action=next]').click();w.document.querySelector('[data-story-action=finish]').click();assert.equal(run('screen'),'start');assert.equal(run('started'),false);assert(w.document.querySelector('#panel').textContent.includes('v7'));
 verifyIntroIntegration({run,tick,w});
 run('newCampaign()');assert.equal(run('s.mode'),'bike');run("keys.w=true");tick(2);run('keys={}');assert(run('s.pos.z')<15,'Bike advances');
 run("action('drone');keys.w=true;keys[' ']=true");tick(2);run('keys={}');assert.equal(run('s.mode'),'drone');assert(run('s.droneSystem.altitude')>5);const alt=run('s.pos.y');run('keys.shift=true');tick(3);run('keys={}');assert(run('s.pos.y')<alt,'Shift descends');run("action('scan')");assert(run('s.discoveries.length')>0,'Scan tags saved');
@@ -157,3 +159,16 @@ assert.equal(w.document.querySelectorAll('[data-pack-item]').length,Object.keys(
 assert.equal(w.document.querySelectorAll('.pack-item .itemGlyph').length,Object.keys(survival.ITEMS).length,'Every item gets an explicit symbol');
 if(process.env.GRIDRUNNER_QA_SAVE)fs.writeFileSync(process.env.GRIDRUNNER_QA_SAVE,JSON.stringify(run('snapshot()')));
 console.log('PASS: 32 item symbols, category filtering, search focus, empty results, selected-item salvage, storage proximity and workshop gates.');
+
+// Reading and replay are presentation only; the expedition and saves stay intact.
+run('newCampaign();s.met=false;s.won=false;s.leg=1;open("story")');
+assert(!w.document.querySelector('.story-book').textContent.includes('147 km'));
+const bookSnapshot=JSON.parse(run('JSON.stringify(snapshot())')).state;
+w.document.querySelector('[data-story-action=replay]').click();assert.equal(run('screen'),'prologue');
+w.document.querySelector('[data-story-action=next]').click();w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape'}));
+assert.equal(run('screen'),'story');assert.deepEqual(JSON.parse(run('JSON.stringify(snapshot())')).state,bookSnapshot);
+run('remap.f="z";open("guide")');assert(w.document.querySelector('.folio-sheet').textContent.includes('Z'));
+for(const id of ['ride','scout','salvage','explore','controls']){w.document.querySelector('[data-manual="'+id+'"]').click();assert(w.document.querySelector('[aria-current="page"][data-manual="'+id+'"]'));assert(!w.document.querySelector('.folio-sheet').textContent.includes('undefined'));}
+run('remap={};storyReadThisSession=false;open("confirmNew")');w.document.querySelector('[data-ui=confirmNew]').click();assert.equal(run('screen'),'prologue');assert.equal(run('paused'),true);
+w.document.querySelector('[data-story-action=skip]').click();assert.equal(run('paused'),false);assert.equal(run('s.intro.stage'),'approach');assert.equal(run('s.elapsed'),0);
+console.log('PASS: opening pages, skip/new expedition, replay without state changes, spoiler-gated story and all manual sections with remapped keys.');
