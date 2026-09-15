@@ -1,0 +1,46 @@
+{
+  "voice": "Microsoft David Desktop / synthesized narration",
+  "format": "22.05 kHz mono PCM",
+  "clips": [
+    {
+      "id": "story-0",
+      "text": "The lights went out one town at a time.. First the schedules stopped. Then the fuel trucks. Then the voices on the other end of the line. The grid broke into islands: a working panel on a roof, a battery behind a locked door, a camp keeping one lamp alive. Between them, the roads grew quiet."
+    },
+    {
+      "id": "story-1",
+      "text": "Someone still had to cross the distance.. You carry what an electric bike can haul. Tools. A few cells. A scout small enough to see over the next ridge. You ride between the places that still have something to give. Salvage becomes charge. Charge becomes distance. Every return trip is a promise you have to keep."
+    },
+    {
+      "id": "story-2",
+      "text": "Last night, a voice came back.. A broken message repeats from the northern tower. Too regular to be a dying battery. Too human to ignore. Mara is waiting at the roadside camp. Your bike is ahead, a scout kit waits in her salvage box, and the battery reads twenty-seven percent. It is enough to begin."
+    },
+    {
+      "id": "equipment-0",
+      "text": "Your way through the quiet. The bike turns battery charge into distance. Ride with motor assist, or pedal when energy is low. Your stamina recovers when you ease off. Every drone returns to this motorcycle."
+    },
+    {
+      "id": "equipment-1",
+      "text": "Carry tomorrow’s charge. The trailer holds a separate reserve battery. Reserve to bike transfers stored energy into the motorcycle. Keep it attached to use that transfer. The reserve gauge shows what remains."
+    },
+    {
+      "id": "equipment-2",
+      "text": "Park. Unfold. Replenish. Stop before generating power. Solar unfolds the panels and charges in daylight. Fuel uses the finite fuel in your tank. Stowed turns generation off. Resume the game for charging to run."
+    },
+    {
+      "id": "equipment-3",
+      "text": "A workshop on two wheels. The trailer stores sixty kilograms of cargo and carries your drone fleet. Open the pack near it to move supplies. Detach parks it behind; approach within eight meters to reattach. Heavy cargo costs more riding energy."
+    },
+    {
+      "id": "scout-0",
+      "text": "Your eyes beyond the road. Scout recovered and linked to your fleet. The first salvage box supplied its field kit, wire and cells. The aircraft is ready at your trailer. You can now launch it from the motorcycle."
+    },
+    {
+      "id": "scout-1",
+      "text": "Climb. Look. Come home. Use movement controls to fly, and rise or descend to change altitude. Scan nearby contacts, then recall the scout. Amber means it is coming home. Wait until it docks before talking to Mara."
+    },
+    {
+      "id": "acquired",
+      "text": "Scout recovered. Added to your fleet. Close the box to learn how to fly it."
+    }
+  ]
+}

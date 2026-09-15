@@ -1,7 +1,7 @@
 import * as T from './three.js';
 import {GLTFLoader} from './GLTFLoader.js';
 import {mergeGeometries} from './BufferGeometryUtils.js';
-// Existing GRIDRUNNER Blender exports. Load only nearby equipment, two at a time.
+// Existing GRIDRUNNER Blender exports. Prepare opening equipment during menus; process one asset at a time.
 export class AssetKit{
  constructor(enabled=true){this.enabled=enabled;this.queue=[];this.active=0;this.cache=new Map();this.slots=[];this.errors=[];}
  place(parent,file,position,height,proxy,rotation=0){const slot=new T.Group();slot.position.set(...position);slot.rotation.y=rotation;parent.add(slot);if(proxy)slot.add(proxy);const record={slot,file,height,proxy,loaded:false,requested:false};this.slots.push(record);return slot;}
