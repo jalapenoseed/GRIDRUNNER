@@ -1,16 +1,16 @@
 // First-hour lock: Approach → Yard → Line. Same map, fewer verbs.
 export function introState(){
-  return {stage:'approach',mounted:false,salvaged:false,scouted:false,talked:false,launched:false};
+  return {stage:'approach',trailerBriefed:false,scoutBriefed:false,mounted:false,salvaged:false,scouted:false,talked:false,launched:false};
 }
 export function completedIntro(){
-  return {stage:'line',mounted:true,salvaged:true,scouted:true,talked:true,launched:true};
+  return {stage:'line',trailerBriefed:true,scoutBriefed:true,mounted:true,salvaged:true,scouted:true,talked:true,launched:true};
 }
 export function migrateIntro(x){
   // Missing intro data belongs to an expedition created before Quiet Start.
   if(!x||typeof x!=='object'||Array.isArray(x))return completedIntro();
   if(x.stage==='line'||x.talked===true)return completedIntro();
   const d=introState();
-  for(const k of ['mounted','salvaged','scouted','talked','launched'])d[k]=x[k]===true;
+  for(const k of ['mounted','salvaged','scouted','talked','launched','trailerBriefed','scoutBriefed'])d[k]=x[k]===true;
   if(d.scouted)d.launched=true;
   if(d.launched)d.salvaged=true;
   if(d.salvaged||x.stage==='yard')d.mounted=true;
@@ -32,7 +32,7 @@ export function introAllows(s,verb){
 }
 export function markIntro(s,flag){
   const i=s.intro=migrateIntro(s.intro);
-  if(!['mounted','salvaged','scouted','talked','launched'].includes(flag))return i;
+  if(!['mounted','salvaged','scouted','talked','launched','trailerBriefed','scoutBriefed'].includes(flag))return i;
   if(i[flag]===true)return i;
   i[flag]=true;
   if(i.talked)i.stage='line';
