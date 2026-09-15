@@ -1,7 +1,9 @@
-# GRIDRUNNER v7.7 — Field Jobs
+# GRIDRUNNER v7.8 — Quiet Start (`grok`)
 
-[Play GRIDRUNNER](https://jalapenoseed.github.io/GRIDRUNNER/)
+**[Play v8](https://cdn.jsdelivr.net/gh/jalapenoseed/GRIDRUNNER@grok/dist/index.html)** · this branch
 
-Phone LOD for the reference drones, plus four campaign airframe jobs on the live expedition. Flight Yard remains the trainer. **G** hangar · **K** scan · **N** night vision · **O** atmosphere.
+**[Play live v7.6](https://jalapenoseed.github.io/GRIDRUNNER/)** · `main` / Pages
 
-[Changes](CHANGELOG-v7.7.md)
+New expeditions start on foot. Mount → salvage → scout hop → Mara. Then the line opens.
+
+[Quiet start](QUIET-START-v7.8.md) · [Changelog](CHANGELOG-v7.8.md)
