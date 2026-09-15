@@ -35,7 +35,7 @@ export function useRelay(r,id,{mode='foot',inv={},capacity=24,selected=r.selecte
  if(id==='fridge')return fail(r.power?'The compressor kicks in. Fresh food, but no one has slept here recently.':'A dead compressor and an empty protected fuse socket. Len has been keeping watch.');
  if(id==='board'){r.frequencyRead=true;recordEvidence(r,'carrier');return ok('Carrier scrap recorded: 147.20 MHz.');}
  if(id==='bunk'){r.schematicRead=true;recordEvidence(r,'schematic');return ok('Signal filter and reserve-cell schematics learned. See Pack / Fieldwork.');}
- if(id==='bench')return {message:r.power?'Workbench powered. Fabricate the signal filter here.':'Unpowered workbench. Restore the cabin circuit first.',panel:'supplies',event:'use'};
+ if(id==='bench')return {message:r.power?'Workbench powered. Fabricate the signal filter here.':'Unpowered workbench. Restore the cabin circuit first.',panel:'workshop',event:'use'};
  if(id==='terminal')return r.power?{panel:'relayTerminal',event:'terminal',message:'RELAY OS / carrier console'}:fail('CRT is dark. Repair the yard generator and kitchen circuit.');
  if(id==='dish'){if(mode!=='drone')return fail('The roof service latch requires your FPV drone.');if(!r.power)return fail('Dish actuator has no power. Restore the house first.');if(r.dishAligned)return fail('Dish already points north.');r.dishAligned=true;return ok('Dish latch released. The reflector turns north. Return to the cellar receiver.','carrierLock');}
  if(id==='radio'){

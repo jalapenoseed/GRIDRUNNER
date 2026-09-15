@@ -1,3 +1,4 @@
+import * as backpack from './dist/backpack.js';
 import * as fieldInterface from './dist/interface.js';
 import * as sceneLayout from './dist/scene-layout.js';
 import {verifyIntroIntegration} from './verify-intro.mjs';
@@ -28,7 +29,7 @@ const context2d=new Proxy({measureText:()=>({width:50}),createLinearGradient:()=
 w.HTMLCanvasElement.prototype.getContext=()=>context2d;
 w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};w.document.exitPointerLock=()=>{};w.HTMLCanvasElement.prototype.requestPointerLock=()=>Promise.resolve();
 let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={render:{calls:0}};}setPixelRatio(){}setSize(){}render(scene,camera){assert(scene.isScene&&camera.isPerspectiveCamera);frames++;}}
-const ctx=vm.createContext({...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
+const ctx=vm.createContext({...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\n/gm,'');
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 const tick=(seconds)=>{for(let i=0;i<seconds*50;i++)run('update(.02)');run('hud();loop(performance.now()+20)');};
@@ -55,12 +56,12 @@ run('scene.updateMatrixWorld(true)');const stats=run('(()=>{let meshes=0,triangl
 console.log('PASS: full startup, actual DOM menus, input-driven bike/drone updates, commands, scan persistence, save/restore, presets, all three real mission chains and final save. Render stub frames:',frames,stats);
 // Fieldwork: real DOM events, transactions, mining and persistent depleted state.
 run('newCampaign();s.inv.toaster=1;open("supplies")');
-w.document.querySelector('[data-field=salvage][data-item=toaster]').click();assert.equal(run('s.inv.toaster'),0);assert.equal(run('s.inv.copper'),1);
-run('s.pos.copy(bike.position);open("supplies")');w.document.querySelector('[data-field=store][data-item=copper][data-storage=bike]').click();assert.equal(run('s.field.storage.bike.copper'),1);assert.equal(run('s.inv.copper'),0);
-w.document.querySelector('[data-field=retrieve][data-item=copper][data-storage=bike]').click();assert.equal(run('s.inv.copper'),1);
-run('s.inv.steel=4;s.inv.rubber=1;s.pos.copy(trailer.position);open("supplies")');w.document.querySelector('[data-field=craft][data-item=pickaxe]').click();assert.equal(run('s.inv.pickaxe'),1);
+w.document.querySelector('[data-pack-item=toaster]').click();w.document.querySelector('[data-field=salvage][data-item=toaster]').click();assert.equal(run('s.inv.toaster'),0);assert.equal(run('s.inv.copper'),1);
+run('s.pos.copy(bike.position);open("supplies")');w.document.querySelector('[data-pack-item=copper]').click();w.document.querySelector('[data-field=store][data-item=copper][data-storage=bike]').click();assert.equal(run('s.field.storage.bike.copper'),1);assert.equal(run('s.inv.copper'),0);
+w.document.querySelector('[data-pack-source=bike]').click();w.document.querySelector('[data-pack-item=copper]').click();w.document.querySelector('[data-field=retrieve][data-item=copper][data-storage=bike]').click();w.document.querySelector('[data-pack-source=pack]').click();assert.equal(run('s.inv.copper'),1);
+run('s.inv.steel=4;s.inv.rubber=1;s.pos.copy(trailer.position);open("workshop")');w.document.querySelector('[data-field=craft][data-item=pickaxe]').click();assert.equal(run('s.inv.pickaxe'),1);
 run('activeField=s.field.world.find(p=>p.kind==="node").id;s.pos.set(s.field.world[5].x,1.7,s.field.world[5].z);open("supplies")');w.document.querySelector('[data-field=mine]').click();tick(4.2);assert.equal(run('s.field.world[5].left'),3);assert.equal(run('fieldJob'),null);
-run('s.inv.fuel=1;s.fuel=0;s.pos.copy(trailer.position);open("supplies")');w.document.querySelector('[data-field=refuel]').click();assert.equal(run('s.fuel'),1);assert.equal(run('s.inv.fuel'),0);
+run('s.inv.fuel=1;s.fuel=0;s.pos.copy(trailer.position);open("supplies")');w.document.querySelector('[data-pack-item=fuel]').click();w.document.querySelector('[data-field=refuel]').click();assert.equal(run('s.fuel'),1);assert.equal(run('s.inv.fuel'),0);
 assert(run('writeSave("manual1")'));run('s.field.storage.bike={};s.field.world[5].left=4;restore(getSave("manual1"))');assert.equal(run('s.field.world[5].left'),3);
 const old=run('snapshot()');delete old.state.field;assert.equal(expedition.validateSave(old).state.field.world.length,144);
 run('newCampaign();s.pos.set(54,1.7,-94);s.inv.steel=20');for(let i=0;i<3;i++){run('open("rig")');w.document.querySelector('[data-ui=fuel]').click();}assert.equal(run('s.field.fuelTrades'),2);assert.equal(run('s.inv.steel'),12);
@@ -130,3 +131,29 @@ run('play();hud()');assert(!w.document.body.classList.contains('menu-open'));
 run("open('flightyard')");w.document.querySelector('[data-yard-drone=relay]').click();assert.equal(w.document.querySelectorAll('.field-shell').length,1);
 run("settings.weather='dusk';settings.sunHour=13.5;settings.nightVision=false;applySettings();loop(performance.now()+20)");assert(run('atmosphere.hemi[0].intensity')>1.6);
 console.log('PASS: single menu shell, five categories, native Tab/Space, closed accordion focus exclusion, prestart Escape safety, specialized rerenders and bright daylight integration.');
+
+// Inspect the new interaction model through DOM events, including filter/focus state.
+run('newCampaign();s.inv.toaster=1;s.inv.copper=2;open("inventory")');
+assert.equal(w.document.querySelectorAll('.pack-view').length,1);
+w.document.querySelector('[data-pack-category=junk]').click();
+assert.equal(w.document.querySelectorAll('[data-pack-item]').length,1);
+w.document.querySelector('[data-pack-item=toaster]').click();
+assert(w.document.querySelector('#packInspector').textContent.includes('Recovery per item'));
+assert(w.document.querySelector('[data-field=salvage][data-item=toaster]'));
+w.document.querySelector('[data-pack-category=all]').click();
+let search=w.document.querySelector('[data-pack-search]');search.value='copper';search.dispatchEvent(new w.Event('input',{bubbles:true}));
+assert(w.document.querySelector('[data-pack-item=copper]'));
+assert.equal(w.document.activeElement,w.document.querySelector('[data-pack-search]'),'Searching retains input focus');
+search=w.document.querySelector('[data-pack-search]');search.value='nothing-has-this-name';search.dispatchEvent(new w.Event('input',{bubbles:true}));
+assert.equal(w.document.querySelectorAll('[data-pack-item]').length,0);
+assert.equal(w.document.querySelectorAll('[data-field=salvage]').length,0,'Empty search cannot leave stale item actions');
+search=w.document.querySelector('[data-pack-search]');search.value='';search.dispatchEvent(new w.Event('input',{bubbles:true}));
+run('s.pos.set(400,1.7,100);open("inventory")');w.document.querySelector('[data-pack-item=copper]').click();
+assert(w.document.querySelector('[data-field=store][data-storage=bike]').disabled,'Storage actions respect actual vehicle proximity');
+run('open("workshop")');assert.equal(w.document.querySelectorAll('[data-field=craft]').length,Object.keys(survival.FIELD_RECIPES).length);
+assert(w.document.querySelector('[data-field=craft][data-item=signalFilter]').disabled,'Knowledge and station gates remain visible');
+run('newCampaign();s.inv=Object.fromEntries(Object.keys(ITEMS).map(id=>[id,1]));s.mode="foot";s.pos.set(0,1.7,160);open("inventory")');
+assert.equal(w.document.querySelectorAll('[data-pack-item]').length,Object.keys(survival.ITEMS).length);
+assert.equal(w.document.querySelectorAll('.pack-item .itemGlyph').length,Object.keys(survival.ITEMS).length,'Every item gets an explicit symbol');
+if(process.env.GRIDRUNNER_QA_SAVE)fs.writeFileSync(process.env.GRIDRUNNER_QA_SAVE,JSON.stringify(run('snapshot()')));
+console.log('PASS: 32 item symbols, category filtering, search focus, empty results, selected-item salvage, storage proximity and workshop gates.');

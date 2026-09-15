@@ -43,7 +43,7 @@ export class Atmosphere{
   sky.cloudCover.value=e.black||settings.graphics==='LOW'?0:(.17+e.rain*.68)*fill;
   sky.cloudLight.value=fill*(1-e.rain*.35);sky.time.value=this.phase;
   this.scene.fog.color.copy(sky.bottom.value);this.scene.background.copy(this.scene.fog.color);
-  this.scene.fog.density=e.weather==='sandstorm'?.0065:e.rain?.002+e.rain*.0018:.0011;
+  this.scene.fog.density=e.weather==='sandstorm'?.008:e.rain?.0033+e.rain*.0019:e.black?.0028:.0028;
   this.sun.intensity=light.sun;this.sun.color.setHex(e.height<=0?0xc2d5f2:e.height<.2?0xffd0a6:0xfff3df);
   // The moon/intensifier illuminates from above when the actual sun is below ground.
   this.keyDirection.copy(dir);if(e.height<=0)this.keyDirection.set(.45,.7,-.55).normalize();
