@@ -1,14 +1,13 @@
-# GRIDRUNNER v7.8.1 — Quiet Start + Flight Yard (`grok`)
+# GRIDRUNNER v7.9 — Field Edition (`grok`)
 
-**[Play v8](https://cdn.jsdelivr.net/gh/jalapenoseed/GRIDRUNNER@grok/dist/index.html)** · this branch
+**[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
 
-**[Play live v7.6](https://jalapenoseed.github.io/GRIDRUNNER/)** · `main` / Pages
+Cleaner field menus, contextual instruments, the supplied icon atlas, brighter daylight and a repaired opening camp. Quiet Start and all four Flight Yard airframes remain intact.
 
-New expeditions start on foot. Mount → salvage → scout hop → Mara. Then the line opens.
+New expeditions start on foot. Mount → salvage → scout hop → Mara. Then follow the line. Tab opens the field menu; Escape pauses or resumes. Flight Yard is in the menu or G. K toggles scan overlays, N night vision, O light/weather, H camera view.
 
-Flight Yard practice is available from the main menu or G at any stage. All four
-airframes launch independently of tutorial gates; returning restores your held
-expedition and its tutorial progress. Supplied later chapters and older saves
-remain unlocked. Run `npm ci` and `npm test` to verify the integration.
+Planning, supplies and equipment use five menu groups. Riding instruments remain on the bike's dashboard, with compact chase-view and drone telemetry. Later supplied chapter starts are under Chapters.
 
-[Quiet start](QUIET-START-v7.8.md) · [Changelog](CHANGELOG-v7.8.md)
+Run `npm ci` and `npm test`. Serve `dist/` for the playable game, or use `npm run dev`. Existing saves migrate; Flight Yard never replaces campaign saves.
+
+[Field Edition changelog](CHANGELOG-v7.9.md) · [Quiet Start](QUIET-START-v7.8.md) · [Previous changelog](CHANGELOG-v7.8.md)

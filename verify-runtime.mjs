@@ -1,3 +1,5 @@
+import * as fieldInterface from './dist/interface.js';
+import * as sceneLayout from './dist/scene-layout.js';
 import {verifyIntroIntegration} from './verify-intro.mjs';
 import * as intro from './dist/intro.js';
 import * as weather from './dist/weather-system.js';
@@ -9,7 +11,7 @@ import * as relayWorldModule from './dist/relay-world.js';
 import * as relayUI from './dist/relay-ui.js';
 import {machineSettings} from './dist/control-settings.js';
 import {drawInstruments} from './dist/instruments.js';
-import {ControllerBridge} from './dist/controller-bridge.js';
+import {ControllerBridge,menuControls} from './dist/controller-bridge.js';
 import * as experience from './dist/experience.js';
 import {CameraManager} from './dist/camera-manager.js';
 import * as settlements from './dist/settlements.js';
@@ -26,7 +28,7 @@ const context2d=new Proxy({measureText:()=>({width:50}),createLinearGradient:()=
 w.HTMLCanvasElement.prototype.getContext=()=>context2d;
 w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};w.document.exitPointerLock=()=>{};w.HTMLCanvasElement.prototype.requestPointerLock=()=>Promise.resolve();
 let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={render:{calls:0}};}setPixelRatio(){}setSize(){}render(scene,camera){assert(scene.isScene&&camera.isPerspectiveCamera);frames++;}}
-const ctx=vm.createContext({...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
+const ctx=vm.createContext({...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\n/gm,'');
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 const tick=(seconds)=>{for(let i=0;i<seconds*50;i++)run('update(.02)');run('hud();loop(performance.now()+20)');};
@@ -113,3 +115,18 @@ run("settings.nightVision=false;settings.weather='rain';settings.movingSun=true;
 for(const type of ['scout','engineer','cargo','relay']){run(`s.droneType='${type}'`);assert(run('writeSave("manual2")'));assert.equal(run('getSave("manual2").state.droneType'),type);}
 run("open('locations')");assert.equal(w.document.querySelectorAll('[data-location]').length,3);assert(!w.document.querySelector('#panel').textContent.includes('undefined'));
 console.log('PASS: four-airframe hangar, cargo attach/drop, campaign restoration and autosave isolation, scan hide/preserved discoveries, true blackout/vision, moving sun/rain and four class save round-trips.');
+// Field menu behavior: one shell, native keyboard access, and mode-specific HUD.
+run("started=false;open('settings')");
+assert.equal(w.document.querySelectorAll('.field-shell').length,1);
+assert.equal(w.document.querySelectorAll('.field-primary button').length,5);
+const openSummary=w.document.querySelector('details[open] > summary');openSummary.focus();
+const tabKey=new w.KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true});openSummary.dispatchEvent(tabKey);assert(!tabKey.defaultPrevented,'Tab retains native menu traversal');
+const spaceKey=new w.KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true});openSummary.dispatchEvent(spaceKey);assert(!spaceKey.defaultPrevented,'Space retains native accordion toggle');
+const closedRange=w.document.querySelector('details:not([open]) input');
+assert(!run('menuControls(document.querySelector("#panel"))').includes(closedRange),'Closed accordion controls are excluded from controller and keyboard navigation');
+w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));assert.equal(run('screen'),'start');assert(run('paused'));assert(!run('started'));
+run("newCampaign();open('supplies')");assert.equal(w.document.querySelectorAll('.field-shell').length,1);assert(w.document.body.classList.contains('menu-open'));
+run('play();hud()');assert(!w.document.body.classList.contains('menu-open'));
+run("open('flightyard')");w.document.querySelector('[data-yard-drone=relay]').click();assert.equal(w.document.querySelectorAll('.field-shell').length,1);
+run("settings.weather='dusk';settings.sunHour=13.5;settings.nightVision=false;applySettings();loop(performance.now()+20)");assert(run('atmosphere.hemi[0].intensity')>1.6);
+console.log('PASS: single menu shell, five categories, native Tab/Space, closed accordion focus exclusion, prestart Escape safety, specialized rerenders and bright daylight integration.');

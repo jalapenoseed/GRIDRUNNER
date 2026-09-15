@@ -37,7 +37,7 @@ export function verifyIntroIntegration({run,tick,w}){
  assert.equal(run('flightSession'),null);assert.equal(run('s.intro.stage'),'approach');
 
  // The actual New Expedition button starts on foot, looking toward the bike.
- run('open("start")');click('[data-ui=new]');click('[data-ui=confirmNew]');
+ run('open("chapters")');click('[data-ui=new]');click('[data-ui=confirmNew]');
  assert.equal(run('s.mode'),'foot');assert(run('s.pos.z>bike.position.z'));
  assert(w.document.body.classList.contains('intro-quiet'));
  assert.equal(w.document.querySelector('#quest h2').textContent,'Find the motorcycle.');

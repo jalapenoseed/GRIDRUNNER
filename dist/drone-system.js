@@ -22,13 +22,20 @@ export function migrateDrone(value,pos,manual=false){
  if(value.rates!==undefined){if(!vec(value.rates)||value.rates.some(n=>Math.abs(n)>5))throw Error('Invalid drone rates');d.rates=[...value.rates];}
  d.reason=d.mode==='DOCK'?'Docked':'Link restored';return d;
 }
-export function commandDrone(d,command,home,battery){
+export function commandDrone(d,command,home,battery,solids=[]){
  if(![...COMMANDS,'MANUAL'].includes(command))return false;
  if(d.mode==='LANDED'&&distance(d.pos,home)>9)return false;
  if(!['DOCK','RETURN HOME'].includes(command)&&(battery<5||d.hp<10))return false;
- if(d.mode==='DOCK'||d.mode==='LANDED'){d.pos=[home[0],home[1]+3,home[2]];d.velocity=[0,0,0];}
- d.mode=command==='DOCK'?'RETURN HOME':command;d.hold=[...d.pos];d.linkLost=0;d.reason=command==='DOCK'?'Dock requested':command;return true;
+ if(d.mode==='DOCK'||d.mode==='LANDED'){
+  const clearance=solids.filter(b=>b.drone!==false).map(padded),launch=[...home];
+  // A covered parking bay launches below its roof; deployment must never move
+  // the aircraft through a solid canopy before physics gets its first frame.
+  for(let rise=.15;rise<=3.001;rise+=.15){const next=[home[0],home[1]+rise,home[2]];if(obstruction(home,next,clearance))break;launch[1]=next[1];}
+  d.pos=launch;d.velocity=[0,0,0];
+ }
+ d.returnPlan=null;d.mode=command==='DOCK'?'RETURN HOME':command;d.hold=[...d.pos];d.linkLost=0;d.reason=command==='DOCK'?'Dock requested':command;return true;
 }
+const padded=b=>({...b,w:b.w+.55,d:b.d+.55,minY:(b.minY??0)-.55,maxY:(b.maxY??12)+.55});
 export function obstruction(a,b,solids){
  // Slab intersection: bounded CPU cost, true 3D roofs rather than infinite walls.
  let count=0;
@@ -37,6 +44,30 @@ export function obstruction(a,b,solids){
   for(let axis=0;axis<3;axis++){const delta=b[axis]-a[axis];if(Math.abs(delta)<1e-8){if(a[axis]<min[axis]||a[axis]>max[axis]){hi=-1;break;}}else{const u=(min[axis]-a[axis])/delta,v=(max[axis]-a[axis])/delta;lo=Math.max(lo,Math.min(u,v));hi=Math.min(hi,Math.max(u,v));}}
   if(hi>=lo&&hi>0&&lo<1)count++;
  }return count;
+}
+function coveredReturnPlan(pos,home,solids){
+ const roofs=solids.filter(b=>b.drone!==false&&(b.minY??0)>home[1]+.6),covers=roofs.filter(b=>Math.abs(home[0]-b.x)<b.w+.55&&Math.abs(home[2]-b.z)<b.d+.55);
+ if(!covers.length)return null;
+ const obstacles=solids.filter(b=>b.drone!==false).map(padded),clear=(a,b)=>!obstruction(a,b,obstacles);
+ // Manual flight may stop 0.4 m from a ceiling, inside the planner's larger
+ // 0.55 m comfort margin. The first retreat uses the actual collision shell,
+ // otherwise a safe descent is incorrectly classified as starting in a wall.
+ const physical=solids.filter(b=>b.drone!==false).map(b=>({...b,w:b.w+.4,d:b.d+.4,minY:(b.minY??0)-.4,maxY:(b.maxY??12)+.4}));
+ const clearStart=(a,b)=>!obstruction(a,b,physical);
+ if(clearStart(pos,home))return {home:[...home],points:[[...home]]};
+ // Combine touching roof strips so the approach is outside the whole canopy,
+ // not outside only the one strip directly above the docking point.
+ const connected=new Set(covers);let growing=true;
+ while(growing){growing=false;for(const b of roofs)if(!connected.has(b)&&[...connected].some(a=>Math.abs(a.x-b.x)<=a.w+b.w+.05&&Math.abs(a.z-b.z)<=a.d+b.d+.05&&(a.minY??0)<(b.maxY??12)+.5&&(b.minY??0)<(a.maxY??12)+.5)){connected.add(b);growing=true;}}
+ const all=[...connected],left=Math.min(...all.map(b=>b.x-b.w))-1.6,right=Math.max(...all.map(b=>b.x+b.w))+1.6,back=Math.min(...all.map(b=>b.z-b.d))-1.6,front=Math.max(...all.map(b=>b.z+b.d))+1.6,top=Math.max(...all.map(b=>b.maxY??12)),cruise=Math.max(pos[1],top+2,home[1]+3),options=[];
+ for(const door of [[left,home[1],home[2]],[right,home[1],home[2]],[home[0],home[1],back],[home[0],home[1],front]]){
+  const high=[door[0],pos[1],door[2]],above=[door[0],cruise,door[2]];
+  for(const points of [[high,door,[...home]],[[pos[0],cruise,pos[2]],above,door,[...home]]]){
+   let from=pos,length=0,valid=true;for(const [i,p] of points.entries()){if(!(i===0?clearStart(from,p):clear(from,p))){valid=false;break;}length+=distance(from,p);from=p;}
+   if(valid)options.push({points,length});
+  }
+ }
+ options.sort((a,b)=>a.length-b.length);return {home:[...home],points:options[0]?.points||[],blocked:!options.length};
 }
 export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600}){
  dt=clamp(dt,0,.05);const homeVelocity=d.lastHome?home.map((v,i)=>clamp((v-d.lastHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastHome=[...home];const spec=DRONE_CLASSES[type]||DRONE_CLASSES.scout,events=[];d.cooldown=Math.max(0,d.cooldown-dt);d.scanCooldown=Math.max(0,d.scanCooldown-dt);
@@ -59,9 +90,15 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
   if(d.mode==='HOLD')target.splice(0,3,...d.hold);
   else if(d.mode==='ORBIT'){const angle=d.travel*.035;target.splice(0,3,home[0]+Math.sin(angle)*14,home[1]+12,home[2]+Math.cos(angle)*14);}
   else if(d.mode==='FOLLOW'||d.mode==='SCOUT AHEAD'){const ahead=d.mode==='SCOUT AHEAD'?65:7;target.splice(0,3,home[0]-Math.sin(yaw)*ahead+Math.cos(yaw)*4,home[1]+(d.mode==='SCOUT AHEAD'?22:7),home[2]-Math.cos(yaw)*ahead-Math.sin(yaw)*4);}
-  else {target.splice(0,3,...home);if(Math.hypot(d.pos[0]-home[0],d.pos[2]-home[2])>5)target[1]=Math.max(home[1]+10,d.pos[1]);}
+  else {
+   if(!d.returnPlan||distance(d.returnPlan.home,home)>1)d.returnPlan=coveredReturnPlan(d.pos,home,solids)||{home:[...home],open:true};
+   if(!d.returnPlan.open){
+    const points=d.returnPlan.points;while(points.length>1&&distance(d.pos,points[0])<.45&&Math.hypot(...d.velocity)<1.1)points.shift();
+    target.splice(0,3,...(points[0]||d.pos));if(d.returnPlan.blocked)d.reason='Return path blocked · move the bike into the open';
+   }else{target.splice(0,3,...home);if(Math.hypot(d.pos[0]-home[0],d.pos[2]-home[2])>5)target[1]=Math.max(home[1]+10,d.pos[1]);}
+  }
   // Climb above an obstructing volume before proceeding. Never teleport across it.
-  if(obstruction(d.pos,target,solids)){let top=12;for(const b of solids)if(b.drone!==false&&obstruction(d.pos,target,[b]))top=Math.max(top,b.maxY??12);target[1]=Math.max(target[1],top+5);if(d.pos[1]<top+3){target[0]=d.pos[0];target[2]=d.pos[2];}}
+  if((d.mode!=='RETURN HOME'||d.returnPlan?.open)&&obstruction(d.pos,target,solids)){let top=12;for(const b of solids)if(b.drone!==false&&obstruction(d.pos,target,[b]))top=Math.max(top,b.maxY??12);target[1]=Math.max(target[1],top+5);if(d.pos[1]<top+3){target[0]=d.pos[0];target[2]=d.pos[2];}}
   const delta=target.map((v,i)=>v-d.pos[i]),horizontal=Math.hypot(delta[0],delta[2]),speed=Math.min(spec.speed,horizontal*1.3,Math.sqrt(2*spec.acceleration*horizontal)*.72);
   desired=[horizontal?delta[0]/horizontal*speed:0,clamp(delta[1]*1.8,-spec.climb,spec.climb),horizontal?delta[2]/horizontal*speed:0];if(['FOLLOW','SCOUT AHEAD','RETURN HOME'].includes(d.mode)){desired[0]+=homeVelocity[0];desired[2]+=homeVelocity[2];const factor=Math.min(1,spec.speed/Math.max(.001,Math.hypot(desired[0],desired[2])));desired[0]*=factor;desired[2]*=factor;}
  }
