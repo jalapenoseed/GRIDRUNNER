@@ -32,7 +32,7 @@ export class Immersion{
   }));this.sky.frustumCulled=false;this.sky.name='AtmosphereSky';scene.add(this.sky);
   const lamp=new T.SpotLight(0xd5f5f0,75,100,.42,.7,1.4);this.headlight=lamp;scene.add(lamp,lamp.target);this.droneLight=new T.PointLight(0x61e4e2,9,24,1.6);scene.add(this.droneLight);
   const fill=new T.HemisphereLight(0x9db5c5,0x3e352e,.5);scene.add(fill);this.fill=fill;
-  sun.castShadow=true;sun.shadow.camera.left=-75;sun.shadow.camera.right=75;sun.shadow.camera.top=75;sun.shadow.camera.bottom=-75;sun.shadow.camera.near=1;sun.shadow.camera.far=500;sun.shadow.bias=-.00012;sun.shadow.normalBias=.045;scene.add(sun.target);
+  sun.castShadow=true;sun.shadow.camera.left=-75;sun.shadow.camera.right=75;sun.shadow.camera.top=75;sun.shadow.camera.bottom=-75;sun.shadow.camera.near=1;sun.shadow.camera.far=500;sun.shadow.bias=-.00012;sun.shadow.normalBias=.045;sun.shadow.camera.updateProjectionMatrix();scene.add(sun.target);
   scene.traverse(o=>{if(o.isMesh&&o!==this.sky){o.receiveShadow=true;if(o.geometry?.attributes.position?.count<25000)o.castShadow=true;}});
   // Reproducible instancing: vegetation, gravel, road wear and collapsed infrastructure.
   let seed=701;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};const dummy=new T.Object3D();

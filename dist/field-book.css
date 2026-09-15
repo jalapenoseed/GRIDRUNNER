@@ -48,3 +48,11 @@
 @media(prefers-reduced-motion:reduce){.prologue-copy{animation:none;}}
 body.reduce-motion .prologue-copy,body[data-reduce-motion=true] .prologue-copy{animation:none;}
 @media(max-width:650px){.folio-heading h2{font-size:34px!important;}.folio-tabs{display:grid;grid-template-columns:1fr 1fr;}.folio-tabs button{font-size:13px!important;}.folio-sheet{padding:23px 20px;}.folio-sheet>h2{font-size:29px!important;}.folio-kicker{font-size:11px;letter-spacing:.6px;}.manual-key-list{grid-template-columns:1fr;}.prologue-copy p{font-size:17px!important;line-height:1.7!important;}.prologue-page{min-height:0;}.prologue-controls>div:last-child{margin-left:auto;}.prologue-controls button{padding:10px 12px!important;}.story-record{grid-template-columns:32px 1fr;gap:13px;}.folio-signoff{flex-wrap:wrap;}}
+
+@media(max-width:650px){
+ .prologue-copy{margin:22px 0;}.prologue-copy h1{font-size:35px!important;margin:12px 0 18px!important;}
+ .prologue-copy p{font-size:16px!important;line-height:1.65!important;}.prologue-copy blockquote{font-size:18px;margin-top:18px;}
+ .prologue-page>.folio-kicker>span:last-child{white-space:nowrap;flex-shrink:0;}
+ .prologue-controls{gap:8px;padding-top:16px!important;}.prologue-controls>div{gap:4px;}
+ .prologue-controls button{font-size:12px!important;padding:8px 9px!important;}.story-pagination button{padding:8px!important;}
+}
