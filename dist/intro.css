@@ -1,0 +1,12 @@
+body.intro-quiet #navigation,
+body.intro-quiet #charging,
+body.intro-quiet #dronePanel,
+body.intro-quiet #droneCommands,
+body.intro-quiet #opticsBar,
+body.intro-quiet #telemetry,
+body.intro-quiet #flightStrip,
+body.intro-quiet #yardProgress{display:none !important;}
+body.intro-quiet footer button[data-act="map"],
+body.intro-quiet footer button[data-act="scan"],
+body.intro-quiet #quickBtn{opacity:.28;pointer-events:none;}
+body.intro-quiet #quest{max-width:min(92vw,22rem);}
