@@ -1,4 +1,5 @@
 // Experience describes activity; profiles change presentation, never physics.
+import {segmentCandidates} from './spatial-index.js';
 export const PROFILES={
  walking:[{id:'eyes',label:'First person',distance:0,height:0,fov:-3},{id:'shoulder',label:'Over shoulder',distance:3,height:.4,side:.65,fov:-3},{id:'third',label:'Third person',distance:6,height:1.4,fov:0}],
  bike:[{id:'helmet',label:'Helmet',distance:0,height:0,fov:0},{id:'bars',label:'Handlebar',distance:0,height:-.4,front:.55,fov:4},{id:'chase',label:'Close chase',distance:5,height:1.6,fov:0},{id:'wide',label:'Wide chase',distance:9,height:3,fov:4}],
@@ -15,4 +16,3 @@ export function selectedProfile(preferences,state){return PROFILES[state].find(p
 // Segment-vs-AABB clipping: camera stops before walls instead of looking through them.
 export function clipCamera(anchor,wanted,solids){let fraction=1;const delta=wanted.map((v,i)=>v-anchor[i]);for(const b of segmentCandidates(solids,anchor,wanted,.2)){const lo=[b.x-b.w,(b.minY??-100)-.18,b.z-b.d],hi=[b.x+b.w,(b.maxY??100)+.18,b.z+b.d];let enter=0,leave=1,hit=true;for(let i=0;i<3;i++){if(Math.abs(delta[i])<1e-8){if(anchor[i]<lo[i]||anchor[i]>hi[i]){hit=false;break;}}else{let a=(lo[i]-anchor[i])/delta[i],z=(hi[i]-anchor[i])/delta[i];if(a>z)[a,z]=[z,a];enter=Math.max(enter,a);leave=Math.min(leave,z);if(enter>leave){hit=false;break;}}}if(hit&&leave>=0&&enter<=1)fraction=Math.min(fraction,Math.max(0,enter-.04));}return anchor.map((v,i)=>v+delta[i]*fraction);}
 export function cameraPose(s,profile,{distance=1,height=1}={}){const [x,y,z]=s.pos.toArray?s.pos.toArray():s.pos,yaw=s.yaw,back=profile.distance*distance,side=profile.side||0,front=profile.front||0;return [x+Math.sin(yaw)*(back-front)+Math.cos(yaw)*side,y+profile.height*height,z+Math.cos(yaw)*(back-front)-Math.sin(yaw)*side];}
-import {segmentCandidates} from './spatial-index.js';
