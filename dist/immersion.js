@@ -30,7 +30,7 @@ export class Immersion{
      #include <colorspace_fragment>
     }`
   }));this.sky.frustumCulled=false;this.sky.name='AtmosphereSky';scene.add(this.sky);
-  const lamp=new T.SpotLight(0xd5f5f0,75,100,.42,.7,1.4);this.headlight=lamp;scene.add(lamp,lamp.target);this.droneLight=new T.SpotLight(0xe3fff5,70,85,.48,.65,1.3);scene.add(this.droneLight,this.droneLight.target);
+  const lamp=new T.SpotLight(0xd5f5f0,75,100,.42,.7,1.4);this.headlight=lamp;scene.add(lamp,lamp.target);this.droneLight=new T.SpotLight(0xe3fff5,180,100,.5,.65,1.3);scene.add(this.droneLight,this.droneLight.target);
   const fill=new T.HemisphereLight(0x9db5c5,0x3e352e,.5);scene.add(fill);this.fill=fill;
   sun.castShadow=true;sun.shadow.camera.left=-75;sun.shadow.camera.right=75;sun.shadow.camera.top=75;sun.shadow.camera.bottom=-75;sun.shadow.camera.near=1;sun.shadow.camera.far=500;sun.shadow.bias=-.00012;sun.shadow.normalBias=.045;sun.shadow.camera.updateProjectionMatrix();scene.add(sun.target);
   scene.traverse(o=>{if(o.isMesh&&o!==this.sky){o.receiveShadow=true;if(o.geometry?.attributes.position?.count<25000)o.castShadow=true;}});

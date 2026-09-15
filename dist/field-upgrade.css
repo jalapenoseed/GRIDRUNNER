@@ -18,3 +18,12 @@ body.interface-ready #hud .meter>div{height:2px;}body.interface-ready #opticsBar
 body.menu-open #fieldControls,body.menu-open #rfReadout{visibility:hidden;}
 @media(max-width:600px){#fieldControls{top:61px;left:14px;right:14px;justify-content:flex-end;gap:4px;}#fieldControls button{font-size:8px;padding:4px 6px;min-height:36px;}#rfReadout{top:155px;width:210px;font-size:9px;}body.interface-ready #joystick{width:78px;height:78px;bottom:120px;}body.interface-ready[data-mode=drone] #droneHUD{top:103px;padding:6px 10px;}body.interface-ready #droneHUD .droneHeader{margin-bottom:4px;}body.interface-ready #droneHUD .telemetryGrid b{font-size:12px;}.lootWindow,.bikeBrief{padding:18px;}.lootWindow h2,.bikeBrief h2{font-size:26px;}#overlay[data-screen=bikeintro]{padding:12px;}#overlay[data-screen=loot]{padding:12px;}.lootRows button{gap:10px;}.lootActions button{font-size:10px;}.bikeBrief button{font-size:9px;}}
 @media(max-height:500px) and (orientation:landscape){#fieldControls{top:8px;right:85px;left:auto;}body.interface-ready #joystick{width:72px;height:72px;bottom:64px;}#overlay[data-screen=bikeintro] #panel{width:min(640px,95vw);}.bikeBrief{padding:15px;}.bikeBrief h2{font-size:24px;margin:7px 0;}.bikeBrief p{margin:6px 0;}.bikeBrief>div{margin-top:10px;}}
+body.interface-ready #overlay:is([data-screen=loot],[data-screen=bikeintro]){backdrop-filter:none;background:#04111644;padding:20px;}
+body.interface-ready #overlay[data-screen=bikeintro]{padding-bottom:35px;}
+#panel .lootWindow h2,#panel .bikeBrief h2{font-family:Georgia,serif;font-size:30px;font-weight:400;}
+#panel .lootWindow p,#panel .bikeBrief p{font-size:13px;line-height:1.6;}
+#panel .lootRows button{display:flex;gap:15px;font-size:12px;}
+#panel .lootWindow .eyebrow,#panel .bikeBrief .eyebrow{font-size:10px;}
+body.interface-ready.power-active[data-hud-mode=field] #charging{display:block!important;}
+@media(max-width:600px){body.interface-ready #overlay:is([data-screen=loot],[data-screen=bikeintro]){padding:12px;}#panel .lootWindow h2,#panel .bikeBrief h2{font-size:26px;}#panel .lootActions button,#panel .bikeBrief button{font-size:10px;}}
+@media(max-width:600px){body.interface-ready #fieldVitals{top:17px;right:76px;bottom:auto;gap:5px;}body.interface-ready #fieldVitals .field-vital{min-width:43px;}body.interface-ready #fieldVitals .field-vital b{font-size:14px;}body.interface-ready #fieldVitals .field-vital .atlasIcon{transform:scale(.55);}}
