@@ -63,7 +63,7 @@ export class Immersion{
   this.sparks=new T.Points(new T.BufferGeometry(),new T.PointsMaterial({color:0x8ffff0,size:.2,transparent:true,opacity:.8,depthWrite:false}));this.sparks.geometry.setAttribute('position',new T.BufferAttribute(new Float32Array(36*3),3));scene.add(this.sparks);
  }
  apply(settings,leg=1){
-  const preset=PRESETS[settings.graphics]||PRESETS.MEDIUM;this.preset=preset;this.renderer.setPixelRatio(Math.min(devicePixelRatio,preset.ratio));this.renderer.shadowMap.enabled=!!preset.shadows;
+  const preset=PRESETS[settings.graphics]||PRESETS.MEDIUM;this.preset=preset;this.renderer.setPixelRatio(Math.min(devicePixelRatio,preset.ratio));if(this.renderer.shadowMap.enabled!==!!preset.shadows)this.scene.traverse(o=>{for(const m of o.material?(Array.isArray(o.material)?o.material:[o.material]):[])m.needsUpdate=true;});this.renderer.shadowMap.enabled=!!preset.shadows;
   if(this.sun.shadow.mapSize.x!==(preset.shadows||512)){this.sun.shadow.map?.dispose();this.sun.shadow.map=null;this.sun.shadow.mapSize.setScalar(preset.shadows||512);}
   for(const m of this.instances)m.count=Math.floor(m.userData.maxCount*preset.clutter);this.particles.geometry.setDrawRange(0,preset.particles);
   const p=palettes[leg],night=settings.weather==='night',storm=settings.weather==='sandstorm';this.sky.material.uniforms.top.value.setHex(night?0x040914:p.top);this.sky.material.uniforms.bottom.value.setHex(night?0x1b3445:storm?0x9b8162:p.horizon);

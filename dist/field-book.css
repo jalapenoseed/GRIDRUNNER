@@ -39,7 +39,7 @@
 .prologue-copy h1{font:500 clamp(36px,4.8vw,64px)/1.02 'Barlow Condensed','Arial Narrow',sans-serif!important;letter-spacing:-.3px!important;color:#eee7d5;margin:16px 0 24px!important;}
 .prologue-copy p{font:18px/1.8 Georgia,serif!important;color:#cbd5cb!important;margin:12px 0!important;max-width:65ch;}
 .prologue-copy blockquote{margin:25px 0 0;padding:5px 0 5px 20px;border-left:2px solid #c0a575;font:italic 20px/1.5 Georgia,serif;color:#d5ba8d;}
-.prologue-controls{position:static!important;display:flex!important;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;margin-top:auto;padding:23px 0 0!important;border:0!important;border-top:1px solid #91a7963b!important;background:none!important;transform:none!important;}
+.prologue-controls{position:static!important;display:flex!important;height:auto!important;flex-shrink:0;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;margin-top:auto;padding:23px 0 0!important;border:0!important;border-top:1px solid #91a7963b!important;background:none!important;transform:none!important;}
 .prologue-controls>div{display:flex;gap:8px;}
 .prologue-controls button{min-height:44px;font-size:14px!important;padding:10px 17px!important;}
 .story-pagination button{color:#9bafa5;background:none!important;padding:8px 12px!important;border:0!important;border-bottom:2px solid transparent!important;}
@@ -54,5 +54,5 @@ body.reduce-motion .prologue-copy,body[data-reduce-motion=true] .prologue-copy{a
  .prologue-copy p{font-size:16px!important;line-height:1.65!important;}.prologue-copy blockquote{font-size:18px;margin-top:18px;}
  .prologue-page>.folio-kicker>span:last-child{white-space:nowrap;flex-shrink:0;}
  .prologue-controls{gap:8px;padding-top:16px!important;}.prologue-controls>div{gap:4px;}
- .prologue-controls button{font-size:12px!important;padding:8px 9px!important;}.story-pagination button{padding:8px!important;}
+ .prologue-controls button{font-size:12px!important;padding:8px 9px!important;white-space:nowrap;}.story-pagination button{padding:8px!important;min-width:28px!important;}
 }
