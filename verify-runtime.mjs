@@ -1,4 +1,8 @@
+import {GamePhysics} from './dist/physics-world.js';
+import {AmbientResidents} from './dist/ambient-residents.js';
+import {buildCampRoutes} from './dist/camp-navigation.js';
 import * as onboarding from './dist/onboarding.js';
+import {SpatialIndex} from './dist/spatial-index.js';
 import {Sensors} from './dist/sensors.js';
 import * as fieldUpgrade from './dist/field-upgrade.js';
 import * as squadron from './dist/squadron.js';
@@ -37,8 +41,10 @@ w.HTMLCanvasElement.prototype.getContext=()=>context2d;
 w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};w.document.exitPointerLock=()=>{};w.HTMLCanvasElement.prototype.requestPointerLock=()=>Promise.resolve();
 let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={render:{calls:0}};}setPixelRatio(){}setSize(){}render(scene,camera){assert(scene.isScene&&camera.isPerspectiveCamera);frames++;}}
 const ctx=vm.createContext({...onboarding,Sensors,...fieldUpgrade,...squadron,SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
+ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\n/gm,'');
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
+await run('spatial.ready');await run('ambientResidents.ready');assert.equal(run('spatial.status'),'ready');assert.equal(run('ambientResidents.status'),'ready');
 const tick=(seconds)=>{for(let i=0;i<seconds*50;i++)run('update(.02)');run('hud();loop(performance.now()+20)');};
 vm.runInContext(`function newCampaign(){newExpedition();s.intro=completedIntro();s.mode='bike';s.pos.set(bike.position.x,1.7,bike.position.z);hud();}`,ctx);
 assert.equal(run('screen'),'prologue');assert.equal(run('started'),false);w.document.querySelector('[data-story-action=next]').click();assert.equal(run('storyPage'),1);w.document.querySelector('[data-story-action=next]').click();w.document.querySelector('[data-story-action=finish]').click();assert.equal(run('screen'),'start');assert.equal(run('started'),false);assert(w.document.querySelector('#panel').textContent.includes('v7'));

@@ -1,4 +1,5 @@
 // Drone 2.0: renderer-independent vehicle simulation. Distances are world metres.
+import {solidList,segmentCandidates} from './spatial-index.js';
 export const DRONE_CLASSES = Object.freeze({
  scout: {name:'Scout',speed:38,climb:12,acceleration:13,drag:2.6,range:420,scan:150,drain:.12,abilities:['scan','relay'],available:true},
  engineer: {name:'UTILITY-01',speed:34,climb:10,acceleration:10,drag:2.8,range:340,scan:115,drain:.16,abilities:['scan','relay','perch','security'],available:true},
@@ -27,7 +28,7 @@ export function commandDrone(d,command,home,battery,solids=[]){
  if(d.mode==='LANDED'&&distance(d.pos,home)>9)return false;
  if(!['DOCK','RETURN HOME'].includes(command)&&(battery<5||d.hp<10))return false;
  if(d.mode==='DOCK'||d.mode==='LANDED'){
-  const clearance=solids.filter(b=>b.drone!==false).map(padded),launch=[...home];
+  const clearance=solidList(solids).filter(b=>b.drone!==false).map(padded),launch=[...home];
   // A covered parking bay launches below its roof; deployment must never move
   // the aircraft through a solid canopy before physics gets its first frame.
   for(let rise=.15;rise<=3.001;rise+=.15){const next=[home[0],home[1]+rise,home[2]];if(obstruction(home,next,clearance))break;launch[1]=next[1];}
@@ -39,20 +40,20 @@ const padded=b=>({...b,w:b.w+.55,d:b.d+.55,minY:(b.minY??0)-.55,maxY:(b.maxY??12
 export function obstruction(a,b,solids){
  // Slab intersection: bounded CPU cost, true 3D roofs rather than infinite walls.
  let count=0;
- for(const s of solids){if(s.drone===false)continue;let lo=0,hi=1;
+ for(const s of segmentCandidates(solids,a,b)){if(s.drone===false)continue;let lo=0,hi=1;
   const min=[s.x-s.w,s.minY??0,s.z-s.d],max=[s.x+s.w,s.maxY??12,s.z+s.d];
   for(let axis=0;axis<3;axis++){const delta=b[axis]-a[axis];if(Math.abs(delta)<1e-8){if(a[axis]<min[axis]||a[axis]>max[axis]){hi=-1;break;}}else{const u=(min[axis]-a[axis])/delta,v=(max[axis]-a[axis])/delta;lo=Math.max(lo,Math.min(u,v));hi=Math.min(hi,Math.max(u,v));}}
   if(hi>=lo&&hi>0&&lo<1)count++;
  }return count;
 }
 function coveredReturnPlan(pos,home,solids){
- const roofs=solids.filter(b=>b.drone!==false&&(b.minY??0)>home[1]+.6),covers=roofs.filter(b=>Math.abs(home[0]-b.x)<b.w+.55&&Math.abs(home[2]-b.z)<b.d+.55);
+ const list=solidList(solids),roofs=list.filter(b=>b.drone!==false&&(b.minY??0)>home[1]+.6),covers=roofs.filter(b=>Math.abs(home[0]-b.x)<b.w+.55&&Math.abs(home[2]-b.z)<b.d+.55);
  if(!covers.length)return null;
- const obstacles=solids.filter(b=>b.drone!==false).map(padded),clear=(a,b)=>!obstruction(a,b,obstacles);
+ const obstacles=list.filter(b=>b.drone!==false).map(padded),clear=(a,b)=>!obstruction(a,b,obstacles);
  // Manual flight may stop 0.4 m from a ceiling, inside the planner's larger
  // 0.55 m comfort margin. The first retreat uses the actual collision shell,
  // otherwise a safe descent is incorrectly classified as starting in a wall.
- const physical=solids.filter(b=>b.drone!==false).map(b=>({...b,w:b.w+.4,d:b.d+.4,minY:(b.minY??0)-.4,maxY:(b.maxY??12)+.4}));
+ const physical=list.filter(b=>b.drone!==false).map(b=>({...b,w:b.w+.4,d:b.d+.4,minY:(b.minY??0)-.4,maxY:(b.maxY??12)+.4}));
  const clearStart=(a,b)=>!obstruction(a,b,physical);
  if(clearStart(pos,home))return {home:[...home],points:[[...home]]};
  // Combine touching roof strips so the approach is outside the whole canopy,
@@ -98,7 +99,7 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
    }else{target.splice(0,3,...home);if(Math.hypot(d.pos[0]-home[0],d.pos[2]-home[2])>5)target[1]=Math.max(home[1]+10,d.pos[1]);}
   }
   // Climb above an obstructing volume before proceeding. Never teleport across it.
-  if((d.mode!=='RETURN HOME'||d.returnPlan?.open)&&obstruction(d.pos,target,solids)){let top=12;for(const b of solids)if(b.drone!==false&&obstruction(d.pos,target,[b]))top=Math.max(top,b.maxY??12);target[1]=Math.max(target[1],top+5);if(d.pos[1]<top+3){target[0]=d.pos[0];target[2]=d.pos[2];}}
+  if((d.mode!=='RETURN HOME'||d.returnPlan?.open)&&obstruction(d.pos,target,solids)){let top=12;for(const b of segmentCandidates(solids,d.pos,target))if(b.drone!==false&&obstruction(d.pos,target,[b]))top=Math.max(top,b.maxY??12);target[1]=Math.max(target[1],top+5);if(d.pos[1]<top+3){target[0]=d.pos[0];target[2]=d.pos[2];}}
   const delta=target.map((v,i)=>v-d.pos[i]),horizontal=Math.hypot(delta[0],delta[2]),speed=Math.min(spec.speed,horizontal*1.3,Math.sqrt(2*spec.acceleration*horizontal)*.72);
   desired=[horizontal?delta[0]/horizontal*speed:0,clamp(delta[1]*1.8,-spec.climb,spec.climb),horizontal?delta[2]/horizontal*speed:0];if(['FOLLOW','SCOUT AHEAD','RETURN HOME'].includes(d.mode)){desired[0]+=homeVelocity[0];desired[2]+=homeVelocity[2];const factor=Math.min(1,spec.speed/Math.max(.001,Math.hypot(desired[0],desired[2])));desired[0]*=factor;desired[2]*=factor;}
  }
@@ -123,7 +124,7 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
  if(d.mode==='MANUAL'&&wind>0){d.velocity[0]+=Math.sin(elapsed*.7)*wind*dt*1.6;d.velocity[2]+=Math.cos(elapsed*.43)*wind*dt*.8;}
  let proposed=d.pos.map((v,i)=>v+d.velocity[i]*dt);proposed[0]=clamp(proposed[0],-600,600);proposed[2]=clamp(proposed[2],floorZ,230);
  const ground=terrain(proposed[0],proposed[2])+.65;
- const collision=proposed[1]<ground||proposed[1]>200||solids.some(b=>b.drone!==false&&obstruction(old,proposed,[{...b,w:b.w+.4,d:b.d+.4,minY:(b.minY??0)-.4,maxY:(b.maxY??12)+.4}])>0);
+ const collision=proposed[1]<ground||proposed[1]>200||(solids?.sweepDrone?.(old,proposed)??segmentCandidates(solids,old,proposed,.4).some(b=>b.drone!==false&&obstruction(old,proposed,[{...b,w:b.w+.4,d:b.d+.4,minY:(b.minY??0)-.4,maxY:(b.maxY??12)+.4}])>0));
  if(collision){const impact=Math.hypot(...d.velocity);if(d.cooldown===0&&impact>3){d.hp=clamp(d.hp-(impact-3)*1.2,0,100);d.cooldown=.8;events.push('damage');}d.velocity=d.velocity.map(v=>v*-.12);proposed=[...d.pos];proposed[1]=clamp(proposed[1],ground,200);}d.pos=proposed;
  d.speed=distance(d.pos,old)/Math.max(.001,dt);d.travel+=distance(d.pos,old);d.altitude=d.pos[1]-terrain(d.pos[0],d.pos[2]);
  if(d.mode==='RETURN HOME'&&distance(d.pos,home)<1.3&&Math.hypot(...d.velocity.map((v,i)=>v-homeVelocity[i]))<4){d.mode='DOCK';d.pos=[...home];d.velocity=[0,0,0];d.reason='Docked';events.push('dock');}

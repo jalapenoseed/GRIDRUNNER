@@ -1,5 +1,7 @@
 # GRIDRUNNER v7 developer guide
 
+For the current physics/navigation modules, engine rebuild commands and pending library checklist, see [v7.15 integrations](INTEGRATIONS-v7.15.md). The sections below describe the original v7 foundation.
+
 ## Scope and provenance
 
 This is an upgrade of the canonical Legs 1–3 ZIP, not a rewrite. The original campaign, geometry, inventory, generators, input and saves remain the foundation. New reusable drone and presentation systems attach to the existing game. `QA-v7.md` records the baseline hash, tests and unresolved GPU validation. The source download contains the untouched original ZIP for comparison.

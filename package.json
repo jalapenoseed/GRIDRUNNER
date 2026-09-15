@@ -1,14 +1,20 @@
 {
   "name": "gridrunner",
   "private": true,
-  "version": "7.13.0",
+  "version": "7.15.0",
   "type": "module",
   "scripts": {
     "dev": "vite --config vite.config.js",
-    "test": "node verify-game.mjs && node verify-drone.mjs && node verify-audio.mjs && node verify-runtime.mjs && node verify-survival.mjs && node verify-experience.mjs && node verify-gamepad.mjs && node verify-relay.mjs && node verify-assets.mjs && node verify-flight-yard.mjs && node verify-fleet.mjs && node verify-lighting.mjs && node verify-scene-layout.mjs"
+    "test": "node verify-game.mjs && node verify-drone.mjs && node verify-audio.mjs && node verify-runtime.mjs && node verify-survival.mjs && node verify-experience.mjs && node verify-gamepad.mjs && node verify-relay.mjs && node verify-assets.mjs && node verify-flight-yard.mjs && node verify-fleet.mjs && node verify-lighting.mjs && node verify-scene-layout.mjs && node verify-spatial.mjs && node verify-engines.mjs",
+    "vendor:engines": "node scripts/vendor-engines.mjs",
+    "test:engines": "node verify-engines.mjs",
+    "test:browser": "node verify-browser.mjs"
   },
   "devDependencies": {
+    "@dimforge/rapier3d-compat": "0.20.0",
+    "esbuild": "0.25.12",
     "jsdom": "^30.0.1",
+    "recast-navigation": "0.43.1",
     "vite": "6.1.0"
   }
 }
