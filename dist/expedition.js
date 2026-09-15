@@ -9,7 +9,7 @@ export function pedalStep({battery,stamina,speed,forward,pedaling,road,weight,re
  const human=battery<=0||pedaling;
  const effort=human&&forward>0;
  const target=forward>0?(human?(stamina>0?(road?5:3.5)/(1+weight/65):1.2):(road?30:20))*forward:forward<0?-4:0;
- return {target,stamina:Math.max(0,stamina+dt*(effort?-6*(1+weight/65):9)),human,mode:forward<0&&speed>1&&regen?'REGEN':human?'HUMAN':battery<40?'ASSIST':'FULL'};
+ return {target,stamina:Math.max(0,Math.min(100,stamina+dt*(effort?-6*(1+weight/65):9))),human,mode:forward<0&&speed>1&&regen?'REGEN':human?'HUMAN':battery<40?'ASSIST':'FULL'};
 }
 export function generationStep(mode,{fuel,reserve,daylight,stopped,flowing=false},dt){
  if(!stopped||reserve>=40)return {gain:0,fuelUsed:0};
