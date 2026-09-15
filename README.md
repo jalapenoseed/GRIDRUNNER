@@ -2,23 +2,23 @@
 
 Desert expedition. Ride, scout, scavenge, survive.
 
-**[Play live — v7.6](https://jalapenoseed.github.io/GRIDRUNNER/)** · live site (`main`)
+**[Play live — v7.6](https://jalapenoseed.github.io/GRIDRUNNER/)**
 
-**[Play v8 — Quiet Start](https://cdn.jsdelivr.net/gh/jalapenoseed/GRIDRUNNER@grok/dist/index.html)** · tutorial build (`grok` branch)
+**[Play v8 — Quiet Start](https://raw.githack.com/jalapenoseed/GRIDRUNNER/grok/dist/index.html)**
 
-If v8 is a blank page, hard-refresh or open the link in a new tab. It loads from the `grok` branch, not Pages.
+After Pages rebuilds: [github.io/GRIDRUNNER/v8.html](https://jalapenoseed.github.io/GRIDRUNNER/v8.html) (same destination).
+
+The jsDelivr link was raw source. raw.githack serves the HTML as a game.
 
 ## v8 Quiet Start
 
-New expeditions begin **on foot**. The bike is ahead of you.
+New expeditions begin on foot. Bike is ahead.
 
-1. Walk to the motorcycle — **F** mounts.
-2. Ride to the first crate (east) — **E** salvages wire and cells.
-3. **Q** launches the scout. Look around. **Q** docks it.
-4. Ride to Mara at the camp — **E** talks. Line opens.
+1. **F** mount
+2. **E** first crate (east)
+3. **Q** scout, **Q** dock
+4. **E** Mara — line opens
 
-Until Mara, the extra HUD (map, hangar, charger panel) stays off. Raiders do not shoot. Old saves skip the tutorial.
+[QUIET-START-v7.8.md](QUIET-START-v7.8.md) · [CHANGELOG-v7.8.md](CHANGELOG-v7.8.md)
 
-Full notes: [QUIET-START-v7.8.md](QUIET-START-v7.8.md) · [CHANGELOG-v7.8.md](CHANGELOG-v7.8.md)
-
-Work for v8 lives on the **`grok`** branch. `main` stays the public v7.6 site.
+`grok` is the v8 branch. `main` stays the public v7.6 site.
