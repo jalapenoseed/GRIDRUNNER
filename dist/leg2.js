@@ -1,4 +1,4 @@
-import * as T from './three.js';
+import * as T from './three.js'; import {boxSolid,coneSolids} from './world-collision.js';
 import {heightAt} from './visuals.js';
 import {sceneryAllowed} from './scene-layout.js';
 export const leg2Defaults={leg:1,calMet:false,intakeCleared:false,phaseNote:false,phaseStep:0,hydroRestored:false,relayPowered:false,leg2Won:false,leg2Cache:false};
@@ -28,9 +28,9 @@ export function phaseInput(s,phase){
  return {step,restored:step===3,message:step===3?'Waterworks restored. River turbine charging is available.':step===0?'Sequence rejected. Breakers reset; check your note.':'Feed '+phase+' latched. Continue the sequence.'};
 }
 export function hydroAvailable(s,trailer){return s.leg===2&&s.calMet&&s.intakeCleared&&Math.hypot(trailer.x-60,trailer.z+2340)<85;}
-export function makeLegTwoWorld(scene,makePerson){
+export function makeLegTwoWorld(scene,makePerson,solids=[]){
  const g=new T.Group(),mats=new Map();const mat=c=>{if(!mats.has(c))mats.set(c,new T.MeshStandardMaterial({color:c,roughness:.88}));return mats.get(c);};
- function box(x,y,z,w,h,d,c){const m=new T.Mesh(new T.BoxGeometry(w,h,d),mat(c));m.position.set(x,y,z);g.add(m);return m;}
+ function box(x,y,z,w,h,d,c){const m=new T.Mesh(new T.BoxGeometry(w,h,d),mat(c));m.position.set(x,y,z);g.add(m);boxSolid(solids,x,y,z,w,h,d);return m;}
  function sign(x,z,text){const c=document.createElement('canvas');c.width=512;c.height=128;const a=c.getContext('2d');a.fillStyle='#11252a';a.fillRect(0,0,512,128);a.strokeStyle='#66c9c9';a.lineWidth=6;a.strokeRect(3,3,506,122);a.fillStyle='#d5e7df';a.font='bold 30px monospace';a.textAlign='center';a.fillText(text,256,75);const tex=new T.CanvasTexture(c),m=new T.Mesh(new T.PlaneGeometry(8,2),new T.MeshBasicMaterial({map:tex,side:T.DoubleSide}));m.position.set(x,3,z);g.add(m);box(x-3.5,1.2,z,.12,2.5,.12,0x505e5f);box(x+3.5,1.2,z,.12,2.5,.12,0x505e5f);}
  // Join the basin road at -1755 and the industrial road at -3150. The old
  // slabs overlapped by 30 m at exactly the same height, flickering at the seam.
@@ -44,7 +44,7 @@ export function makeLegTwoWorld(scene,makePerson){
  box(47,2,-1818,15,4,8,0x585b4e);box(45,.5,-1810,2,1,2,0x747b63);g.add(makePerson(49,-1810,0x72806b));
  box(-35,.7,-2720,3,1.4,2,0x846c42);box(14,5,-3035,24,10,18,0x505e61);box(0,1.5,-3024,3,3,2,0x3d555b);
  const lights=[];for(const z of [-1817,-2348,-3030]){box(22,6,z,.16,12,.16,0x556464);const lamp=new T.Mesh(new T.SphereGeometry(.4,8,6),new T.MeshBasicMaterial({color:0x223b3a}));lamp.position.set(22,12,z);g.add(lamp);lights.push(lamp);}
- for(let i=0;i<18;i++){const side=i%2?1:-1,z=-1800-i*75,radius=30+i%4*7,h=45+i%3*12;let x=side*(175+(i%3)*30);for(let attempt=0;attempt<8&&!sceneryAllowed(x,z,radius);attempt++)x+=side*25;if(!sceneryAllowed(x,z,radius))continue;const rock=new T.Mesh(new T.ConeGeometry(radius,h,5),mat(0x81705c));rock.position.set(x,heightAt(x,z)+h*.34,z);rock.rotation.y=i;g.add(rock);}
+ for(let i=0;i<18;i++){const side=i%2?1:-1,z=-1800-i*75,radius=30+i%4*7,h=45+i%3*12;let x=side*(175+(i%3)*30);for(let attempt=0;attempt<8&&!sceneryAllowed(x,z,radius);attempt++)x+=side*25;if(!sceneryAllowed(x,z,radius))continue;const rock=new T.Mesh(new T.ConeGeometry(radius,h,5),mat(0x81705c));rock.position.set(x,heightAt(x,z)+h*.34,z);rock.rotation.y=i;g.add(rock);coneSolids(solids,x,rock.position.y,z,radius,h);}
  sign(0,-1720,'LEG 2 / THE SPILLWAY');sign(38,-1800,'CAL / FIELD CAMP');sign(60,-2324,'TURBINE DOCK');sign(-9,-3000,'NORTH RELAY');
  // Merge static untextured geometry to keep the extended route inexpensive to draw.
  const batches=new Map();for(const m of [...g.children]){if(!m.isMesh||!m.material.isMeshStandardMaterial)continue;m.updateMatrix();const geo=m.geometry.index?m.geometry.toNonIndexed():m.geometry.clone();geo.applyMatrix4(m.matrix);if(!batches.has(m.material))batches.set(m.material,[]);batches.get(m.material).push(geo);g.remove(m);m.geometry.dispose();}

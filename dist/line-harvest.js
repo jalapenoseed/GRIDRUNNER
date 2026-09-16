@@ -28,7 +28,7 @@ export function assignLineHarvest(record,options){
  if(record.battery<25||record.system.hp<30||record.system.mode==='LANDED')return {ok:false,reason:'Line harvest needs 25% battery, 30% hull and a recovered aircraft.'};
  if(record.taskSerial>=1e9)return {ok:false,reason:'Task sequence limit reached.'};
  const anchor=findLineAnchor(record,options);if(!anchor)return {ok:false,reason:'No clear energized conductor in link range. Move closer to the transmission corridor.'};
- if(!commandDrone(record.system,'SCOUT AHEAD',options.home,record.battery,options.solids))return {ok:false,reason:'Aircraft cannot depart. Release or recover it first.'};
+ if(!commandDrone(record.system,'SCOUT AHEAD',options.home,record.battery,options.solids,{type:record.type,payloadKg:carriedPack(options.state,record)?.massKg||0}))return {ok:false,reason:'Aircraft cannot depart. Release or recover it first.'};
  record.taskSerial++;
  record.task={version:1,id:record.id+':task:'+record.taskSerial,kind:'LINE',aircraftId:record.id,batteryId:record.batteryId,leg:options.state.leg,state:'RUNNING',stage:'APPROACH',destination:lineBody(anchor),anchor:{...anchor},elapsed:0,stageElapsed:0,dwell:0,scanned:false,contacts:0,reason:'LINE DETECTED / approaching conductor',harvestedWh:0,targetPercent:90};
  if(pack){record.task.packId=pack.id;record.task.deliveryTarget=[...options.trailerHome];}

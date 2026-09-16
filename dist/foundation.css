@@ -1,0 +1,7 @@
+#visionDetections{position:fixed;inset:0;pointer-events:none;z-index:12;overflow:hidden}
+.visionBox{position:absolute;border:1px solid #ffc369;box-shadow:0 0 0 1px #171c22a0}
+.visionBox span{position:absolute;top:0;left:0;background:#151c22e8;color:#ffcd82;padding:3px 5px;font:12px monospace;white-space:nowrap;max-width:90vw}
+#visionReadout{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);z-index:13;background:#131b24e8;color:#ffd08b;padding:7px 12px;font:12px monospace;pointer-events:none;max-width:80vw;text-align:center}
+.firstUse{padding:14px 18px;border-left:3px solid #72d7c9;background:#17292f;margin:0 0 18px;font-size:1rem;line-height:1.5}
+.firstUse p{margin:4px 0 10px}.firstUse button{font-size:.875rem}
+@media(max-width:700px){#visionReadout{bottom:155px}.visionBox span{font-size:12px}}

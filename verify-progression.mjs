@@ -27,3 +27,10 @@ assert.match(renderFleetPolicy(state),/80%/);assert.match(renderFleetPolicy(stat
 const migrated=validateFleetPolicy(undefined);assert.equal(migrated.targetPercent,60);assert.throws(()=>validateFleetPolicy({...migrated,targetPercent:55}));assert.throws(()=>validateFleetPolicy({...migrated,status:'x'.repeat(181)}));
 const later={...state,leg:2,progression:createCampaignProgress(),met:false,engineerBuilt:true,relayHouse:{schematicRead:false,discovered:false}};assert(campaignUnlocks(later).airframes.relay);assert(campaignUnlocks(later).packFabrication);
 console.log('PASS: quest-gated airframes/systems, persistent manual-delivery unlock, one-time cycle accounting, weather hold, safe pack loading, repeat dispatch, target selection and save validation.');
+
+record.task.state='FAILED';record.task.id='failed-after-arm';record.system.mode='DOCK';
+events=advanceFleetPolicy(state,record,{elapsed:50,nearTrailer:true,trailerStopped:true,trailerHome,home});assert(!state.fleetPolicy.enabled);assert.match(state.fleetPolicy.status,/Suspended/);assert(!events.includes('policy-dispatched'));
+assert(configureFleetPolicy(state,{enabled:true}).ok);events=advanceFleetPolicy(state,record,{elapsed:51,nearTrailer:true,trailerStopped:true,trailerHome,home});assert(events.includes('policy-dispatched'),'explicit re-arm acknowledges previous failed job');
+console.log('PASS: failed autonomous job disarms policy and requires explicit re-arm.');
+
+configureFleetPolicy(state,{enabled:true});const runningId=record.task.id;assert.equal(record.task.state,'RUNNING');record.task.state='FAILED';record.system.mode='DOCK';events=advanceFleetPolicy(state,record,{elapsed:60,nearTrailer:true,trailerStopped:true,trailerHome,home});assert.equal(record.task.id,runningId);assert(!state.fleetPolicy.enabled,'arming a running job does not acknowledge its later failure');assert(!events.includes('policy-dispatched'));

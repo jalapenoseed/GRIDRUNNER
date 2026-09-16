@@ -56,12 +56,12 @@ export function validateAircraftTask(record,source,leg=1){
 function finish(r,state,reason){r.task.state=state;r.task.reason=reason;r.task.dwell=0;}
 function complete(r){finish(r,'COMPLETED','Survey complete; docked at bike');r.task.stage='DONE';}
 function failAndReturn(r,reason,home,solids){finish(r,'FAILED',reason);if(!['DOCK','LANDED'].includes(r.system.mode))commandDrone(r.system,'RETURN HOME',home,r.battery,solids);}
-export function assignSurvey(record,{destination,leg=1,home,solids=[]}={}){
+export function assignSurvey(record,{destination,leg=1,home,solids=[],payloadKg=0}={}){
  if(hasLiveTask(record))return {ok:false,reason:'Pause/resume or cancel the current job first.'};
  if(!point(destination)||![1,2,3].includes(leg)||destination[2]<(leg===3?-4720:leg===2?-3200:-1600))return {ok:false,reason:'Survey point is outside this region.'};
  if(record.taskSerial>=1e9)return {ok:false,reason:'Task sequence limit reached.'};
  if(record.battery<25||record.system.hp<30)return {ok:false,reason:'Survey needs at least 25% battery and 30% hull.'};
- if(!commandDrone(record.system,'SCOUT AHEAD',home,record.battery,solids))return {ok:false,reason:'Recover the landed aircraft before assigning work.'};
+ if(!commandDrone(record.system,'SCOUT AHEAD',home,record.battery,solids,{type:record.type,payloadKg}))return {ok:false,reason:'Recover the landed aircraft before assigning work.'};
  record.taskSerial++;
  record.task={version:1,id:record.id+':task:'+record.taskSerial,kind:'SURVEY',aircraftId:record.id,batteryId:record.batteryId,leg,state:'RUNNING',stage:'TRANSIT',destination:[...destination],elapsed:0,stageElapsed:0,dwell:0,scanned:false,contacts:0,reason:'Flying to survey point'};
  return {ok:true,reason:record.task.reason};
@@ -69,8 +69,8 @@ export function assignSurvey(record,{destination,leg=1,home,solids=[]}={}){
 
 // Called for both selected-aircraft and squad commands; rejected commands do not
 // mutate a job. Automatic failsafes bypass this wrapper and are reconciled below.
-export function commandAircraft(record,command,home,solids=[]){
- if(!commandDrone(record.system,command,home,record.battery,solids))return false;
+export function commandAircraft(record,command,home,solids=[],payloadKg=record.system.collisionPayload||0){
+ if(!commandDrone(record.system,command,home,record.battery,solids,{type:record.type,payloadKg}))return false;
  if(hasLiveTask(record)){
   if(['MANUAL','HOLD'].includes(command)){record.task.state='PAUSED';record.task.dwell=0;record.task.reason=command==='MANUAL'?'Manual takeover; resume when ready':'Operator hold; resume when ready';}
   else finish(record,'CANCELLED',['DOCK','RETURN HOME'].includes(command)?'Recalled by operator':'Replaced by '+command);

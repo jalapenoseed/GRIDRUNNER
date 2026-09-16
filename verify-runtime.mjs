@@ -12,7 +12,7 @@ import * as fleetPolicy from './dist/fleet-policy.js';
 import * as fleetPolicyUI from './dist/fleet-policy-ui.js';
 import * as fleetTasks from './dist/fleet-tasks.js';
 import * as fleetTaskUI from './dist/fleet-task-ui.js';
-import {GamePhysics} from './dist/physics-world.js';
+import {riderGradeAllowed} from './dist/collision-shapes.js'; import {VisionDetector} from './dist/vision-detector.js'; import {beamSolids} from './dist/world-collision.js'; import {GamePhysics} from './dist/physics-world.js';
 import {verifyFlightIntegration} from './verify-flight-integration.mjs';
 import {verifyFleetTaskIntegration} from './verify-fleet-task-integration.mjs';
 import * as droneControls from './dist/drone-controls.js';
@@ -58,7 +58,7 @@ w.HTMLCanvasElement.prototype.getContext=()=>context2d;
 w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};w.document.exitPointerLock=()=>{};w.HTMLCanvasElement.prototype.requestPointerLock=()=>Promise.resolve();
 let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={render:{calls:0}};}setPixelRatio(){}setSize(){}render(scene,camera){assert(scene.isScene&&camera.isPerspectiveCamera);frames++;}}
 const ctx=vm.createContext({...onboarding,Sensors,...fieldUpgrade,...squadron,SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
-Object.assign(ctx,batteryPacks,batteryPackUI,campaignProgress,fleetPolicy,fleetPolicyUI,droneControls,fleetTasks,fleetTaskUI,relayOutpost,powerLines,lineHarvest,lineHarvestUI);ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
+Object.assign(ctx,{VisionDetector,beamSolids,riderGradeAllowed},batteryPacks,batteryPackUI,campaignProgress,fleetPolicy,fleetPolicyUI,droneControls,fleetTasks,fleetTaskUI,relayOutpost,powerLines,lineHarvest,lineHarvestUI);ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\n/gm,'');
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 await run('spatial.ready');await run('ambientResidents.ready');assert.equal(run('spatial.status'),'ready');assert.equal(run('ambientResidents.status'),'ready');
@@ -240,3 +240,17 @@ verifyTutorialRecovery({run,w});
 verifyLineHarvestIntegration({run,tick,w});
 
 verifyPackIntegration({run,tick,w});
+
+// Policy must tick even when its docked Utility is not the selected aircraft.
+run(`newCampaign();s.engineerBuilt=true;s.progression.relayHouseSolved=true;s.progression.firstPackDelivered=true;s.trailer=0;settings.weather='clear';s.batteryPacks.serial=1;s.batteryPacks.packs=[{id:'pack-1',capacityWh:120,chargeWh:0,massKg:1.2,owner:'trailer'}];configureFleetPolicy(s,{enabled:true,targetPercent:60});`);
+tick(.1);assert.equal(run('s.droneType'),'scout');assert.equal(run('s.squad.engineer.task?.state'),'RUNNING','Unselected docked Utility dispatches policy');
+run("issueFleet('DOCK')");assert.equal(run('s.fleetPolicy.enabled'),false,'Fleet recall disarms repeat dispatch');
+run(`newCampaign();setFormation('RELAY OUTPOST')`);assert.notEqual(run('s.squad.relay.task?.state'),'RUNNING','Locked outpost cannot bypass campaign gate');
+assert(run("solids.some(b=>b.x===65&&b.z===-2358)"),'Spillway breaker cabinet registered');
+assert(run("solids.some(b=>b.kind==='capacitor'&&b.z===-4320)"),'Black Start capacitors registered');
+assert.equal(run("spatial.moveRider({x:0,y:1.7,z:-3500},0,-20,{mode:'bike'}).hit"),false,'Main later-chapter road remains rideable');
+run("newCampaign();settings.tutorialEnabled=false;open('rig')");assert(!w.document.querySelector('.firstUse'),'Tutorial OFF suppresses first-use cards');
+console.log('PASS: background docked policy scheduling, operator recall disarm, locked outpost protection, later-chapter solid props, clear road and tutorial preference.');
+
+run("open('drones')");const remembered=w.document.querySelector('[data-formation=TRAIL]');remembered.focus();run("open('rig');open('drones')");assert.equal(w.document.activeElement.dataset.formation,'TRAIL','real menu render retains the focused formation');
+console.log('PASS: actual rendered Fleet page restores focus without an unconditional focus override.');

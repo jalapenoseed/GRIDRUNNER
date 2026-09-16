@@ -1,6 +1,12 @@
-# GRIDRUNNER v7.22 — Quest-gated fleet (`grok`)
+# GRIDRUNNER v7.23 — Perception & foundations
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
+
+**New in v7.23:** Y / YOLO runs bundled YOLOX-Nano on visible rendered game frames locally, in its own worker. It reports real general-object detections; it does not identify custom electrical equipment or replace R's authored field scanner. Toggle it off to release its runtime. This pass also hardens class/load-sized collision, docking, terrain rollback and rider fallback; adds later-chapter prop coverage; fixes unselected Utility policy scheduling and deliberate re-arm after interruption; and adds menu child/focus/scroll memory plus first-use cards. Settings can replay those hints.
+
+Read the **[full project scope, history, future build paths and options](dist/GRIDRUNNER-PROJECT-SCOPE.md)** and [v7.23 changes and limits](CHANGELOG-v7.23.md). Three.js remains the main build. Native engine ports, full suspension/trailer physics, custom detector training, comprehensive parent/back navigation and heavier AI remain separate future slices. Source is maintained in this Site's `main` branch; older `grok` notes refer to the separate GitHub track.
+
+Verification: `npm test` plus `npm run test:foundations`. The latter runs the committed YOLO model with the committed WASM runtime; it is not a browser/GPU playtest.
 
 **New: campaign unlocks and reserve automation.** Expedition airframes and systems now open through field objectives: meet Mara for Cargo, fabricate the engineer module for Utility, recover the Relay House schematic for removable packs, decode its hidden carrier for conductor harvesting and Relay, then complete one manual **Harvest & Deliver** run to unlock **Maintain trailer reserve**. The Journal shows this route. Flight Yard remains an unrestricted practice sandbox.
 
