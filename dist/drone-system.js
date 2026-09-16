@@ -25,7 +25,7 @@ export function migrateDrone(value,pos,manual=false){
  const d=createDrone(pos);
  if(!value){if(manual){d.mode='MANUAL';d.pos=[...pos];}return d;}
  const vec=v=>Array.isArray(v)&&v.length===3&&v.every(n=>Number.isFinite(n)&&Math.abs(n)<=10000);
- if(value.version!==1||![...COMMANDS,'MANUAL','LANDED'].includes(value.mode)||!vec(value.pos)||!vec(value.velocity)||!vec(value.hold))throw Error('Invalid drone record');
+ if(value.version!==1||![...COMMANDS,'MANUAL','LANDED','RELAY'].includes(value.mode)||!vec(value.pos)||!vec(value.velocity)||!vec(value.hold))throw Error('Invalid drone record');
  for(const k of ['hp','signal'])if(!Number.isFinite(value[k])||value[k]<0||value[k]>100)throw Error('Invalid drone telemetry');
  if(!Number.isFinite(value.travel)||value.travel<0||value.travel>1e10)throw Error('Invalid drone distance');
  for(const k of ['mode','pos','velocity','hold','hp','signal','travel'])d[k]=Array.isArray(value[k])?[...value[k]]:value[k];
@@ -80,18 +80,24 @@ function coveredReturnPlan(pos,home,solids){
  }
  options.sort((a,b)=>a.length-b.length);return {home:[...home],points:options[0]?.points||[],blocked:!options.length};
 }
-export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',payloadKg=0,terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null,taskTarget=null}){
+export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',payloadKg=0,terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null,taskTarget=null,relayNodes=[]}){
  dt=clamp(dt,0,.05);const homeVelocity=d.lastHome?home.map((v,i)=>clamp((v-d.lastHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastHome=[...home];const spec=dronePerformance(type,payloadKg),events=[];d.cooldown=Math.max(0,d.cooldown-dt);d.scanCooldown=Math.max(0,d.scanCooldown-dt);
- if(d.mode==='DOCK'){d.pos=[...home];d.velocity=[0,0,0];d.rates=[0,0,0];d.pitch=d.roll=d.thrust=0;d.yaw=wrapAngle(yaw);d.speed=0;d.altitude=home[1]-terrain(home[0],home[2]);d.range=0;d.signal=100;return {battery,events};}
+ if(d.mode==='DOCK'){d.pos=[...home];d.velocity=[0,0,0];d.rates=[0,0,0];d.pitch=d.roll=d.thrust=0;d.yaw=wrapAngle(yaw);d.speed=0;d.altitude=home[1]-terrain(home[0],home[2]);d.range=0;d.signal=100;d.linkVia=null;return {battery,events};}
  d.range=distance(d.pos,home);d.altitude=d.pos[1]-terrain(d.pos[0],d.pos[2]);
- const blocked=obstruction(home,d.pos,solids),effectiveRange=spec.range*(storm?.62:1)*(jammed?.65:1);
- const desiredSignal=clamp(100-100*(d.range/effectiveRange)**1.65-blocked*24,0,100);d.signal+=(desiredSignal-d.signal)*(1-Math.exp(-dt*3));
+ const link=droneLink(d.pos,home,{type,solids,terrain,storm,jammed,relayNodes});
+ d.linkVia=link.via;d.signal+=(link.signal-d.signal)*(1-Math.exp(-dt*3));
  d.linkLost=d.signal<4?d.linkLost+dt:0;
  const reserve=4+d.range/spec.speed*spec.drain*2.8*difficulty;
  if(!['RETURN HOME','LANDED'].includes(d.mode)&&(battery<Math.max(10,reserve)||d.linkLost>1.2||d.hp<20)){
   d.mode='RETURN HOME';d.reason=battery<Math.max(10,reserve)?'Battery reserve':d.hp<20?'Hull damage':'Link lost';events.push('return');
  }
  if((battery<=0||d.hp<=0)&&d.mode!=='LANDED'){d.reason='Emergency landing';d.mode='LANDED';events.push('landing');}
+ // A deliberate outpost is distinct from an emergency landing. Radio power is
+ // finite; failsafes above can launch a physical return from this position.
+ if(d.mode==='RELAY'){
+  if(Math.abs(d.altitude-.65)>.2){d.mode='HOLD';d.hold=[...d.pos];d.reason='Outpost lost ground contact';}
+  else{d.velocity=[0,0,0];d.rates=[0,0,0];d.pitch=d.roll=d.thrust=d.speed=0;return {battery:Math.max(0,battery-.012*difficulty*dt),events,auto:true};}
+ }
  const auto=d.mode!=='MANUAL',target=[...d.pos];let desired=[0,0,0];
  if(d.mode==='MANUAL'){
   let [f,t,v]=input;const l=Math.max(1,Math.hypot(f,t));f/=l;t/=l;
@@ -113,6 +119,11 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
   if((d.mode!=='RETURN HOME'||d.returnPlan?.open)&&obstruction(d.pos,target,solids)){let top=12;for(const b of segmentCandidates(solids,d.pos,target))if(b.drone!==false&&obstruction(d.pos,target,[b]))top=Math.max(top,b.maxY??12);target[1]=Math.max(target[1],top+5);if(d.pos[1]<top+3){target[0]=d.pos[0];target[2]=d.pos[2];}}
   const delta=target.map((v,i)=>v-d.pos[i]),horizontal=Math.hypot(delta[0],delta[2]),speed=Math.min(spec.speed,horizontal*1.3,Math.sqrt(2*spec.acceleration*horizontal)*.72);
   desired=[horizontal?delta[0]/horizontal*speed:0,clamp(delta[1]*1.8,-spec.climb,spec.climb),horizontal?delta[2]/horizontal*speed:0];if(['FOLLOW','SCOUT AHEAD','RETURN HOME'].includes(d.mode)&&!(d.mode==='SCOUT AHEAD'&&taskTarget)){desired[0]+=homeVelocity[0];desired[2]+=homeVelocity[2];const factor=Math.min(1,spec.speed/Math.max(.001,Math.hypot(desired[0],desired[2])));desired[0]*=factor;desired[2]*=factor;}
+ }
+ // Ground outpost approaches brake well before contact; the normal cruise
+ // controller can overshoot a near-ground target at full climb/descent speed.
+ if(d.mode==='SCOUT AHEAD'&&taskTarget&&taskTarget[1]-terrain(taskTarget[0],taskTarget[2])<.85){
+  desired[1]=Math.max(desired[1],-Math.min(2,Math.max(.15,(d.altitude-.65)*.7)));
  }
  const old=[...d.pos];
  if(!auto&&flight==='acro'){
@@ -143,6 +154,28 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
  const airborne=d.mode!=='DOCK'&&(d.mode!=='LANDED'||d.altitude>.8);
  battery=Math.max(0,battery-(airborne?spec.drain*(1+d.speed/spec.speed*.55+Math.max(0,d.velocity[1])*.04+Math.max(0,d.thrust-1)*.3)*(storm?1.35:1)*difficulty*dt:0));
  return {battery,events,auto};
+}
+// Each hop is constrained by its own radio range, terrain and solid occlusion.
+// The weaker hop limits the route. Only game-owned active outposts are supplied.
+export function radioQuality(a,b,range,{solids=[],terrain=()=>0,storm=false,jammed=false}={}){
+ const effective=range*(storm?.62:1)*(jammed?.65:1);
+ let blocked=obstruction(a,b,solids);
+ const steps=Math.max(2,Math.ceil(distance(a,b)/8));
+ for(let i=1;i<steps;i++){const t=i/steps,x=a[0]+(b[0]-a[0])*t,z=a[2]+(b[2]-a[2])*t;
+  if(terrain(x,z)>a[1]+(b[1]-a[1])*t-.15){blocked+=4;break;}
+ }
+ return clamp(100-100*(distance(a,b)/effective)**1.65-blocked*24,0,100);
+}
+export function droneLink(pos,home,{type='scout',relayNodes=[],...environment}={}){
+ const spec=DRONE_CLASSES[type]||DRONE_CLASSES.scout;
+ let signal=radioQuality(home,pos,spec.range,environment),via=null;
+ for(const node of relayNodes){
+  if(type==='relay'||node.battery<10||node.hp<20)continue;
+  const signalAtRelay=radioQuality(home,node.pos,DRONE_CLASSES.relay.range,environment);
+  const hop=radioQuality(node.pos,pos,spec.range,environment),candidate=Math.min(signalAtRelay,hop)*.95;
+  if(candidate>signal){signal=candidate;via=node.id;}
+ }
+ return {signal,via};
 }
 export const wrapAngle=a=>Math.atan2(Math.sin(a),Math.cos(a));
 export function droneAxes({pitch=0,yaw=0,roll=0}){const sp=Math.sin(pitch),cp=Math.cos(pitch),sy=Math.sin(yaw),cy=Math.cos(yaw),sr=Math.sin(roll),cr=Math.cos(roll);return {nose:[-sy*cp,sp,-cy*cp],up:[-cy*sr+sy*sp*cr,cp*cr,sy*sr+cy*sp*cr]};}

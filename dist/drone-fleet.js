@@ -14,11 +14,11 @@ export function fleetCards(selected,{yard=false,engineerBuilt=false,docked=true,
 const texNames=['01_painted_alum','02_machined_alum','03_black_anodized','04_weave','05_rubber','06_aged_copper','07_galvanized','08_damp_concrete','09_camera_glass'];
 const LOD={high:18,mid:42};
 const idle=()=>new Promise(resolve=>globalThis.requestIdleCallback?requestIdleCallback(resolve,{timeout:500}):setTimeout(resolve,0));
-function beaconTexture(){const data=new Uint8Array(32*32*4);for(let y=0;y<32;y++)for(let x=0;x<32;x++){const i=(y*32+x)*4,r=Math.hypot(x-15.5,y-15.5)/16;data[i]=data[i+1]=data[i+2]=255;data[i+3]=Math.round(255*Math.max(0,1-r)**2);}const map=new T.DataTexture(data,32,32);map.needsUpdate=true;return map;}
+function beaconTexture(){const data=new Uint8Array(32*32*4);for(let y=0;y<32;y++)for(let x=0;x<32;x++){const i=(y*32+x)*4,r=Math.hypot(x-15.5,y-15.5)/16;data[i]=data[i+1]=data[i+2]=255;data[i+3]=Math.round(255*(r<.24?1:Math.max(0,1-(r-.24)/.76)**3));}const map=new T.DataTexture(data,32,32);map.needsUpdate=true;return map;}
 const beaconMap=beaconTexture();
 export class DroneFleet{
  constructor(scene,{assets=true}={}){this.enabled=assets;this.quality='HIGH';this.meshes={};this.records={};this.materials=new Map();this.textures=new Map();this.errors=[];this.wet=0;
-  for(const d of FLEET){const root=new T.Group();root.name=d.code;const proxy=makeDrone();proxy.scale.setScalar(d.span/1.8);root.add(proxy);const beacon=new T.Sprite(new T.SpriteMaterial({map:beaconMap,blending:T.NormalBlending,fog:false,color:0x65ffe3,transparent:true,opacity:.95,depthWrite:false,toneMapped:false}));beacon.position.y=.25;root.add(beacon);root.userData.beacon=beacon;root.visible=false;root.userData.rotors=proxy.userData.rotors;scene.add(root);this.meshes[d.id]=root;this.records[d.id]={...d,root,proxy,loading:false,loaded:false};}
+  for(const d of FLEET){const root=new T.Group();root.name=d.code;const proxy=makeDrone();proxy.scale.setScalar(d.span/1.8);root.add(proxy);const beacon=new T.Sprite(new T.SpriteMaterial({map:beaconMap,blending:T.AdditiveBlending,fog:false,color:0x65ffe3,transparent:true,opacity:.95,depthWrite:false,toneMapped:false}));beacon.position.y=.25;root.add(beacon);root.userData.beacon=beacon;root.visible=false;root.userData.rotors=proxy.userData.rotors;scene.add(root);this.meshes[d.id]=root;this.records[d.id]={...d,root,proxy,loading:false,loaded:false};}
  }
  setQuality(q){this.quality=q||'HIGH';const low=this.quality==='LOW';for(const t of this.textures.values())t.anisotropy=low?1:4;}
  shouldStream(id,s){if(!this.enabled)return false;if(this.quality==='LOW')return false;return true;}
@@ -44,10 +44,10 @@ export class DroneFleet{
  }
  prepare(ids=['scout']){return Promise.all(ids.map(id=>this.load(id)));}
  update(dt,s,trailer,bike,camera){const squad=syncSquad(s);const active=this.records[s.droneType]||this.records.scout;if(this.shouldStream(active.id,s))this.load(active.id);
-  for(const r of Object.values(this.records)){const selected=r===active,d=squad[r.id].system,flying=d.mode!=='DOCK';r.root.visible=flying?!(selected&&s.mode==='drone'):selected&&s.mode!=='drone';const beacon=r.root.userData.beacon;beacon.visible=flying;beacon.material.color.setHex(d.mode==='RETURN HOME'?0xffab39:0x4cffe1);beacon.material.opacity=.6+.4*Math.pow(Math.sin((s.elapsed||0)*4+FLEET.indexOf(r)),8);const size=Math.max(.09,Math.min(12,camera?r.root.position.distanceTo(camera.position)*.018:.3));beacon.scale.set(size,size,1);
+  for(const r of Object.values(this.records)){const selected=r===active,d=squad[r.id].system,flying=d.mode!=='DOCK';r.root.visible=flying?!(selected&&s.mode==='drone'):selected&&s.mode!=='drone';const beacon=r.root.userData.beacon;beacon.visible=flying;beacon.material.color.setHex(d.mode==='RETURN HOME'?0xffdc9b:d.mode==='RELAY'?0xc7d5ff:0xd3fff6);beacon.material.opacity=.88+.12*Math.pow(Math.sin((s.elapsed||0)*4+FLEET.findIndex(f=>f.id===r.id)),8);const distance=camera?Math.hypot(d.pos[0]-camera.position.x,d.pos[1]-camera.position.y,d.pos[2]-camera.position.z):30,size=Math.max(.1,Math.min(3.6,distance*.006));beacon.scale.set(size,size,1);
    const useGlb=(selected||flying)&&camera&&this.detail(r.id,camera)==='glb';
    if(r.model)r.model.visible=!!useGlb;if(r.proxy)r.proxy.visible=(selected||flying)&&!useGlb;
-   if(flying){r.root.position.fromArray(d.pos);r.root.rotation.set(d.pitch,d.yaw,d.roll,'YXZ');}else{r.root.position.copy(trailer.position).add(new T.Vector3(0,1.8,0));r.root.rotation.set(0,bike.rotation.y,0);}for(const [i,rotor]of r.root.userData.rotors.entries()){const speed=flying&&d.mode!=='LANDED'?dt*65*(i%2?1:-1):0;rotor.rotation.y+=speed;}}
+   if(flying){r.root.position.fromArray(d.pos);r.root.rotation.set(d.pitch,d.yaw,d.roll,'YXZ');}else{r.root.position.copy(trailer.position).add(new T.Vector3(0,1.8,0));r.root.rotation.set(0,bike.rotation.y,0);}for(const [i,rotor]of r.root.userData.rotors.entries()){const speed=flying&&!['LANDED','RELAY'].includes(d.mode)?dt*65*(i%2?1:-1):0;rotor.rotation.y+=speed;}}
  }
  setWet(wet){if(Math.abs(wet-this.wet)<.01)return;this.wet=wet;for(const m of this.materials.values()){m.roughness=m.userData.baseRoughness*(1-wet*.27);if(m.isMeshPhysicalMaterial){m.clearcoat=Math.max(m.userData.baseCoat,wet*.45);m.clearcoatRoughness=.12;}}}
 }

@@ -28,7 +28,7 @@ export function verifyFleetTaskIntegration({run,tick,w}){
  // Unselected aircraft gets the same task/failsafe reconciliation as FPV.
  run("selectFleetAircraft('relay');s.drone=80;operateFleetTask('assign');selectFleetAircraft('scout');s.squad.relay.battery=5;update(.02)");assert.equal(run('s.squad.relay.task.state'),'FAILED');assert.equal(run('s.squad.relay.system.mode'),'RETURN HOME');
  const reserve=run('s.squad.relay.battery');assert(run('writeSave("manual3")'));run('restore(getSave("manual3"))');assert.equal(run('s.squad.relay.battery'),reserve);assert.equal(run('s.squad.relay.task.state'),'FAILED');
- assert(run("operateFleetTask('assign')"));run('startLegTwo(false)');assert.equal(run('s.squad.scout.task.state'),'CANCELLED');assert(run('writeSave("manual1")'),'Cancelled old-region jobs remain valid history');
+ assert(run("operateFleetTask('assign')"));run('s.won=true;startLegTwo(false)');assert.equal(run('s.squad.scout.task.state'),'CANCELLED');assert(run('writeSave("manual1")'),'Cancelled old-region jobs remain valid history');
 
  // Practice owns a separate manifest; restore exactly the held expedition.
  run("newCampaign();operateFleetTask('assign');play()");tick(.4);const campaign=JSON.parse(run('JSON.stringify(snapshot())'));

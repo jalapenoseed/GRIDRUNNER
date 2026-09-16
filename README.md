@@ -1,6 +1,10 @@
-# GRIDRUNNER v7.18 — Autonomous sorties (`grok`)
+# GRIDRUNNER v7.19 — Relay outposts (`grok`)
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
+
+After onboarding, open **Fleet → Relay Outpost** or press **Shift+0**. Relay flies about 240 m ahead, lands and stops its rotors. Scout waits for that connection, surveys about 460 m ahead, scans and returns. The weaker of the two radio hops limits coverage; terrain, structures and weather still matter. Relay remains deployed with finite radio drain until recalled or forced home by reserve/signal/hull limits. Both aircraft need at least 40% battery, 30% hull and no active job. Move or turn the bike if no clear outpost is found. This is ground landing and radio support; line harvesting remains next.
+
+Beacons are smaller, brighter points with a steady luminous core; returning aircraft remain amber, active outposts are pale blue. **Begin with tutorial** recovers the guided opening even if an older saved setting disabled it. Skipping the current introduction no longer disables future tutorials. Pause → Replay equipment guide revisits the lessons without resetting the campaign.
 
 After the opening tutorial, open **Fleet → select an aircraft → Assign survey**, then resume play. The drone flies to a fixed waypoint ahead of the bike, holds steady for five seconds, spends 3% charge to scan actual contacts, and physically returns. Other aircraft can run independent jobs while you ride. Jobs persist in saves; they do not run while paused or while the app is closed.
 
@@ -18,7 +22,7 @@ Planning, supplies and equipment use five menu groups. Riding instruments remain
 
 Run `npm ci` and `npm test`. Serve `dist/` for the playable game, or use `npm run dev`. Existing saves migrate; Flight Yard never replaces campaign saves.
 
-[v7.18 changelog and QA](CHANGELOG-v7.18.md) · [v7.17 flight update](CHANGELOG-v7.17.md) · [Current/new systems roadmap](ROADMAP-2026-09-15.md) · [v7.16 changelog](CHANGELOG-v7.16.md) · [v7.15 engine integration notes](INTEGRATIONS-v7.15.md). The pinned engines are committed under `dist/vendor/`; regenerate with `npm run vendor:engines`. No CDN or runtime package install is required. A source commit does not automatically update the hosted playable build.
+[v7.19 changelog and QA](CHANGELOG-v7.19.md) · [v7.18 changelog and QA](CHANGELOG-v7.18.md) · [v7.17 flight update](CHANGELOG-v7.17.md) · [Current/new systems roadmap](ROADMAP-2026-09-15.md) · [v7.16 changelog](CHANGELOG-v7.16.md) · [v7.15 engine integration notes](INTEGRATIONS-v7.15.md). The pinned engines are committed under `dist/vendor/`; regenerate with `npm run vendor:engines`. No CDN or runtime package install is required. A source commit does not automatically update the hosted playable build.
 
 [Field Edition changelog](CHANGELOG-v7.10.md) · [Quiet Start](QUIET-START-v7.8.md) · [Previous changelog](CHANGELOG-v7.8.md)
 

@@ -1,7 +1,7 @@
 import {createDrone,migrateDrone} from './drone-system.js';
 import {createAircraftRecord,validateAircraftTask} from './fleet-tasks.js';
 export const AIRCRAFT=['scout','cargo','engineer','relay'];
-export const FORMATIONS=['WEDGE','TRAIL','LINE','ORBIT'];
+export const FORMATIONS=['WEDGE','TRAIL','LINE','ORBIT','RELAY OUTPOST'];
 const localToWorld=([right,up,forward],yaw)=>[
  Math.cos(yaw)*right-Math.sin(yaw)*forward,
  up,
@@ -35,7 +35,7 @@ export function validateSquad(s){
   const savedSystem=migrateDrone(r.system,[0,2,15]),system=id===s.droneType?s.droneSystem:savedSystem;
   if((id!==s.droneType||s.mode!=='drone')&&system.mode==='MANUAL'){system.mode='HOLD';system.hold=[...system.pos];}
   const record=createAircraftRecord(id,system,id===s.droneType?s.drone:r.battery??100);
-  validateAircraftTask(record,r,s.leg||1);out[id]=record;
+  validateAircraftTask(record,r,s.leg||1);if(system.mode==='RELAY'&&(id!=='relay'||record.task?.kind!=='RELAY'||record.task.state!=='RUNNING'||record.task.stage!=='RELAY'))throw Error('Invalid relay outpost ownership');out[id]=record;
  }
  s.squad=out;syncSquad(s);return out;
 }

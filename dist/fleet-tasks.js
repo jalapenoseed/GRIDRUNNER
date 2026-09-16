@@ -1,8 +1,8 @@
 // Persistent jobs own references, not duplicate aircraft, charge, or cargo.
 // Four existing airframes retain class-keyed slots until multi-instance hangars.
-import {commandDrone} from './drone-system.js';
+import {commandDrone,droneLink} from './drone-system.js';
 export const TASK_STATES=['RUNNING','PAUSED','COMPLETED','CANCELLED','FAILED'];
-export const TASK_STAGES=['TRANSIT','SURVEY','RETURN','DONE'];
+export const TASK_STAGES=['WAIT','TRANSIT','SURVEY','LAND','RELAY','RETURN','DONE'];
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
 const finite=(v,a,b)=>Number.isFinite(v)&&v>=a&&v<=b;
@@ -10,7 +10,16 @@ const point=p=>Array.isArray(p)&&p.length===3&&finite(p[0],-600,600)&&finite(p[1
 export const aircraftId=type=>'aircraft-'+type+'-01';
 export const aircraftBatteryId=type=>'battery-'+type+'-01';
 export const hasLiveTask=r=>!!r.task&&['RUNNING','PAUSED'].includes(r.task.state);
-export function taskDestination(record){const t=record.task;return t?.state==='RUNNING'&&['TRANSIT','SURVEY'].includes(t.stage)?t.destination:null;}
+export function taskDestination(record){
+ const t=record.task;if(t?.state!=='RUNNING')return null;
+ if(t.stage==='WAIT')return record.system.hold;
+ if(t.kind==='RELAY'&&t.stage==='TRANSIT')return [t.destination[0],t.destination[1]+12,t.destination[2]];
+ return ['TRANSIT','SURVEY','LAND'].includes(t.stage)?t.destination:null;
+}
+export function activeRelayNodes(squad={}){
+ return Object.values(squad).filter(r=>r.type==='relay'&&r.task?.kind==='RELAY'&&r.task.state==='RUNNING'&&r.task.stage==='RELAY'&&r.system.mode==='RELAY'&&r.battery>=10&&r.system.hp>=20)
+  .map(r=>({id:r.id,pos:r.system.pos,battery:r.battery,hp:r.system.hp}));
+}
 export function createAircraftRecord(type,system,battery=100){return {id:aircraftId(type),type,batteryId:aircraftBatteryId(type),system,battery,taskSerial:0,task:null};}
 
 export function validateAircraftTask(record,source,leg=1){
@@ -18,11 +27,13 @@ export function validateAircraftTask(record,source,leg=1){
  const serial=source.taskSerial??0;if(!Number.isSafeInteger(serial)||serial<0||serial>1e9)throw Error('Invalid fleet task sequence');record.taskSerial=serial;
  if(source.task===undefined||source.task===null)return record;
  const t=source.task;
- if(!t||t.version!==1||t.kind!=='SURVEY'||t.id!==record.id+':task:'+serial||serial<1||t.aircraftId!==record.id||t.batteryId!==record.batteryId)throw Error('Invalid fleet task ownership');
+ if(!t||t.version!==1||!['SURVEY','RELAY'].includes(t.kind)||t.id!==record.id+':task:'+serial||serial<1||t.aircraftId!==record.id||t.batteryId!==record.batteryId)throw Error('Invalid fleet task ownership');
  if(!TASK_STATES.includes(t.state)||!TASK_STAGES.includes(t.stage)||!point(t.destination)||![1,2,3].includes(t.leg)||!finite(t.elapsed,0,1e10)||!finite(t.stageElapsed,0,1e10)||!finite(t.dwell,0,5)||typeof t.scanned!=='boolean'||!Number.isInteger(t.contacts)||t.contacts<0||t.contacts>1000||typeof t.reason!=='string'||t.reason.length>160)throw Error('Invalid fleet task record');
  if(t.destination[2]<(t.leg===3?-4720:t.leg===2?-3200:-1600)||['RUNNING','PAUSED'].includes(t.state)&&t.leg!==leg)throw Error('Fleet task belongs to another region');
- if((['RETURN','DONE'].includes(t.stage)!==t.scanned)||t.state==='COMPLETED'&&t.stage!=='DONE'||t.stage==='DONE'&&t.state!=='COMPLETED'||!t.scanned&&t.contacts!==0)throw Error('Invalid fleet task progress');
- record.task={version:1,id:t.id,kind:t.kind,aircraftId:t.aircraftId,batteryId:t.batteryId,leg:t.leg,state:t.state,stage:t.stage,destination:[...t.destination],elapsed:t.elapsed,stageElapsed:t.stageElapsed,dwell:t.dwell,scanned:t.scanned,contacts:t.contacts,reason:t.reason};
+ const relay=t.kind==='RELAY',relayId=t.relayId??null;
+ if(relay&&(record.type!=='relay'||!['TRANSIT','LAND','RELAY'].includes(t.stage)||t.scanned||t.contacts||t.state==='COMPLETED')||!relay&&(['LAND','RELAY'].includes(t.stage)||(['RETURN','DONE'].includes(t.stage)!==t.scanned)||t.state==='COMPLETED'&&t.stage!=='DONE'||t.stage==='DONE'&&t.state!=='COMPLETED')||!t.scanned&&t.contacts!==0)throw Error('Invalid fleet task progress');
+ if(relayId!==null&&(relayId!==aircraftId('relay')||record.type!=='scout'||relay)||t.stage==='WAIT'&&!relayId)throw Error('Invalid relay dependency');
+ record.task={version:1,id:t.id,kind:t.kind,aircraftId:t.aircraftId,batteryId:t.batteryId,leg:t.leg,state:t.state,stage:t.stage,destination:[...t.destination],elapsed:t.elapsed,stageElapsed:t.stageElapsed,dwell:t.dwell,scanned:t.scanned,contacts:t.contacts,reason:t.reason,relayId};
  // A save must never restart a failsafe or silently seize manual controls.
  if(hasLiveTask(record)){
   const mode=record.system.mode;
@@ -33,7 +44,7 @@ export function validateAircraftTask(record,source,leg=1){
   }else if(mode==='MANUAL'){record.task.state='PAUSED';record.task.reason='Manual control restored';}
   else if(record.task.state==='PAUSED'&&mode!=='HOLD'){
    record.system.mode='HOLD';record.system.hold=[...record.system.pos];record.task.reason='Paused job restored';
-  }else if(record.task.state==='RUNNING'&&mode!==(t.stage==='RETURN'?'RETURN HOME':'SCOUT AHEAD')){
+  }else if(record.task.state==='RUNNING'&&mode!==(t.stage==='RELAY'?'RELAY':t.stage==='RETURN'?'RETURN HOME':'SCOUT AHEAD')){
    record.task.state='PAUSED';record.task.reason='Flight order changed; resume explicitly';record.system.mode='HOLD';record.system.hold=[...record.system.pos];
   }
  }
@@ -75,12 +86,13 @@ export function controlTask(record,action,home,solids=[]){
  }
  if(action!=='resume'||t.state!=='PAUSED')return {ok:false,reason:'This job is not paused.'};
  if(record.battery<15||record.system.hp<25||['LANDED','RETURN HOME','DOCK'].includes(record.system.mode))return {ok:false,reason:'Recover, recharge or finish the safety return before resuming.'};
+ if(t.kind==='RELAY'&&t.stage==='RELAY')t.stage='TRANSIT';
  if(!commandDrone(record.system,t.stage==='RETURN'?'RETURN HOME':'SCOUT AHEAD',home,record.battery,solids))return {ok:false,reason:'Aircraft cannot resume.'};
  t.state='RUNNING';t.stageElapsed=0;t.dwell=0;t.reason='Job resumed';return {ok:true,reason:t.reason};
 }
 export function cancelRegionTasks(s){for(const r of Object.values(s.squad||{}))if(hasLiveTask(r))finish(r,'CANCELLED','Region changed; assign a new local job');}
 
-export function advanceAircraftTask(record,dt,{home,solids=[],events=[],scan}={}){
+export function advanceAircraftTask(record,dt,{home,solids=[],events=[],scan,squad={},terrain=()=>0,storm=false,jammed=false}={}){
  if(!hasLiveTask(record))return [];
  const t=record.task,d=record.system,out=[];dt=clamp(Number.isFinite(dt)?dt:0,0,.05);
  if(d.mode==='LANDED'){finish(record,'FAILED','Emergency landing: '+d.reason);return ['task-failed'];}
@@ -91,10 +103,28 @@ export function advanceAircraftTask(record,dt,{home,solids=[],events=[],scan}={}
   return [t.state==='COMPLETED'?'task-complete':'task-failed'];
  }
  if(d.mode==='MANUAL'){t.state='PAUSED';t.dwell=0;t.reason='Manual takeover; resume when ready';return out;}
- if(d.mode!==(t.stage==='RETURN'?'RETURN HOME':'SCOUT AHEAD')){t.state='PAUSED';t.dwell=0;t.reason='Flight order changed; resume explicitly';return out;}
+ if(d.mode!==(t.stage==='RELAY'?'RELAY':t.stage==='RETURN'?'RETURN HOME':'SCOUT AHEAD')){t.state='PAUSED';t.dwell=0;t.reason='Flight order changed; resume explicitly';return out;}
  t.elapsed+=dt;t.stageElapsed+=dt;
+ if(t.stage==='RELAY'){t.reason='Landed relay online; radio drawing battery';return out;}
  if(t.stageElapsed>120){failAndReturn(record,'Route timed out; return requested',home,solids);return ['task-failed'];}
  if(t.stage==='RETURN'){t.reason=d.returnPlan?.blocked?'Return path blocked; move the bike into the open':'Returning to bike';return out;}
+ if(t.stage==='WAIT'){
+  const relay=squad.relay;
+  if(!relay||relay.id!==t.relayId||!hasLiveTask(relay)||relay.task.kind!=='RELAY'){failAndReturn(record,'Relay outpost unavailable; returning',home,solids);return ['task-failed'];}
+  const nodes=activeRelayNodes(squad),link=droneLink(t.destination,home,{type:record.type,relayNodes:nodes,solids,terrain,storm,jammed});
+  if(nodes.length&&link.via===t.relayId&&link.signal>8){t.stage='TRANSIT';t.stageElapsed=0;t.reason='Relay established; surveying beyond direct range';}
+  else t.reason='Waiting for landed relay and a clear two-hop link';
+  return out;
+ }
+ if(t.kind==='RELAY'){
+  const target=taskDestination(record),onStation=distance(d.pos,target)<1&&d.speed<1;
+  if(t.stage==='TRANSIT'&&onStation){t.stage='LAND';t.stageElapsed=0;t.reason='Descending onto outpost';}
+  else if(t.stage==='LAND'&&distance(d.pos,t.destination)<.15&&d.speed<.5){
+   d.mode='RELAY';d.reason='Outpost radio online';d.velocity=[0,0,0];d.speed=d.thrust=d.pitch=d.roll=0;
+   t.stage='RELAY';t.stageElapsed=0;t.reason='Landed relay online';return ['task-relay'];
+  }
+  return out;
+ }
  const onStation=distance(d.pos,t.destination)<3&&d.speed<2;
  if(t.stage==='TRANSIT'&&onStation){t.stage='SURVEY';t.stageElapsed=0;t.reason='Holding for survey';}
  if(t.stage==='SURVEY'){
