@@ -1,14 +1,16 @@
+import {attachPresenceAudio,startPresenceAudio,updatePresenceAudio} from './presence-audio.js';
 // Original procedural sound; no remote files, autoplay, or repeating warning beeps.
 export function musicState(s,frame={}){
  if(s.dead||s.leg3Won)return 'CALM';if(frame.shot)return 'COMBAT';if(frame.threat&&Math.abs(s.speed)>18)return 'ESCAPE';if(frame.threat)return 'DANGER';if(s.mode==='drone'&&s.droneSystem?.signal<35)return 'TENSION';if(s.scanTime>12)return 'DISCOVERY';if(s.leg===3&&!s.securityOff)return 'TENSION';return Math.abs(s.speed)<.5?'CALM':'EXPLORATION';
 }
 export const EXPERIENCE_MIX={walking:{world:1.15,rotor:.7},bike:{world:1,rotor:1},drone:{world:.32,rotor:1.2},inspection:{world:.6,rotor:.5},power:{world:.8,rotor:.8},camp:{world:.75,rotor:.5}};
 export class FieldAudio{
- constructor(){this.ctx=null;this.levels={master:.65,effects:.7,music:.25,ambience:.65};this.voices={};this.frame={};this.nextNote=0;this.note=0;this.state='CALM';this.lastSpeed=0;this.warnAt=-99;this.oneShots=new Set();this.radioUntil=0;this.lastEvent={};}
+ constructor(){this.ctx=null;this.levels={master:.65,effects:.7,music:.25,ambience:.65};this.voices={};this.frame={};this.nextNote=0;this.note=0;this.state='CALM';this.lastSpeed=0;this.warnAt=-99;this.oneShots=new Set();this.radioUntil=0;this.lastEvent={};attachPresenceAudio(this);}
  start(){try{if(!this.ctx){const C=globalThis.AudioContext||globalThis.webkitAudioContext;if(!C)return;const c=this.ctx=new C();this.master=c.createGain();this.fx=c.createGain();this.music=c.createGain();this.ambient=c.createGain();const limiter=c.createDynamicsCompressor();limiter.threshold.value=-12;limiter.ratio.value=8;this.master.connect(limiter);limiter.connect(c.destination);this.fx.connect(this.master);this.music.connect(this.master);this.ambient.connect(this.master);
   const buffer=c.createBuffer(1,c.sampleRate*3,c.sampleRate),data=buffer.getChannelData(0);let brown=0;for(let i=0;i<data.length;i++){brown=(brown+(Math.random()*2-1)*.04)/1.02;data[i]=brown*3;}
   const voice=(name,type,freq,bus,noise=false)=>{const o=noise?c.createBufferSource():c.createOscillator(),filter=c.createBiquadFilter(),g=c.createGain(),p=c.createStereoPanner();if(noise){o.buffer=buffer;o.loop=true;}else{o.type=type;o.frequency.value=freq;}filter.type=noise?'bandpass':'lowpass';filter.frequency.value=noise?freq:1800;filter.Q.value=.7;g.gain.value=0;o.connect(filter);filter.connect(g);g.connect(p);p.connect(bus);o.start();this.voices[name]={o,g,p,filter,noise};};
   voice('generator','triangle',48,this.ambient);voice('crt','sine',120,this.ambient);voice('carrier','sine',740,this.ambient);voice('rotorBody','triangle',43,this.fx);voice('motor','triangle',65,this.fx);voice('regen','sine',150,this.fx);voice('rotor','sawtooth',90,this.fx);voice('machine','triangle',60,this.ambient);voice('wind','',350,this.ambient,true);voice('tire','',700,this.fx,true);voice('rattle','',1800,this.fx,true);voice('static','',2900,this.fx,true);voice('river','',900,this.ambient,true);voice('industrial','sine',48,this.ambient);voice('workshop','',1250,this.ambient,true);voice('shelter','',220,this.ambient,true);
+  startPresenceAudio(this);
  }this.ctx.resume()?.catch(()=>{});}catch{this.ctx=null;}}
  setLevels(levels){this.levels={...this.levels,...levels};}
  setFrame(frame){this.frame=frame;}
@@ -28,5 +30,6 @@ export class FieldAudio{
  if(t>=this.nextNote){this.nextNote=t+interval;const phase=this.note++%16;if(phase<8||urgent){const motif=[146.83,220,155.56,146.83],root=motif[phase%4],volume=state==='CALM'?.009:urgent?.045:.027;this.tone(root*(urgent?.5:1),interval*1.8,volume,this.music,'sine',1.0003,Math.sin(phase)*.18);if(state==='DISCOVERY')this.tone(root*2,2,.012,this.music,'sine',1);}}
  // Low-energy/link alerts are edge-triggered and rate limited, never a continuous alarm.
  const warning=(s.mode==='drone'&&(s.drone<15||(d?.signal??100)<25))||s.battery<8;if(warning&&!this.warning&&t-this.warnAt>18){this.event('return');this.warnAt=t;}this.warning=warning;
+ updatePresenceAudio(this,s,this.frame.camera);
  }
 }

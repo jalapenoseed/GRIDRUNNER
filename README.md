@@ -1,4 +1,10 @@
-# GRIDRUNNER v7.26 — Swarm / Sensor Lab
+# GRIDRUNNER v7.29 — Presence
+
+**[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
+
+**New in v7.29:** HIGH/ULTRA bloom, Mixamo-named skeletons on Mara and the camp, volume oak crowns, spatial camp audio, and a TRELLIS remesh drop-in. See [CHANGELOG-v7.29.md](CHANGELOG-v7.29.md). Three.js r169, Rapier and Recast are unchanged.
+
+
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
 

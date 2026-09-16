@@ -23,13 +23,13 @@ The browser smoke test passed on 2026-09-15 with Chromium/SwiftShader: 236 Rapie
 
 | Item | Current state / next useful step |
 |---|---|
-| Asset pipeline | Preloading exists. Meshopt decoding, glTF Transform optimization and KTX2 texture encoding are still pending. First profile the initial bike/drone asset upload and compilation. |
+| Asset pipeline | **v7.29:** `scripts/remesh-gltf.mjs` welds TRELLIS/generated meshes and writes Rapier AABBs into `dist/assets/imported/`. Meshopt decoding, glTF Transform optimization and KTX2 texture encoding are still pending. |
 | Static-world queries | The existing spatial grid remains useful. `three-mesh-bvh` is not installed; add it when imported buildings need triangle-level queries instead of authored boxes. |
 | Rapier | First collision/controller migration complete; vehicle suspension and trailer constraints remain. |
 | Recast | Camp navigation complete; broader navigation/crowds remain. |
 | Unified input | Existing `ControllerBridge` and action routing already handle keyboard/gamepad; extend this for calibrated FPV radios instead of adding another overlapping wrapper. |
-| Postprocessing | Next rendering candidate. `postprocessing@6.36.7` declares Three `>=0.157.0 <0.174.0`, which includes the game's r169. Start with a quality-gated bloom pass and preserve thermal/NV rendering. Do not install the newest version without checking its peer range. |
-| Vegetation, water and weather | Existing systems remain. Add LOD/instancing only after profiling draw/triangle budgets; do not introduce a WebGPU-only vegetation dependency into the current WebGL renderer. |
+| Postprocessing | **v7.29:** local bloom + FXAA + vignette on HIGH/ULTRA. Thermal/NV/LOW/MEDIUM unchanged. `postprocessing@6.36.7` remains a future candidate if a shared effect stack is needed; not installed. |
+| Vegetation, water and weather | **v7.29:** instanced icosahedron oak crowns with wind. Grass cards and existing weather remain. |
 
 ## Additional libraries researched on 2026-09-15
 

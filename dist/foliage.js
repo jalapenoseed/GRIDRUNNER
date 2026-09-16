@@ -39,7 +39,22 @@ export function roadsideCover(scene,leaf,solids=[]){
   for(const p of trees)solids.push({x:p.x,z:p.z,w:.34,d:.34,minY:heightAt(p.x,p.z),maxY:heightAt(p.x,p.z)+p.h*.82,kind:'tree'});
   const trunk=new T.MeshStandardMaterial({color:0x695e47,roughness:1});
   add('Roadside / oak trunks',new T.CylinderGeometry(.1,.23,1,6),trunk,trees,leg,(o,p)=>{o.position.set(p.x,heightAt(p.x,p.z)+p.h*.4,p.z);o.scale.set(1,p.h*.8,1);o.rotation.set(0,p.yaw,.035);});
-  add('Roadside / oak crowns',new T.PlaneGeometry(1,1),leaf,trees.flatMap(p=>[p,{...p,yaw:p.yaw+Math.PI/2}]),leg,(o,p)=>{o.position.set(p.x,heightAt(p.x,p.z)+p.h*.85,p.z);o.scale.set(p.h*1.9,p.h*1.3,1);o.rotation.set(0,p.yaw,0);},true);
+  const crown=new T.MeshStandardMaterial({color:0x6f7d55,roughness:1});
+  crown.onBeforeCompile=shader=>{shader.uniforms.coverTime=time;shader.uniforms.coverWind=wind;shader.vertexShader='uniform float coverTime;uniform float coverWind;\n'+shader.vertexShader;shader.vertexShader=shader.vertexShader.replace('#include <begin_vertex>',`#include <begin_vertex>
+  #ifdef USE_INSTANCING
+   float phase=instanceMatrix[3].x*.21+instanceMatrix[3].z*.17;
+   float sway=sin(coverTime*1.05+phase)*(.03+coverWind*.07)*max(0.,position.y);
+   transformed.x+=sway;transformed.z+=sway*.45;
+  #endif`);};
+  crown.customProgramCacheKey=()=> 'gridrunner-crown-1';
+  const volumes=trees.flatMap(p=>[p,{...p,layer:1}]);
+  add('Roadside / oak crowns',new T.IcosahedronGeometry(.55,1),crown,volumes,leg,(o,p)=>{
+    const layer=p.layer?1:0, h=Number(p.h)||3.6;
+    const lift=h*(layer?1.05:.82);
+    o.position.set(p.x,heightAt(p.x,p.z)+lift,p.z);
+    o.scale.set(h*(layer?.7:1),h*(layer?.48:.62),h*(layer?.7:1));
+    o.rotation.set(layer*.2,p.yaw||0,layer?-.12:0);
+  });
  }
  return {batches,update(s,settings){time.value=s.elapsed||0;wind.value=settings.weather==='storm'?1:settings.weather==='rain'?.45:.15;}};
 }

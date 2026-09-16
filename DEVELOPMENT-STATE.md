@@ -1,6 +1,10 @@
 # GRIDRUNNER continuation state
 
-Date: 2026-09-16. Current slice: v7.28 Fleet and sensor access repair.
+Date: 2026-09-16. Current slice: v7.29 Presence (look, bones, foliage, spatial audio, TRELLIS intake).
+
+v7.29 is a graphical/interactive wave on top of the v7.28 fleet/sensor access repair. See CHANGELOG-v7.29.md. Canonical playable Site remains `gridrunner.goodyartist.chatgpt.site`; this GitHub `grok` branch now carries the presence modules.
+
+
 
 v7.28 repairs discoverability of sensors/formations and makes formation selection issue orders to free aircraft. See CHANGELOG-v7.28.md and MENU-LIBRARY-NOTES.md. The canonical source is the deployed Sites repository; this repair was based on v7.27, not the older dirty v7.21 workspace or the unsynchronized GitHub branch.
 
