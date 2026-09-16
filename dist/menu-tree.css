@@ -1,0 +1,138 @@
+/* FIELD DIRECTORY — narrow hierarchy, one working branch, world still in view. */
+body.interface-ready #overlay:has(.compact-menu){justify-content:flex-start;padding:20px;background:#030b122e;backdrop-filter:none}
+body.interface-ready #overlay:has(.compact-menu) #panel{width:min(900px,100%);max-width:900px;max-height:min(710px,calc(100dvh - 40px));border:1px solid #54777b;border-top:2px solid #7ac8ce;border-radius:5px;box-shadow:0 15px 60px #0008}
+.compact-menu.field-shell{height:min(680px,calc(100dvh - 42px));max-height:calc(100dvh - 42px);background:#0b171ded;color:#e4ece6}
+.compact-menu .field-mast{min-height:48px;padding:5px 14px;gap:12px;background:#12242a}
+#panel .compact-menu .field-brand{font-size:19px;letter-spacing:1px;min-height:36px;gap:6px}
+#panel .compact-menu .field-brand small,.compact-menu .field-link,.compact-menu .field-resume kbd{display:none}
+#panel .compact-menu .field-resume{margin-left:auto;font-size:14px;min-height:36px;padding:6px 10px}
+.compact-menu .field-mark{font-size:28px}
+.compact-menu .field-body{min-height:0;flex:1;overflow:hidden}
+.compact-menu .field-bottom{padding:8px 14px;font-size:12px;letter-spacing:.2px;gap:8px}
+.compact-menu .field-bottom span:last-child{display:none}
+.menu-path{display:flex;align-items:center;gap:12px;padding:6px 12px;border-bottom:1px solid #739da52a;background:#0b1b21;min-height:44px;flex-shrink:0}
+#panel .menu-path button{min-height:32px;padding:5px 8px;font-size:14px;border:0;background:transparent;color:#a9c7c9;white-space:nowrap}
+.menu-breadcrumb{color:#9cb4b7;font-size:12px;line-height:1.5;min-width:0}
+.menu-breadcrumb b{font-weight:500;color:#e5dfbf}
+#panel .tree-toggle{display:none}
+.menu-tree{flex:0 0 195px;min-width:0;padding:12px 8px;overflow-y:auto;overscroll-behavior:contain;border-right:1px solid #70949b30;background:#0a141a;scrollbar-width:thin;scrollbar-color:#4a6569 #0b161c}
+.tree-label{display:block;padding:3px 10px 12px;color:#829b9e;font:12px/1.4 monospace;letter-spacing:.6px}
+#panel .menu-tree button{border:0;border-radius:3px;background:transparent;min-height:38px;color:#a7bdbe;font-size:14px;letter-spacing:0;text-transform:none;text-align:left;width:100%;margin:0;white-space:normal;line-height:1.35}
+#panel .menu-tree [data-menu-group]{display:flex;gap:8px;align-items:center;padding:8px;font-weight:600;color:#d9e8e6;margin-top:2px}
+.menu-tree .atlasIcon{transform:scale(.8);margin:-2px;opacity:.85}
+.tree-chevron{font:21px/1 monospace;margin-left:auto;transition:transform .12s}
+[aria-expanded=true]>.tree-chevron{transform:rotate(90deg)}
+.menu-group-pages{margin:2px 0 9px 19px;border-left:1px solid #3c555d;padding-left:7px}
+#panel .menu-tree .tree-page{padding:7px 8px;color:#a3b8b8}
+#panel .menu-tree button[aria-current=page]{color:#b0eced;background:#17353b;box-shadow:inset 2px 0 #79cbd0}
+.tree-sections{margin:2px 0 8px 8px;padding-left:8px;border-left:1px solid #466064}
+#panel .menu-tree [data-menu-section]{font-size:14px;padding:6px 7px;min-height:34px;color:#9eb2b4}
+#panel .menu-tree [data-menu-section][aria-current=true]{color:#f5d09b;background:#b18b4620;box-shadow:inset 2px 0 #dbb17a}
+#panel .menu-tree button:hover{background:#1b3038;color:#f3f5e9}
+#panel .compact-menu :is(button,summary):focus-visible{outline:2px solid #9de9ed;outline-offset:-2px;background-color:#1b3942}
+#panel .compact-menu button:active:not(:disabled){transform:translateY(1px)}
+#panel .compact-menu button.selected,#panel .compact-menu button[aria-pressed=true]{border-color:#86d0d1;color:#d9ffff;background:#1b3b43;box-shadow:inset 0 -2px #70bfc5}
+.compact-menu .field-content{padding:16px 18px;scrollbar-gutter:stable;min-width:0;overflow-x:hidden}
+#panel .compact-menu .field-content h2{font-size:26px!important;line-height:1.15;margin:4px 0 6px}
+#panel .compact-menu .field-content h3{font-size:20px!important;line-height:1.3;margin:8px 0 10px}
+#panel .compact-menu .field-content p{font-size:16px;line-height:1.5;margin:8px 0 12px}
+#panel .compact-menu .field-content :is(.hint,small){font-size:12px!important;line-height:1.5}
+#panel .compact-menu .field-content .eyebrow{font-size:12px;letter-spacing:.7px}
+#panel .compact-menu .field-content button{font-size:14px;line-height:1.35;min-height:38px;padding:8px 10px;letter-spacing:.1px}
+#panel .compact-menu .field-content .primary{background:#94d4d0;color:#092227!important;border-color:#a5e1dc;padding:8px 12px}
+#panel .compact-menu .field-content .panelTop{margin:0 0 12px;padding:0 0 10px}
+.compact-menu .menu-pane{min-width:0;animation:menu-enter .12s ease-out}
+.compact-menu .menu-pane[hidden]{display:none!important}
+.compact-menu .commandGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.compact-menu .fleetQuick{padding:0 0 12px;margin:0 0 14px;background:none;border:0;border-bottom:1px solid #54777b55;border-radius:0}
+.compact-menu .fleetQuick>h3{display:none}
+.compact-menu .fleetQuickPicks{gap:5px;margin-bottom:7px;grid-template-columns:repeat(4,minmax(0,1fr))}
+#panel .compact-menu .fleetQuickPicks button{min-height:58px;padding:7px 8px;gap:3px}
+#panel .compact-menu .fleetQuickPicks b{font-size:14px}
+#panel .compact-menu .fleetQuickPicks span{font-size:12px;line-height:1.4}
+.compact-menu .fleetQuick .hint{margin:6px 0 0!important}
+.compact-menu .droneOps{padding:0;border:0;background:transparent;margin:0}
+.compact-menu .sectionHeading{padding:0 0 6px;margin:8px 0;border:0}
+.compact-menu .sectionHeading span{font-size:12px}.compact-menu .sectionHeading b{font-size:17px}
+.compact-menu .fleetTask{padding:0 0 10px;margin:0 0 12px;background:none;border:0;border-bottom:1px solid #52707845}
+.compact-menu .taskActions{display:flex;flex-wrap:wrap;gap:6px}
+.compact-menu .fleetCards{display:flex;flex-direction:column;gap:8px;margin:0}
+.compact-menu .fleetCard{display:grid;grid-template-columns:120px minmax(0,1fr);gap:0}
+.compact-menu .fleetCard img{width:120px;aspect-ratio:1;align-self:start;margin-top:8px}
+.compact-menu .fleetInfo{padding:10px}
+#panel .compact-menu .fleetInfo p{font-size:14px!important;min-height:0;margin:4px 0}
+.compact-menu .fleetInfo .airframeSpecs{display:none}
+.compact-menu .settingRow{min-height:42px;padding:6px 0;font-size:14px;gap:12px}
+.compact-menu .settingsGrid{grid-template-columns:1fr;gap:0}
+#panel .compact-menu :is(select,input[type=search]){font-size:14px;min-height:36px}
+.compact-menu .settingRow input[type=range]{max-width:42%;flex-shrink:1}
+.compact-menu .settingRow select{max-width:55%}
+.compact-menu .firstUse{margin:0 0 10px;padding:10px 12px;font-size:14px;border-left-width:2px}
+#panel .compact-menu .firstUse p{font-size:14px}
+.compact-menu details{margin:8px 0;background:#0c1c22}
+.compact-menu summary{font-size:16px;min-height:40px;padding:10px 12px}
+.compact-menu .menu-help{border:0;border-left:2px solid #547c84;background:#13272d;margin:0 0 10px}
+.compact-menu .menu-help .firstUse{border:0;margin:0;padding:8px 0;background:none}
+.compact-menu .menu-help .firstUse strong{display:none}
+.compact-menu .quickGrid{grid-template-columns:1fr;gap:5px}
+#panel .compact-menu .quickGrid button{min-height:44px!important;padding:8px 10px!important;font-size:14px!important;gap:9px}
+.compact-menu .quickGrid button small{margin-left:auto;text-align:right;max-width:50%}
+.compact-menu .missionGrid,.compact-menu .locationGrid,.compact-menu .manualGrid,.compact-menu .sourceCards{grid-template-columns:1fr;gap:8px}
+.compact-menu .missionGrid article{display:grid;grid-template-columns:1fr auto;gap:0 10px;padding:12px}
+.compact-menu .missionGrid article p,.compact-menu .missionGrid article small{grid-column:1;min-height:0}
+.compact-menu .missionGrid article button{grid-column:2;grid-row:1/5;align-self:center}
+.compact-menu .missionGrid article h3{margin:5px 0!important}
+.compact-menu .sourceCards>*{padding:12px}
+.compact-menu .briefStats{margin:10px 0;padding:10px 0;gap:20px}
+.compact-menu .briefStats b{font-size:23px}.compact-menu .briefStats span{font-size:12px}
+.compact-menu .recipe{gap:10px;padding:10px 0}.compact-menu .recipe button{min-width:85px}
+.compact-menu.field-home .field-content{padding:0 18px 16px}
+.compact-menu.field-home .menuHero{min-height:132px;margin:0 -18px 14px;padding:18px;background-position:50% 46%}
+#panel .compact-menu.field-home .menuHero h1{font-size:42px!important;letter-spacing:1px!important;margin:12px 0 4px!important}
+#panel .compact-menu.field-home .menuHero .subtitle{font-size:12px!important;letter-spacing:.7px}
+.compact-menu.field-home .homeGrid{grid-template-columns:1fr;gap:16px}
+.compact-menu.field-home .mainMenu{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+#panel .compact-menu.field-home .mainMenu button{min-height:42px;font-size:14px;padding:8px 10px;gap:8px}
+#panel .compact-menu.field-home .mainMenu .primary{grid-column:1/-1;min-height:44px;margin:0}
+.compact-menu.field-home .briefing{padding:12px 0 0;border-top:1px solid #647f793b}
+.compact-menu.field-home .briefing .eyebrow{display:none}
+#panel .compact-menu.field-home .briefing h2{font-size:22px!important;margin:4px 0}
+.compact-menu .mapCanvas{max-width:100%;max-height:430px;object-fit:contain}
+@keyframes menu-enter{from{opacity:.5;transform:translateY(3px)}to{opacity:1;transform:none}}
+@media(max-width:680px){
+ body.interface-ready #overlay:has(.compact-menu){padding:8px}
+ body.interface-ready #overlay:has(.compact-menu) #panel{max-height:calc(100dvh - 16px);width:100%}
+ .compact-menu.field-shell{height:calc(100dvh - 18px);max-height:calc(100dvh - 18px)}
+ #panel .tree-toggle{display:block;border:1px solid #4b737c}
+ .compact-menu .field-body{position:relative}
+ .compact-menu .menu-tree{display:none;flex:1;border:0;padding:12px}
+ .compact-menu.tree-visible .menu-tree{display:block}
+ .compact-menu.tree-visible .field-content{display:none}
+ .compact-menu .field-content{padding:12px}
+ .compact-menu .menu-path{gap:6px;padding:5px 8px;flex-wrap:wrap}
+ .compact-menu .menu-breadcrumb{flex-basis:100%;padding:0 4px 2px}
+ #panel .menu-tree button,#panel .menu-tree [data-menu-section]{min-height:44px}
+ #panel .compact-menu .field-content button{min-height:44px}
+ .compact-menu .fleetQuickPicks{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .compact-menu .commandGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .compact-menu .fleetQuick .commandGrid{grid-template-columns:1fr 1fr}
+ .compact-menu .fleetQuick .commandGrid .primary{grid-column:1/-1}
+ .compact-menu.field-home .field-content{padding:0 12px 12px}
+ .compact-menu.field-home .menuHero{margin:0 -12px 12px;padding:16px;min-height:112px}
+ #panel .compact-menu.field-home .menuHero h1{font-size:36px!important}
+ .compact-menu .fleetCard{grid-template-columns:85px minmax(0,1fr)}
+ .compact-menu .fleetCard img{width:85px}
+ .compact-menu .quickGrid button small{display:none}
+ .compact-menu .field-bottom{font-size:12px}
+}
+@media(pointer:coarse) and (orientation:landscape){
+ body.interface-ready #overlay:has(.compact-menu){padding:6px}
+ .compact-menu.field-shell{height:calc(100dvh - 14px);max-height:calc(100dvh - 14px)}
+ .compact-menu .field-mast{min-height:42px}.compact-menu .field-bottom{display:none}
+ .compact-menu .menu-tree{flex-basis:180px}.compact-menu .field-content{padding:10px 14px}
+ .compact-menu.field-home .menuHero{min-height:96px;padding:12px 18px}
+ #panel .compact-menu.field-home .menuHero h1{font-size:32px!important}
+}
+@media(prefers-reduced-motion:reduce){.compact-menu *{animation:none!important;transition:none!important}}
+
+.compact-menu .sensorButtons button{display:flex;flex-direction:column;align-items:flex-start;gap:4px}

@@ -1,11 +1,11 @@
 # GRIDRUNNER continuation state
 
-Date: 2026-09-16. Current slice: v7.26 Swarm / Sensor Lab.
+Date: 2026-09-16. Current slice: v7.27 Compact Field Directory.
 
 ## Source of truth
 
 - The active playable Site is `gridrunner.goodyartist.chatgpt.site`; its own source branch is `main`.
-- This work resumed the clean published v7.25 source at `213b42cf0bd552f0e111b1994470dd929a4fb3ed`.
+- This menu continuation resumed published v7.26 source at `fb1b1fa159df90568333c1d6c6ea71bb471eb134`.
 - An older dirty checkout at `/workspace/sites/gridrunner` contains separate unfinished console/UV changes. It was inspected, not changed, committed or published by this continuation. Do not copy it over the current source.
 - The separate GitHub `jalapenoseed/GRIDRUNNER` `grok` branch was observed with package version 7.16. Source reconciliation/push to that separate repository is not completed by a Sites release. Honor the previous authorization blocker; do not force-push or overwrite either history.
 - No Godot, Unreal or approved Blender source assets were changed.
@@ -15,6 +15,19 @@ Date: 2026-09-16. Current slice: v7.26 Swarm / Sensor Lab.
 Inspect live source → run baseline → add failing focused tests → implement a bounded slice → run real-scene integration → review regressions → update this handoff → publish only after checks.
 
 This is an ECC-style working practice. No ECC plugin, hooks, global rules or remote-PC installation were performed, and no independent-agent review is claimed.
+
+## Compact menu continuation (v7.27)
+
+- Replaced category tabs plus page rail with a single five-branch directory; one category expands at a time.
+- Fleet has one visible pane: commands, formations, survey/harvesting, packs, automation, airframes, or sensors. Four quick selectors and Launch All remain above it.
+- Settings/controls and bike/trailer use focused subpages. The existing action elements are moved, not recreated; gameplay, unlocks, campaign persistence and worker behavior remain unchanged.
+- Sensor buttons invoke the same supported-payload checks and optics application as the B shortcut. UV, thermal and RF remain available on their existing airframes.
+- Desktop panel is capped at 900px (previously 1180px). No world blur. On narrow screens Directory switches between navigation and content. Ordinary action targets are 44px on narrow screens.
+- Back/Escape/controller B returns from a subpage to its first page before following the existing page history. Branch, focus and scroll preferences are device-local and separate from campaign saves.
+- `dist/menu-tree.js`, `dist/menu-tree.css`: presentation adapter and styling. `verify-menu-tree.mjs`: focused navigation regression. `npm run test:menus`: focused plus integrated regression.
+- Full 28-stage `npm test` passed; browser-targeted module bundle and diff checks passed.
+- Browser checks: desktop menu and Fleet branch interaction; 390×844 iframe phone viewport, Directory navigation and branch switching. Used the existing `/_qa` renderer stub because actual WebGL boot reports unavailable in this cloud browser. `/_qa-mobile` is a development-only viewport wrapper. It is not included in the hosted static archive.
+- GPU/world compositing, physical touch and physical controller acceptance remain outstanding. Automated real-scene/DOM tests cover WALK, BIKE, DRONE, fleet, saves, collision and controller routing. No GPU performance improvement is claimed.
 
 ## Swarm / sensor continuation
 
@@ -38,6 +51,6 @@ Release checks passed: the complete 27-stage `npm test` chain, focused Phase 4 i
 
 ## Remaining acceptance and scope
 
-Browser/GPU rendering, listening, physical-controller/mobile checks and fresh-player route comprehension remain unverified. Read `dist/GRIDRUNNER-v7.26-REPORT.md` and `dist/GRIDRUNNER-v7.25-REPORT.md` for the short manual route. Do not describe automated renderer-stub tests as visual playtesting.
+GPU rendering, listening, physical-controller/touch checks and fresh-player route comprehension remain unverified. Menu browser checks are described above. Read `dist/GRIDRUNNER-v7.26-REPORT.md` and `dist/GRIDRUNNER-v7.25-REPORT.md` for the short manual route. Do not describe automated renderer-stub tests as visual playtesting.
 
 Phase 4 is an initial bounded prototype, not full combat or region-wide density. Tune based on play feedback before expanding. Next structural candidate is Phase 5's multi-instance fleet registry and migration; original communicator/intro, Eclipse and broader physics/audio/asset work remain on the roadmap.

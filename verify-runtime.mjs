@@ -166,18 +166,19 @@ console.log('PASS: four-airframe hangar, cargo attach/drop, campaign restoration
 // Field menu behavior: one shell, native keyboard access, and mode-specific HUD.
 run("started=false;open('settings')");
 assert.equal(w.document.querySelectorAll('.field-shell').length,1);
-assert.equal(w.document.querySelectorAll('.field-primary button').length,5);
-const openSummary=w.document.querySelector('details[open] > summary');openSummary.focus();
-const tabKey=new w.KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true});openSummary.dispatchEvent(tabKey);assert(!tabKey.defaultPrevented,'Tab retains native menu traversal');
-const spaceKey=new w.KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true});openSummary.dispatchEvent(spaceKey);assert(!spaceKey.defaultPrevented,'Space retains native accordion toggle');
-const closedRange=w.document.querySelector('details:not([open]) input');
-assert(!run('menuControls(document.querySelector("#panel"))').includes(closedRange),'Closed accordion controls are excluded from controller and keyboard navigation');
+assert.equal(w.document.querySelectorAll('[data-menu-group]').length,5);
+assert.equal(w.document.querySelectorAll('.menu-pane:not([hidden])').length,1);
+const navButton=w.document.querySelector('[data-menu-group="system"]');navButton.focus();
+const tabKey=new w.KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true});navButton.dispatchEvent(tabKey);assert(!tabKey.defaultPrevented,'Tab retains native menu traversal');
+const spaceKey=new w.KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true});navButton.dispatchEvent(spaceKey);assert(!spaceKey.defaultPrevented,'Space retains native button behavior');
+const closedRange=w.document.querySelector('.menu-pane[hidden] input');
+assert(closedRange&&!run('menuControls(document.querySelector("#panel"))').includes(closedRange),'Hidden branch controls are excluded from controller and keyboard navigation');
 w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));assert.equal(run('screen'),'locations','Escape restores the actual parent page');assert(run('paused'));assert(!run('started'));
 run("newCampaign();open('supplies')");assert.equal(w.document.querySelectorAll('.field-shell').length,1);assert(w.document.body.classList.contains('menu-open'));
 run('play();hud()');assert(!w.document.body.classList.contains('menu-open'));
 run("open('flightyard')");w.document.querySelector('[data-yard-drone=relay]').click();assert.equal(w.document.querySelectorAll('.field-shell').length,1);
 run("settings.weather='dusk';settings.sunHour=13.5;settings.nightVision=false;applySettings();loop(performance.now()+20)");assert(run('atmosphere.hemi[0].intensity')>1.6);
-console.log('PASS: single menu shell, five categories, native Tab/Space, closed accordion focus exclusion, prestart Escape safety, specialized rerenders and bright daylight integration.');
+console.log('PASS: single menu shell, five tree categories, native Tab/Space, hidden branch focus exclusion, prestart Escape safety, specialized rerenders and bright daylight integration.');
 
 // Inspect the new interaction model through DOM events, including filter/focus state.
 run('newCampaign();s.inv.toaster=1;s.inv.copper=2;open("inventory")');
@@ -266,18 +267,25 @@ assert.equal(run("spatial.moveRider({x:0,y:1.7,z:-3500},0,-20,{mode:'bike'}).hit
 run("newCampaign();settings.tutorialEnabled=false;open('rig')");assert(!w.document.querySelector('.firstUse'),'Tutorial OFF suppresses first-use cards');
 console.log('PASS: background docked policy scheduling, operator recall disarm, locked outpost protection, later-chapter solid props, clear road and tutorial preference.');
 
-run("open('drones')");const remembered=w.document.querySelector('[data-formation=TRAIL]');remembered.focus();run("open('rig');open('drones')");assert.equal(w.document.activeElement.dataset.formation,'TRAIL','real menu render retains the focused formation');
+run("open('drones')");w.document.querySelector('[data-menu-section="formations"]').click();const remembered=w.document.querySelector('[data-formation=TRAIL]');remembered.focus();run("open('rig');open('drones')");assert.equal(w.document.activeElement.dataset.formation,'TRAIL','real menu render retains the focused formation');
 console.log('PASS: actual rendered Fleet page restores focus without an unconditional focus override.');
 
 run("newCampaign();play();open('quick');open('drones')");
 w.document.querySelector('[data-formation=TRAIL]').focus();run("open('settings');backMenu()");
 assert.equal(run('screen'),'drones');assert.equal(w.document.activeElement.dataset.formation,'TRAIL');
-run("controller.menu({menu:[],actions:['cancel']})");assert.equal(run('screen'),'quick');
+run("controller.menu({menu:[],actions:['cancel']})");assert.equal(run('screen'),'drones');assert.equal(w.document.querySelector('.menu-pane:not([hidden])').dataset.menuPane,'commands');run("controller.menu({menu:[],actions:['cancel']})");assert.equal(run('screen'),'quick');
 w.document.querySelector('[data-back]').click();assert.equal(run('screen'),'pause');run('backMenu()');assert(!run('paused'));
 run("settings.tutorialEnabled=true;s.lessons={};s.droneSystem.scanCooldown=0;action('scan')");assert.equal(run('s.lessons.scan'),'done');
 assert(run('writeSave("manual1")'));run('restore(getSave("manual1"))');assert.equal(run('s.lessons.scan'),'done');
 run("open('guide')");w.document.querySelector('[data-lesson-replay=scan]').click();assert.equal(run('s.lessons.scan'),undefined);assert.equal(run('s.intro.stage'),'line');
 run("s.met=true;settings.sensorMode='night';open('drones')");w.document.querySelector('[data-drone=cargo]').click();assert.equal(run('settings.sensorMode'),'visible','Changing airframe removes unsupported optics');
+run("selectFleetAircraft('scout');open('drones')");
+w.document.querySelector('[data-menu-section="sensors"]').click();
+assert(run('menuControls(document.querySelector("#panel"))').includes(w.document.querySelector('[data-sensor-mode="uv"]')));
+w.document.querySelector('[data-sensor-mode="uv"]').click();assert.equal(run('settings.sensorMode'),'uv');
+assert.equal(w.document.querySelector('.menu-pane:not([hidden])').dataset.menuPane,'sensors','changing sensor retains active branch');
+assert.equal(w.document.querySelector('[data-sensor-mode="uv"]').getAttribute('aria-pressed'),'true');
+run("selectFleetAircraft('cargo');renderPanel()");assert.equal(run('settings.sensorMode'),'visible');assert(!w.document.querySelector('[data-sensor-mode="uv"]'),'unsupported sensors are absent');
 console.log('PASS: keyboard/controller/touch parent history and focus, first scan completion/save/replay, campaign preservation and class sensor fallback.');
 verifyPhase4Integration({run,tick,w});
 
