@@ -136,3 +136,5 @@ body.interface-ready #overlay:has(.compact-menu) #panel{width:min(900px,100%);ma
 @media(prefers-reduced-motion:reduce){.compact-menu *{animation:none!important;transition:none!important}}
 
 .compact-menu .sensorButtons button{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.fleet-section-shortcuts{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+#panel .compact-menu .fleet-section-shortcuts button{flex:1;white-space:nowrap}

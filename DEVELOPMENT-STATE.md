@@ -1,6 +1,8 @@
 # GRIDRUNNER continuation state
 
-Date: 2026-09-16. Current slice: v7.27 Compact Field Directory.
+Date: 2026-09-16. Current slice: v7.28 Fleet and sensor access repair.
+
+v7.28 repairs discoverability of sensors/formations and makes formation selection issue orders to free aircraft. See CHANGELOG-v7.28.md and MENU-LIBRARY-NOTES.md. The canonical source is the deployed Sites repository; this repair was based on v7.27, not the older dirty v7.21 workspace or the unsynchronized GitHub branch.
 
 ## Source of truth
 

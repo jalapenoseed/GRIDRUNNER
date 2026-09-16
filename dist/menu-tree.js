@@ -13,7 +13,7 @@ function sectionsFor(content,screen){
   add('packs','Battery packs',[content.querySelector('[aria-label="Harvest battery packs"]')]);
   add('automation','Reserve automation',[content.querySelector('[aria-label="Autonomous reserve policy"]')]);
   const cards=content.querySelector('.fleetCards');add('airframes','Airframe details',[cards,cards?.nextElementSibling?.matches('p')?cards.nextElementSibling:null]);
-  const sensor=Array.from(content.children).find(n=>n.tagName==='H3'&&n.textContent==='Sensor payload');
+  const sensor=Array.from(content.children).find(n=>n.matches('[data-sensor-heading]')||(n.tagName==='H3'&&n.textContent==='Sensor payload'));
   if(sensor){const nodes=[];let n=sensor;while(n&&!n.classList?.contains('menu-pane')){nodes.push(n);n=n.nextSibling;}add('sensors','Sensors & optics',nodes);}
  }else if(screen==='settings'||screen==='controls'){
   const details=[...content.querySelectorAll(':scope > .settingDetails')];
@@ -58,12 +58,21 @@ export function installMenuTree({shell,body,content,screen,group,groups,home,sta
  const toggle=bar.querySelector('.tree-toggle');
  const setMobile=open=>{shell.classList.toggle('tree-visible',open);toggle.setAttribute('aria-expanded',String(open));};
  toggle.onclick=()=>setMobile(!shell.classList.contains('tree-visible'));
+ // Common fleet actions stay discoverable even when the mobile directory is closed.
+ let shortcuts;
+ if(screen==='drones'){
+  shortcuts=doc.createElement('nav');shortcuts.className='fleet-section-shortcuts';shortcuts.setAttribute('aria-label','Fleet pages');
+  shortcuts.innerHTML=[['commands','Commands'],['formations','Formations'],['sensors','Sensors & optics']].filter(([id])=>sections.some(p=>p.id===id)).map(([id,label])=>`<button data-menu-jump="${id}" aria-controls="menu-pane-${id}">${label}</button>`).join('');
+  if(title)title.after(shortcuts);else content.prepend(shortcuts);
+  shortcuts.addEventListener('click',e=>{const b=e.target.closest('[data-menu-jump]');if(b)select(b.dataset.menuJump,{focus:false});});
+ }
  let current;
  const select=(id,{focus=false,capture=true}={})=>{
   const section=sections.find(p=>p.id===id)||sections[0];if(!section)return;
   if(capture)memory.capture(doc.getElementById('panel'));
   sections.forEach(p=>p.pane.hidden=p!==section);
   rail.querySelectorAll('[data-menu-section]').forEach(b=>{b.setAttribute('aria-current',b.dataset.menuSection===section.id?'true':'false');});
+  shortcuts?.querySelectorAll('[data-menu-jump]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.menuJump===section.id)));
   current=section; prefs[screen]=section.id;save();
   bar.querySelector('.menu-breadcrumb b').textContent=' / '+section.label;
   memory.current='';content.scrollTop=0;

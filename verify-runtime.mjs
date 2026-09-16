@@ -1,3 +1,4 @@
+import {verifyMenuRepair} from './verify-menu-repair-integration.mjs';
 import {verifySwarmSensorsIntegration} from './verify-swarm-sensors-integration.mjs';
 import * as sensorLabModule from './dist/sensor-lab.js';
 import * as swarmSteering from './dist/swarm-steering.js';
@@ -74,6 +75,7 @@ vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 await run('spatial.ready');await run('ambientResidents.ready');assert.equal(run('spatial.status'),'ready');assert.equal(run('ambientResidents.status'),'ready');
 const tick=(seconds)=>{for(let i=0;i<seconds*50;i++)run('update(.02)');run('hud();loop(performance.now()+20)');};
 vm.runInContext(`function newCampaign(){newExpedition();s.intro=completedIntro();s.mode='bike';s.pos.set(bike.position.x,1.7,bike.position.z);hud();}`,ctx);
+if(process.argv.includes('--menu-repair')){verifyMenuRepair({run,tick,w});process.exit(0);}
 if(process.argv.includes('--swarm-sensors')){verifySwarmSensorsIntegration({run,tick,w});process.exit(0);}
 if(process.argv.includes('--phase4')){verifyPhase4Integration({run,tick,w});process.exit(0);}
 assert.equal(run('screen'),'prologue');assert.equal(run('started'),false);w.document.querySelector('[data-story-action=next]').click();assert.equal(run('storyPage'),1);w.document.querySelector('[data-story-action=next]').click();w.document.querySelector('[data-story-action=finish]').click();assert.equal(run('screen'),'start');assert.equal(run('started'),false);assert(w.document.querySelector('#panel').textContent.includes('v7'));
@@ -290,3 +292,5 @@ console.log('PASS: keyboard/controller/touch parent history and focus, first sca
 verifyPhase4Integration({run,tick,w});
 
 verifySwarmSensorsIntegration({run,tick,w});
+
+verifyMenuRepair({run,tick,w});
