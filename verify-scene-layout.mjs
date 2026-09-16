@@ -31,7 +31,7 @@ for(const {mesh,max} of environment.batches){
  if(mesh.geometry.type==='CircleGeometry')continue; // Flush road-surface wear.
  for(let i=0;i<max;i++){
   mesh.getMatrixAt(i,matrix);matrix.decompose(position,rotation,scale);
-  const radius=mesh.geometry.type==='PlaneGeometry'?scale.x/2:mesh.geometry.type==='CylinderGeometry'?.5:Math.max(scale.x,scale.y,scale.z);
+  const radius=mesh.geometry.type==='PlaneGeometry'?scale.x/2:mesh.geometry.type==='CylinderGeometry'?.5:/oak crowns/.test(mesh.name||'')?Math.max(scale.x,scale.z)*.6:Math.max(scale.x,scale.y,scale.z);
   assert(sceneryAllowed(position.x,position.z,radius),`Environment ${mesh.geometry.type} intersects authored site at ${position.x},${position.z}`);checked++;
  }
 }

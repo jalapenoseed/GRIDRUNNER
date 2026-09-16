@@ -94,9 +94,9 @@ function coveredReturnPlan(pos,home,solids,type='scout',payloadKg=0){
  }
  options.sort((a,b)=>a.length-b.length);return {home:[...home],points:options[0]?.points||[],blocked:!options.length};
 }
-export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',payloadKg=0,terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null,taskTarget=null,relayNodes=[],idleMotion=true,formationSpeed=Infinity,swarmPeers=[],swarmId=type}){
+export function updateDrone(d,dt,{home,followHome=home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',payloadKg=0,terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null,taskTarget=null,relayNodes=[],idleMotion=true,formationSpeed=Infinity,swarmPeers=[],swarmId=type}){
  d.collisionType=type;d.collisionPayload=payloadKg;
- dt=clamp(dt,0,.05);const homeVelocity=d.lastHome?home.map((v,i)=>clamp((v-d.lastHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastHome=[...home];const spec=dronePerformance(type,payloadKg),events=[];d.cooldown=Math.max(0,d.cooldown-dt);d.scanCooldown=Math.max(0,d.scanCooldown-dt);
+ dt=clamp(dt,0,.05);const homeVelocity=d.lastHome?home.map((v,i)=>clamp((v-d.lastHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastHome=[...home];const followVelocity=d.lastFollowHome?followHome.map((v,i)=>clamp((v-d.lastFollowHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastFollowHome=[...followHome];const spec=dronePerformance(type,payloadKg),events=[];d.cooldown=Math.max(0,d.cooldown-dt);d.scanCooldown=Math.max(0,d.scanCooldown-dt);
  if(d.mode==='DOCK'){d.pos=[...home];d.velocity=[0,0,0];d.rates=[0,0,0];d.pitch=d.roll=d.thrust=0;d.yaw=wrapAngle(yaw);d.speed=0;d.altitude=home[1]-terrain(home[0],home[2]);d.range=0;d.signal=100;d.linkVia=null;return {battery,events};}
  d.range=distance(d.pos,home);d.altitude=d.pos[1]-terrain(d.pos[0],d.pos[2]);
  const link=droneLink(d.pos,home,{type,solids,terrain,storm,jammed,relayNodes});
@@ -125,9 +125,9 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
  else{
   if(d.mode==='RELEASE')target.splice(0,3,...lineRelease(d.perch));
   else if(d.mode==='HOLD')target.splice(0,3,...d.hold);
-  else if(d.mode==='ORBIT'){if(formationOffset)target.splice(0,3,home[0]+formationOffset[0],home[1]+formationOffset[1],home[2]+formationOffset[2]);else{const angle=d.travel*.035;target.splice(0,3,home[0]+Math.sin(angle)*14,home[1]+12,home[2]+Math.cos(angle)*14);}}
+  else if(d.mode==='ORBIT'){if(formationOffset)target.splice(0,3,followHome[0]+formationOffset[0],followHome[1]+formationOffset[1],followHome[2]+formationOffset[2]);else{const angle=d.travel*.035;target.splice(0,3,followHome[0]+Math.sin(angle)*14,followHome[1]+12,followHome[2]+Math.cos(angle)*14);}}
   else if(d.mode==='SCOUT AHEAD'&&taskTarget)target.splice(0,3,...taskTarget);
-  else if(d.mode==='FOLLOW'||d.mode==='SCOUT AHEAD'){const ahead=d.mode==='SCOUT AHEAD'?58:0,slot=formationOffset||[4,7,-7];target.splice(0,3,home[0]+slot[0]-Math.sin(yaw)*ahead,home[1]+slot[1]+(d.mode==='SCOUT AHEAD'?10:0),home[2]+slot[2]-Math.cos(yaw)*ahead);}
+  else if(d.mode==='FOLLOW'||d.mode==='SCOUT AHEAD'){const ahead=d.mode==='SCOUT AHEAD'?58:0,slot=formationOffset||[4,7,-7];target.splice(0,3,followHome[0]+slot[0]-Math.sin(yaw)*ahead,followHome[1]+slot[1]+(d.mode==='SCOUT AHEAD'?10:0),followHome[2]+slot[2]-Math.cos(yaw)*ahead);}
   else {
    if(!d.returnPlan||distance(d.returnPlan.home,home)>1)d.returnPlan=coveredReturnPlan(d.pos,home,solids,type,payloadKg)||{home:[...home],open:true};
    if(!d.returnPlan.open){
@@ -135,12 +135,12 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
     target.splice(0,3,...(points[0]||d.pos));if(d.returnPlan.blocked)d.reason='Return path blocked · move the bike into the open';
    }else{target.splice(0,3,...home);if(Math.hypot(d.pos[0]-home[0],d.pos[2]-home[2])>5)target[1]=Math.max(home[1]+10,d.pos[1]);}
   }
-  if(idleMotion&&d.mode==='FOLLOW'&&!taskTarget&&Math.hypot(...homeVelocity)<.5){const offset=idleOffset(type,elapsed);for(let i=0;i<3;i++)target[i]+=offset[i];}
+  if(idleMotion&&d.mode==='FOLLOW'&&!taskTarget&&Math.hypot(...followVelocity)<.5){const offset=idleOffset(type,elapsed);for(let i=0;i<3;i++)target[i]+=offset[i];}
   // Climb above an obstructing volume before proceeding. Never teleport across it.
   const navigationHull=droneHull(type,payloadKg),blocking=segmentCandidates(solids,d.pos,target,Math.max(...navigationHull)).filter(b=>b.drone!==false&&hullIntersectsSegment(d.pos,target,b,navigationHull));
   if((d.mode!=='RETURN HOME'||d.returnPlan?.open)&&blocking.length){let top=12;for(const b of blocking)top=Math.max(top,b.maxY??12);target[1]=Math.max(target[1],top+5);if(d.pos[1]<top+3){target[0]=d.pos[0];target[2]=d.pos[2];}}
   const delta=target.map((v,i)=>v-d.pos[i]),horizontal=Math.hypot(delta[0],delta[2]),speed=Math.min(d.mode==='FOLLOW'&&!taskTarget?formationSpeed:Infinity,spec.speed,horizontal*1.3,Math.sqrt(2*spec.acceleration*horizontal)*.72);
-  desired=[horizontal?delta[0]/horizontal*speed:0,clamp(delta[1]*1.8,-spec.climb,spec.climb),horizontal?delta[2]/horizontal*speed:0];if(['FOLLOW','SCOUT AHEAD','RETURN HOME'].includes(d.mode)&&!(d.mode==='SCOUT AHEAD'&&taskTarget)){desired[0]+=homeVelocity[0];desired[2]+=homeVelocity[2];const factor=Math.min(1,Math.min(spec.speed,d.mode==='FOLLOW'&&!taskTarget?formationSpeed:Infinity)/Math.max(.001,Math.hypot(desired[0],desired[2])));desired[0]*=factor;desired[2]*=factor;}
+  desired=[horizontal?delta[0]/horizontal*speed:0,clamp(delta[1]*1.8,-spec.climb,spec.climb),horizontal?delta[2]/horizontal*speed:0];if(['FOLLOW','SCOUT AHEAD','RETURN HOME'].includes(d.mode)&&!(d.mode==='SCOUT AHEAD'&&taskTarget)){const velocity=d.mode==='RETURN HOME'?homeVelocity:followVelocity;desired[0]+=velocity[0];desired[2]+=velocity[2];const factor=Math.min(1,Math.min(spec.speed,d.mode==='FOLLOW'&&!taskTarget?formationSpeed:Infinity)/Math.max(.001,Math.hypot(desired[0],desired[2])));desired[0]*=factor;desired[2]*=factor;}
  }
  // Ground outpost approaches brake well before contact; the normal cruise
  // controller can overshoot a near-ground target at full climb/descent speed.
@@ -205,6 +205,6 @@ export function droneLink(pos,home,{type='scout',relayNodes=[],...environment}={
 export const wrapAngle=a=>Math.atan2(Math.sin(a),Math.cos(a));
 export function droneAxes({pitch=0,yaw=0,roll=0}){const sp=Math.sin(pitch),cp=Math.cos(pitch),sy=Math.sin(yaw),cy=Math.cos(yaw),sr=Math.sin(roll),cr=Math.cos(roll);return {nose:[-sy*cp,sp,-cy*cp],up:[-cy*sr+sy*sp*cr,cp*cr,sy*sr+cy*sp*cr]};}
 export function scanEntities(d,entities,{type='scout',solids=[],elapsed=0,leg=1,sensor='visible'}){
- if(d.scanCooldown>0)return [];d.scanCooldown=5;sensor=sensorFor(type,sensor);const spec=SENSOR_SPECS[sensor],radius=DRONE_CLASSES[type].scan*spec.range;
+ if(d.scanCooldown>0)return [];d.scanCooldown=5;sensor=sensorFor(type,sensor);const spec=SENSOR_SPECS[sensor],radius=(type==='personal'?60:DRONE_CLASSES[type].scan)*spec.range;
  return entities.filter(e=>(sensor!=='uv'||e.sensors?.includes('uv'))&&(!e.sensors||e.sensors.includes(sensor))&&(!spec.kinds||spec.kinds.includes(e.kind))&&distance(d.pos,[e.x,e.y,e.z])<=radius&&obstruction(d.pos,[e.x,e.y+1,e.z],solids)<(sensor==='rf'?2:1)).map(e=>({...e,at:elapsed,leg,...sensorReading(sensor,e,distance(d.pos,[e.x,e.y,e.z]),radius,obstruction(d.pos,[e.x,e.y+1,e.z],solids))}));
 }

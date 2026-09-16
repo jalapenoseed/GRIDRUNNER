@@ -1,11 +1,11 @@
 {
   "name": "gridrunner",
   "private": true,
-  "version": "7.28.0",
+  "version": "7.30.0",
   "type": "module",
   "scripts": {
     "dev": "vite --config vite.config.js",
-    "test": "node verify-game.mjs && node verify-drone.mjs && node verify-flight-dynamics.mjs && node verify-audio.mjs && node verify-runtime.mjs && node verify-survival.mjs && node verify-experience.mjs && node verify-gamepad.mjs && node verify-relay.mjs && node verify-assets.mjs && node verify-flight-yard.mjs && node verify-fleet.mjs && node verify-fleet-controls.mjs && node verify-fleet-tasks.mjs && node verify-relay-outpost.mjs && node verify-line-harvest.mjs && node verify-beacons.mjs && node verify-battery-packs.mjs && node verify-progression.mjs && node verify-lighting.mjs && node verify-scene-layout.mjs && node verify-spatial.mjs && node verify-engines.mjs && node verify-foundations.mjs && node verify-phases.mjs && node verify-phase4.mjs && node verify-swarm-sensors.mjs && node verify-menu-tree.mjs",
+    "test": "node verify-game.mjs && node verify-drone.mjs && node verify-escort.mjs && node verify-flight-dynamics.mjs && node verify-audio.mjs && node verify-runtime.mjs && node verify-survival.mjs && node verify-experience.mjs && node verify-gamepad.mjs && node verify-relay.mjs && node verify-assets.mjs && node verify-flight-yard.mjs && node verify-fleet.mjs && node verify-fleet-controls.mjs && node verify-fleet-tasks.mjs && node verify-relay-outpost.mjs && node verify-line-harvest.mjs && node verify-beacons.mjs && node verify-battery-packs.mjs && node verify-progression.mjs && node verify-lighting.mjs && node verify-scene-layout.mjs && node verify-spatial.mjs && node verify-engines.mjs && node verify-foundations.mjs && node verify-phases.mjs && node verify-phase4.mjs && node verify-swarm-sensors.mjs && node verify-menu-tree.mjs && node verify-presence.mjs",
     "vendor:engines": "node scripts/vendor-engines.mjs",
     "test:engines": "node verify-engines.mjs",
     "test:phase4": "node verify-phase4.mjs && node verify-runtime.mjs --phase4",
@@ -13,7 +13,11 @@
     "vendor:vision": "node scripts/vendor-vision.mjs",
     "test:browser": "node verify-browser.mjs",
     "test:swarm-sensors": "node verify-swarm-sensors.mjs && node verify-runtime.mjs --swarm-sensors",
-    "test:menus": "node verify-menu-tree.mjs && node verify-runtime.mjs"
+    "test:menus": "node verify-menu-tree.mjs && node verify-runtime.mjs",
+    "test:presence": "node verify-presence.mjs",
+    "remesh": "node scripts/remesh-gltf.mjs",
+    "test:neon": "node verify-escort.mjs && node verify-beacons.mjs && node verify-runtime.mjs --personal-fleet",
+    "test:neon-browser": "node verify-neon-browser.mjs"
   },
   "devDependencies": {
     "@dimforge/rapier3d-compat": "0.20.0",

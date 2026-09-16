@@ -35,7 +35,9 @@ export class EnvironmentDetail{
    if(leg===1)trees.push({x:-121,z:-47,h:5},{x:-126,z:-115,h:5},{x:-40,z:-121,h:4.5});
    for(const t of trees)solids.push({x:t.x,z:t.z,w:.34,d:.34,minY:heightAt(t.x,t.z),maxY:heightAt(t.x,t.z)+t.h*.9,kind:'tree'});
    batch(new T.CylinderGeometry(.1,.25,1,7),bark,trees.length,leg,(o,i)=>{const t=trees[i];o.position.set(t.x,heightAt(t.x,t.z)+t.h*.45,t.z);o.scale.set(1,t.h*.9,1);o.rotation.set(0,0,.05);});
-   batch(new T.PlaneGeometry(1,1),leaf,trees.length*3,leg,(o,i)=>{const t=trees[Math.floor(i/3)];o.position.set(t.x,heightAt(t.x,t.z)+t.h,t.z);o.scale.set(t.h*2.3,t.h*1.6,1);o.rotation.set(0,(i%3)*Math.PI/3,0);});
+   const crown=new T.MeshStandardMaterial({color:0x6a784f,roughness:1});
+   const crowns=batch(new T.IcosahedronGeometry(.6,1),crown,trees.length*2,leg,(o,i)=>{const t=trees[Math.floor(i/2)],layer=i%2,h=t.h;o.position.set(t.x,heightAt(t.x,t.z)+h*(layer?.95:.78),t.z);o.scale.set(h*(layer?.72:.95),h*(layer?.48:.62),h*(layer?.72:.95));o.rotation.set(layer*.15,i,layer?-.1:0);});
+   crowns.name='Grove / oak crowns';
   }
   this.cover=roadsideCover(scene,leaf,solids);this.batches.push(...this.cover.batches);
  }
@@ -43,5 +45,5 @@ export class EnvironmentDetail{
   for(const [id,name]of [['rock','Rock030'],['ground','Ground037'],['wood','Wood051']]){set(this.materials[id],'map',name+'_Color.jpg',true,2);set(this.materials[id],'normalMap',name+'_NormalGL.jpg',false,2);set(this.materials[id],'roughnessMap',name+'_Roughness.jpg',false,2);this.materials[id].normalScale=new T.Vector2(.6,.6);}
   set(this.materials.leaf,'map','oak.png',true);this.materials.leaf.color.setHex(0xc1cab0);
  }
- update(s,settings){this.cover.update(s,settings);const quality=PRESETS[settings.graphics]||PRESETS.HIGH;if(settings.graphics!=='LOW')this.load();for(const b of this.batches){b.mesh.visible=b.leg===s.leg&&!(settings.graphics==='LOW'&&(b.mesh.material===this.materials.leaf||b.mesh.name==='Roadside / oak trunks'));b.mesh.count=Math.floor(b.max*quality.clutter);}}
+ update(s,settings){this.cover.update(s,settings);const quality=PRESETS[settings.graphics]||PRESETS.HIGH;if(settings.graphics!=='LOW')this.load();for(const b of this.batches){b.mesh.visible=b.leg===s.leg&&!(settings.graphics==='LOW'&&(b.mesh.material===this.materials.leaf||/oak (trunks|crowns)/.test(b.mesh.name||'')));b.mesh.count=Math.floor(b.max*quality.clutter);}}
 }

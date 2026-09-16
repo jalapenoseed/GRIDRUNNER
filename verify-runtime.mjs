@@ -1,3 +1,7 @@
+import {verifyPersonalFleet} from './verify-personal-fleet-integration.mjs';
+import {PresenceComposer} from './dist/presence-composer.js';
+import {ImportedProps} from './dist/imported-props.js';
+import {setFieldAction,updateFieldRig} from './dist/presence-rig.js';
 import {verifyMenuRepair} from './verify-menu-repair-integration.mjs';
 import {verifySwarmSensorsIntegration} from './verify-swarm-sensors-integration.mjs';
 import * as sensorLabModule from './dist/sensor-lab.js';
@@ -68,13 +72,14 @@ w.HTMLCanvasElement.prototype.getContext=()=>context2d;
 w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};w.document.exitPointerLock=()=>{};w.HTMLCanvasElement.prototype.requestPointerLock=()=>Promise.resolve();
 let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={render:{calls:0}};}setPixelRatio(){}setSize(){}render(scene,camera){assert(scene.isScene&&camera.isPerspectiveCamera);frames++;}}
 const ctx=vm.createContext({...sensorPackages,...fieldFlow,...onboarding,Sensors,...fieldUpgrade,...squadron,SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
-Object.assign(ctx,{VisionDetector,beamSolids,riderGradeAllowed},batteryPacks,batteryPackUI,campaignProgress,fleetPolicy,fleetPolicyUI,droneControls,fleetTasks,fleetTaskUI,relayOutpost,powerLines,lineHarvest,lineHarvestUI);ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
+Object.assign(ctx,{VisionDetector,beamSolids,riderGradeAllowed,PresenceComposer,ImportedProps,setFieldAction,updateFieldRig},batteryPacks,batteryPackUI,campaignProgress,fleetPolicy,fleetPolicyUI,droneControls,fleetTasks,fleetTaskUI,relayOutpost,powerLines,lineHarvest,lineHarvestUI);ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\n/gm,'');
 Object.assign(ctx,sensorLabModule,swarmSteering,surveillance,openingRoute,{OpeningWorld:class extends OpeningWorld{constructor(scene,solids){super(scene,solids,{assets:false});}}});
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 await run('spatial.ready');await run('ambientResidents.ready');assert.equal(run('spatial.status'),'ready');assert.equal(run('ambientResidents.status'),'ready');
 const tick=(seconds)=>{for(let i=0;i<seconds*50;i++)run('update(.02)');run('hud();loop(performance.now()+20)');};
 vm.runInContext(`function newCampaign(){newExpedition();s.intro=completedIntro();s.mode='bike';s.pos.set(bike.position.x,1.7,bike.position.z);hud();}`,ctx);
+if(process.argv.includes('--personal-fleet')){verifyPersonalFleet({run,tick,w});process.exit(0);}
 if(process.argv.includes('--menu-repair')){verifyMenuRepair({run,tick,w});process.exit(0);}
 if(process.argv.includes('--swarm-sensors')){verifySwarmSensorsIntegration({run,tick,w});process.exit(0);}
 if(process.argv.includes('--phase4')){verifyPhase4Integration({run,tick,w});process.exit(0);}
@@ -160,8 +165,8 @@ tick(.2);run('s.droneSystem.pos=[170,4,52];s.droneSystem.speed=0;interact()');as
 const cargoBest=Number(w.localStorage.getItem('gridrunner.flightBest.cargo.cargo'));assert(cargoBest>0);assert.equal(cargoBest,run('flightSession.elapsed'));run('flightSession.elapsed+=10;interact()');assert.equal(Number(w.localStorage.getItem('gridrunner.flightBest.cargo.cargo')),cargoBest,'Repeated delivery cannot overwrite best time');
 run('leaveFlightYard()');assert.equal(run('s.inv.steel'),7);assert.equal(run('s.battery'),38);assert.deepEqual(Array.from(run('s.pos.toArray()')),held.state.pos);assert.equal(run('s.yaw'),held.state.yaw);
 run("action('scan');const discoveredBefore=s.discoveries.length;action('scanHUD');hud()");assert.equal(w.document.querySelector('#scanTags').innerHTML,'');assert.equal(run('s.discoveries.length'),run('discoveredBefore'));assert.equal(w.document.querySelector('#scanToggle').getAttribute('aria-pressed'),'false');run("action('scanHUD');action('nightVision');loop(performance.now()+20)");assert(w.document.body.classList.contains('night-vision'));
-run("settings.nightVision=false;settings.weather='blackout';applySettings();loop(performance.now()+20)");assert.equal(run('sun.intensity'),0);assert.equal(run('scene.environmentIntensity'),0);assert(run('atmosphere.hemi.every(h=>h.intensity===0)'));run("settings.nightVision=true;loop(performance.now()+20)");assert(run('sun.intensity')>0);assert(run('scene.environmentIntensity')>0);
-run("settings.nightVision=false;settings.weather='rain';settings.movingSun=true;applySettings();loop(performance.now()+20)");assert(run('atmosphere.rain.visible'));const sunBefore=Array.from(run('sun.position.toArray()'));run('s.elapsed+=80;loop(performance.now()+20)');assert.notDeepEqual(Array.from(run('sun.position.toArray()')),sunBefore);
+run("settings.sensorMode='visible';settings.nightVision=false;settings.weather='blackout';applySettings();loop(performance.now()+20)");assert.equal(run('sun.intensity'),0);assert.equal(run('scene.environmentIntensity'),0);assert(run('atmosphere.hemi.every(h=>h.intensity===0)'));run("settings.nightVision=true;loop(performance.now()+20)");assert(run('sun.intensity')>0);assert(run('scene.environmentIntensity')>0);
+run("settings.sensorMode='visible';settings.nightVision=false;settings.weather='rain';settings.movingSun=true;applySettings();loop(performance.now()+20)");assert(run('atmosphere.rain.visible'));const sunBefore=Array.from(run('sun.position.toArray()'));run('s.elapsed+=80;loop(performance.now()+20)');assert.notDeepEqual(Array.from(run('sun.position.toArray()')),sunBefore);
 for(const type of ['scout','engineer','cargo','relay']){run(`s.droneType='${type}'`);assert(run('writeSave("manual2")'));assert.equal(run('getSave("manual2").state.droneType'),type);}
 run("open('locations')");assert.equal(w.document.querySelectorAll('[data-location]').length,3);assert(!w.document.querySelector('#panel').textContent.includes('undefined'));
 console.log('PASS: four-airframe hangar, cargo attach/drop, campaign restoration and autosave isolation, scan hide/preserved discoveries, true blackout/vision, moving sun/rain and four class save round-trips.');
@@ -234,7 +239,9 @@ const scoutPosition=run('JSON.stringify(s.squad.scout.system.pos)');run('restore
 run('open("drones")');w.document.querySelector('[data-drone=scout]').click();assert.equal(run('s.droneSystem.mode'),'SCOUT AHEAD');run('issueDrone("RETURN HOME");play()');tick(25);
 assert.equal(run('s.droneSystem.mode'),'DOCK');assert.equal(run('s.squad.cargo.system.mode'),'FOLLOW');
 run('newCampaign();s.met=true;s.progression.relayHouseSolved=true;play()');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'5',shiftKey:true}));assert.equal(run('fleetAll'),true);w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'1'}));assert.equal(run('s.squad.scout.system.mode'),'FOLLOW');assert.equal(run('s.squad.cargo.system.mode'),'FOLLOW');assert.equal(run('s.squad.relay.system.mode'),'FOLLOW');assert.equal(run('s.squad.engineer.system.mode'),'DOCK','Locked utility aircraft stays docked');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'8'}));assert.equal(run('s.fleetFormation'),'TRAIL');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'2',shiftKey:true}));assert.equal(run('s.droneType'),'cargo');assert.equal(run('fleetAll'),false);
-for(const mode of ['visible','night','thermal','rf','acoustic','depth']){run(`s.droneType='${{visible:'scout',night:'scout',thermal:'engineer',rf:'relay',acoustic:'scout',depth:'cargo'}[mode]}';settings.sensorMode='${mode}';settings.nightVision=${mode==='night'};applySettings();loop(performance.now()+40)`);assert.equal(w.document.body.dataset.sensor,mode);}
+run("yardChoice='scout';startFlightYard('sensors')");
+for(const mode of ['visible','night','thermal','rf','acoustic','depth']){run(`selectFleetAircraft('${{visible:'scout',night:'scout',thermal:'engineer',rf:'relay',acoustic:'scout',depth:'cargo'}[mode]}');issueDrone('MANUAL');settings.sensorMode='${mode}';settings.nightVision=${mode==='night'};applySettings();loop(performance.now()+40)`);assert.equal(w.document.body.dataset.sensor,mode);}
+run('leaveFlightYard()');
 run('settings.sensorMode="visible";settings.nightVision=false;applySettings();action("droneLamp");loop(performance.now()+40)');assert.equal(run('settings.droneLamp'),true);
 const rngSettings={randomEnvironment:true};fieldUpgrade.randomEnvironment(rngSettings,()=>0);assert.equal(rngSettings.sunHour,0);fieldUpgrade.randomEnvironment(rngSettings,()=>.999);assert.equal(rngSettings.sunHour,23.9);assert.equal(rngSettings.weather,'sandstorm');
 console.log('PASS: selective loot persistence, two independently flying aircraft, per-aircraft saves and return, sensor rendering/restoration, light toggle, randomized day/night endpoints.');
@@ -280,17 +287,19 @@ w.document.querySelector('[data-back]').click();assert.equal(run('screen'),'paus
 run("settings.tutorialEnabled=true;s.lessons={};s.droneSystem.scanCooldown=0;action('scan')");assert.equal(run('s.lessons.scan'),'done');
 assert(run('writeSave("manual1")'));run('restore(getSave("manual1"))');assert.equal(run('s.lessons.scan'),'done');
 run("open('guide')");w.document.querySelector('[data-lesson-replay=scan]').click();assert.equal(run('s.lessons.scan'),undefined);assert.equal(run('s.intro.stage'),'line');
-run("s.met=true;settings.sensorMode='night';open('drones')");w.document.querySelector('[data-drone=cargo]').click();assert.equal(run('settings.sensorMode'),'visible','Changing airframe removes unsupported optics');
+run("s.met=true;settings.sensorMode='night';open('drones')");w.document.querySelector('[data-drone=cargo]').click();assert.equal(run('settings.sensorMode'),'night','Selecting aircraft preserves personal visor optics');
 run("selectFleetAircraft('scout');open('drones')");
 w.document.querySelector('[data-menu-section="sensors"]').click();
 assert(run('menuControls(document.querySelector("#panel"))').includes(w.document.querySelector('[data-sensor-mode="uv"]')));
 w.document.querySelector('[data-sensor-mode="uv"]').click();assert.equal(run('settings.sensorMode'),'uv');
 assert.equal(w.document.querySelector('.menu-pane:not([hidden])').dataset.menuPane,'sensors','changing sensor retains active branch');
 assert.equal(w.document.querySelector('[data-sensor-mode="uv"]').getAttribute('aria-pressed'),'true');
-run("selectFleetAircraft('cargo');renderPanel()");assert.equal(run('settings.sensorMode'),'visible');assert(!w.document.querySelector('[data-sensor-mode="uv"]'),'unsupported sensors are absent');
+run("selectFleetAircraft('cargo');renderPanel()");assert.equal(run('settings.sensorMode'),'uv');assert(w.document.querySelector('[data-sensor-mode="uv"]'),'personal UV remains available');
 console.log('PASS: keyboard/controller/touch parent history and focus, first scan completion/save/replay, campaign preservation and class sensor fallback.');
 verifyPhase4Integration({run,tick,w});
 
 verifySwarmSensorsIntegration({run,tick,w});
 
 verifyMenuRepair({run,tick,w});
+
+verifyPersonalFleet({run,tick,w});
