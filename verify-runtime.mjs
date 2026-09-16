@@ -1,4 +1,11 @@
+import * as relayOutpost from './dist/relay-outpost.js';
+import {verifyRelayOutpostIntegration,verifyTutorialRecovery} from './verify-relay-outpost-integration.mjs';
+import * as fleetTasks from './dist/fleet-tasks.js';
+import * as fleetTaskUI from './dist/fleet-task-ui.js';
 import {GamePhysics} from './dist/physics-world.js';
+import {verifyFlightIntegration} from './verify-flight-integration.mjs';
+import {verifyFleetTaskIntegration} from './verify-fleet-task-integration.mjs';
+import * as droneControls from './dist/drone-controls.js';
 import {AmbientResidents} from './dist/ambient-residents.js';
 import {buildCampRoutes} from './dist/camp-navigation.js';
 import * as onboarding from './dist/onboarding.js';
@@ -41,7 +48,7 @@ w.HTMLCanvasElement.prototype.getContext=()=>context2d;
 w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};w.document.exitPointerLock=()=>{};w.HTMLCanvasElement.prototype.requestPointerLock=()=>Promise.resolve();
 let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={render:{calls:0}};}setPixelRatio(){}setSize(){}render(scene,camera){assert(scene.isScene&&camera.isPerspectiveCamera);frames++;}}
 const ctx=vm.createContext({...onboarding,Sensors,...fieldUpgrade,...squadron,SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
-ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
+Object.assign(ctx,droneControls,fleetTasks,fleetTaskUI,relayOutpost);ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\n/gm,'');
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 await run('spatial.ready');await run('ambientResidents.ready');assert.equal(run('spatial.status'),'ready');assert.equal(run('ambientResidents.status'),'ready');
@@ -63,7 +70,7 @@ at(70,1.7,-2260);run('interact()');assert(run('s.phaseNote'));at(65,1.7,-2355);r
 run('s.battery=45');at(0,1.7,-3020);run('interact();interact()');assert(run('s.leg2Won'));run('startLegThree(false)');assert.equal(run('s.leg'),3);
 run("s.engineerBuilt=true;s.droneType='engineer';issueDrone('MANUAL');s.droneSystem.pos=[65,20,-3510];s.pos.set(65,20,-3510)");tick(.02);run('interact()');assert(run('s.securityOff'));run("issueDrone('DOCK')");at(-55,1.7,-3780);run('interact()');assert(run('s.archiveKey'));at(50,1.7,-3980);run('interact();s.dialA=3;s.dialB=1;s.dialC=4;alignAntenna();play()');assert(run('s.antennaAligned'));run('s.battery=60');at(60,1.7,-4310);run('interact()');assert(run('s.capacitorReady'));at(0,1.7,-4590);run("interact();finishLegThree('restore')");assert(run('s.leg3Won'));assert(run("writeSave('manual2')"));run("s.ending='';restore(getSave('manual2'))");assert.equal(run('s.ending'),'restore');
 // Existing v6 record missing all new fields migrates; invalid optional data fails.
-const legacy=run('snapshot()');delete legacy.state.droneSystem;delete legacy.state.discoveries;expedition.validateSave(legacy);assert.equal(legacy.state.droneSystem.mode,'DOCK');
+const legacy=run('snapshot()');delete legacy.state.droneSystem;delete legacy.state.discoveries;delete legacy.state.fleetFormation;expedition.validateSave(legacy);assert.equal(legacy.state.droneSystem.mode,'DOCK');assert.equal(legacy.state.fleetFormation,'WEDGE');
 // Check live scene numbers; shader compilation is deliberately outside this test.
 run('scene.updateMatrixWorld(true)');const stats=run('(()=>{let meshes=0,triangles=0;scene.traverse(o=>{if(o.isMesh){meshes++;triangles+=(o.geometry.index?.count||o.geometry.attributes.position.count)/3*(o.isInstancedMesh?o.count:1);if(o.matrixWorld.elements.some(n=>!Number.isFinite(n)))throw Error("Invalid transform");}});return {meshes,triangles};})()');
 console.log('PASS: full startup, actual DOM menus, input-driven bike/drone updates, commands, scan persistence, save/restore, presets, all three real mission chains and final save. Render stub frames:',frames,stats);
@@ -199,6 +206,7 @@ assert(run('s.squad.scout.battery')<100);assert(run('s.drone')<100);assert(run('
 const scoutPosition=run('JSON.stringify(s.squad.scout.system.pos)');run('restore(JSON.parse(JSON.stringify(snapshot())))');assert.equal(run('JSON.stringify(s.squad.scout.system.pos)'),scoutPosition);
 run('open("drones")');w.document.querySelector('[data-drone=scout]').click();assert.equal(run('s.droneSystem.mode'),'SCOUT AHEAD');run('issueDrone("RETURN HOME");play()');tick(25);
 assert.equal(run('s.droneSystem.mode'),'DOCK');assert.equal(run('s.squad.cargo.system.mode'),'FOLLOW');
+run('newCampaign();play()');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'5',shiftKey:true}));assert.equal(run('fleetAll'),true);w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'1'}));assert.equal(run('s.squad.scout.system.mode'),'FOLLOW');assert.equal(run('s.squad.cargo.system.mode'),'FOLLOW');assert.equal(run('s.squad.relay.system.mode'),'FOLLOW');assert.equal(run('s.squad.engineer.system.mode'),'DOCK','Locked utility aircraft stays docked');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'8'}));assert.equal(run('s.fleetFormation'),'TRAIL');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'2',shiftKey:true}));assert.equal(run('s.droneType'),'cargo');assert.equal(run('fleetAll'),false);
 for(const mode of ['visible','night','thermal','rf']){run(`settings.sensorMode='${mode}';settings.nightVision=${mode==='night'};applySettings();loop(performance.now()+40)`);assert.equal(w.document.body.dataset.sensor,mode);}
 run('settings.sensorMode="visible";settings.nightVision=false;applySettings();action("droneLamp");loop(performance.now()+40)');assert.equal(run('settings.droneLamp'),true);
 const rngSettings={randomEnvironment:true};fieldUpgrade.randomEnvironment(rngSettings,()=>0);assert.equal(rngSettings.sunHour,0);fieldUpgrade.randomEnvironment(rngSettings,()=>.999);assert.equal(rngSettings.sunHour,23.9);assert.equal(rngSettings.weather,'sandstorm');
@@ -215,3 +223,7 @@ run('open("rig")');w.document.querySelector('[data-rig-focus=cargo]').click();as
 run('settings.tutorialEnabled=false;newExpedition()');assert.equal(run('s.intro.stage'),'line');run('open("npc")');assert(w.document.querySelector('.maraDialogue'));assert(w.document.querySelector('.contactPortrait'));
 run('settings.graphics="LOW";applySettings()');assert.equal(run('fleet.quality'),'LOW');assert.equal(run('fleet.shouldStream("scout",s)'),false);
 console.log('PASS: four equipment lessons, camera framing/restoration, scout acquisition guide, recorded narration/mute, skip without loot duplication, trailer feature inspector and low-quality streaming gate.');
+verifyFlightIntegration({run,w});
+verifyFleetTaskIntegration({run,tick,w});
+verifyRelayOutpostIntegration({run,tick,w});
+verifyTutorialRecovery({run,w});

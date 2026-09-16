@@ -45,9 +45,10 @@ export class GamePhysics extends SpatialIndex {
     if (!this.world) return this;
     for (const handle of this.colliders.keys()) this.world.removeCollider(this.world.getCollider(handle), false);
     this.colliders.clear();
+    this.rejected = 0;
     for (const b of this.source) {
       const minY = b.minY ?? 0, maxY = b.maxY ?? 12;
-      if (!(b.w>0 && b.d>0 && maxY>minY)) continue;
+      if (!(Number.isFinite(b.x)&&Number.isFinite(b.z)&&b.w>0&&b.d>0&&Number.isFinite(minY)&&Number.isFinite(maxY)&&maxY>minY)) { this.rejected++; continue; }
       const c = this.world.createCollider(this.R.ColliderDesc.cuboid(b.w,(maxY-minY)/2,b.d)
         .setTranslation(b.x,(minY+maxY)/2,b.z));
       this.colliders.set(c.handle,b);
@@ -75,7 +76,12 @@ export class GamePhysics extends SpatialIndex {
       undefined,undefined,this.rider,undefined,c => this.colliders.get(c.handle)?.drone!==false);
     return !!hit;
   }
-  stats() { return {...super.stats(),engine:'Rapier',status:this.status}; }
+  audit() {
+    const invalid=this.source.filter(b=>!(Number.isFinite(b.x)&&Number.isFinite(b.z)&&b.w>0&&b.d>0&&(b.maxY??12)>(b.minY??0)));
+    const categories={};for(const b of this.source){const key=b.kind||'authored';categories[key]=(categories[key]||0)+1;}
+    return {...this.stats(),invalid:invalid.length,categories};
+  }
+  stats() { return {...super.stats(),engine:'Rapier',status:this.status,active:this.colliders?.size||0,rejected:this.rejected||0}; }
   dispose() {
     if (this.disposed) return;
     this.disposed = true;

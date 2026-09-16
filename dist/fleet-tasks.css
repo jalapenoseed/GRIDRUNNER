@@ -1,0 +1,11 @@
+.fleetTask{margin:18px 0;padding:16px;border:1px solid #8ab6a442;border-left:2px solid #d3af77;background:#10262c70;}
+.fleetTask h3{margin:8px 0!important;}
+.fleetTask p{font-size:13px!important;line-height:1.6;max-width:70ch;}
+.taskActions{display:flex;flex-wrap:wrap;gap:8px;}
+.taskActions button{min-height:44px;}
+.fleetTask details{margin-top:10px;font-size:11px;}
+.fleetTask summary{cursor:pointer;min-height:32px;padding:8px 0;color:#9fc9b9;}
+.fleetTask dl{display:grid;grid-template-columns:minmax(90px,1fr) 3fr;gap:9px;}
+.fleetTask dd{margin:0;overflow-wrap:anywhere;}
+.fleetInfo .taskBadge,.fleetTask .taskBadge{font:10px/1.5 monospace!important;color:#d3ba89!important;min-height:0!important;}
+@media(max-width:600px){.fleetTask{padding:12px;}.taskActions button{flex:1 1 125px;}.fleetTask dl{grid-template-columns:1fr;}}
