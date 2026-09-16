@@ -1,5 +1,7 @@
 # GRIDRUNNER — Project Scope, Build History & Future Paths
 
+> **v7.24 update, September 16, 2026:** Phases 1–3 below are now implemented and automatically checked. Human playtest acceptance remains open. Read [the current build report](GRIDRUNNER-v7.24-REPORT.md) and [milestone timeline](reports/GRIDRUNNER-v7.24-timeline.xlsx) for current state. The v7.23 inventory and history below are retained as the baseline; their descriptions of these phases as future work are superseded.
+
 Revision: 16 September 2026 · foundation update v7.23
 
 Playable project: https://gridrunner.goodyartist.chatgpt.site
@@ -167,7 +169,7 @@ This closes specific current-foundation gaps, not every possible collision featu
 - Dismissal persists locally; Tutorial OFF suppresses those cards.
 - Settings offers replay of first-use hints.
 
-This is not yet the complete menu hierarchy redesign. Escape/controller-B parent traversal, contextual ranking, comprehensive interaction tutorials and the original communicator remain scheduled work. Existing explicit Resume/back behavior is retained for now.
+The v7.24 continuation implements Escape/controller-B parent traversal, contextual field-menu ranking and seven saved interaction guides. The original communicator remains phase 6. See the current build report for implementation and playtest limits.
 
 ## 6. Recommended next build sequence
 

@@ -1,3 +1,4 @@
+import {setCircuitRoute,energizeCircuits} from './dist/relay-circuits.js';
 import assert from 'node:assert/strict';
 import {createRelayHouse,useRelay,terminalCommand,validateRelayHouse,relayObjective} from './dist/relay-house.js';
 import {fabricate} from './dist/survival.js';
@@ -15,7 +16,7 @@ assert.equal(fabricate(inv,'radioCoil',40,options).error,'');assert.equal(inv.ra
 assert(fabricate(inv,'signalFilter',40,{...options,atWorkbench:false}).error);assert(fabricate(inv,'signalFilter',40,{...options,powered:false}).error);assert(fabricate(inv,'signalFilter',40,{...options,battery:0}).error);
 assert.equal(fabricate(inv,'signalFilter',40,options).error,'');assert.equal(inv.signalFilter,1);assert.equal(inv.radioCoil,0);use('radio');assert(r.filterInstalled&&!r.discovered);assert.equal(inv.signalFilter,0);
 use('dish');assert(!r.dishAligned,'Rider cannot align dish');use('dish','drone');assert(r.dishAligned);use('radio');assert(!r.discovered,'Frequency gate');
-terminalCommand(r,'tune 104.7');assert.equal(r.frequency,0);terminalCommand(r,'tune 147.20');assert.equal(r.frequency,147.2);assert(use('radio').discovery);assert(r.radioTuned&&r.discovered);assert(!use('radio').discovery,'Discovery only once');
+terminalCommand(r,'tune 104.7');assert.equal(r.frequency,0);terminalCommand(r,'tune 147.20');assert.equal(r.frequency,147.2);assert(!use('radio').discovery,'Distribution puzzle gates carrier');setCircuitRoute(r.circuits,'A','fan');setCircuitRoute(r.circuits,'B','transmitter');setCircuitRoute(r.circuits,'C','receiver');assert(!energizeCircuits(r.circuits).ok,'Startup overload must trip');setCircuitRoute(r.circuits,'A','off');assert(energizeCircuits(r.circuits).ok);setCircuitRoute(r.circuits,'A','fan');assert(energizeCircuits(r.circuits).complete);assert(use('radio').discovery);assert(r.radioTuned&&r.discovered);assert(!use('radio').discovery,'Discovery only once');
 assert.match(relayObjective(r),/token/);assert.equal(terminalCommand(r,'exit'),'EXIT');assert.match(terminalCommand(r,'dump'),/tower/);
 const restored=validateRelayHouse(JSON.parse(JSON.stringify(r)));assert.deepEqual(restored,r);assert.deepEqual(validateRelayHouse(undefined),createRelayHouse());
 for(const mutate of [v=>v.evidence.push('<script>'),v=>v.selected='__proto__',v=>v.frequency=Infinity,v=>v.power=false,v=>v.noteRead=false,v=>v.version=2]){const broken=structuredClone(r);mutate(broken);assert.throws(()=>validateRelayHouse(broken));}

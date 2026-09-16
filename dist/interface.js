@@ -1,3 +1,4 @@
+import {interactionGuide,guideLibrary} from './field-flow.js';
 import {MenuMemory} from './menu-memory.js'; let memory; import {glyph} from './item-icons.js';
 // Field unit UI: one menu surface, contextual instruments, original supplied atlas.
 // The atlas stays unmodified. Coordinates are icon centers on its 1536 x 1024 plate.
@@ -53,7 +54,7 @@ export function finishInterface({screen,started=false,state={},tutorialEnabled=t
   });
   const shell=document.createElement('div');
   shell.className=`field-shell${home?' field-home':''}${context?' field-context':''}`;
-  shell.innerHTML=`<div class="field-mast"><button class="field-brand" data-nav="${started?'pause':'start'}" aria-label="GRIDRUNNER home"><span class="field-mark" aria-hidden="true">⌁</span> GRIDRUNNER <small>FIELD UNIT / 07</small></button><div class="field-link"><i></i> ${started?'EXPEDITION HELD':'SYSTEM READY'}</div>${started?`<button class="field-resume" data-panel="play">${icon('play')}<span>RESUME</span><kbd>ESC</kbd></button>`:''}</div>`;
+  shell.innerHTML=`<div class="field-mast"><button class="field-brand" data-nav="${started?'pause':'start'}" aria-label="GRIDRUNNER home"><span class="field-mark" aria-hidden="true">⌁</span> GRIDRUNNER <small>FIELD UNIT / 07</small></button><div class="field-link"><i></i> ${started?'EXPEDITION HELD':'SYSTEM READY'}</div>${started?`<button class="field-resume" data-panel="play">${icon('play')}<span>RESUME</span><kbd>PLAY</kbd></button>`:''}</div>`;
   if(!home&&!context){
     shell.insertAdjacentHTML('beforeend',`<nav class="field-primary" aria-label="Menu categories">${MENU_GROUPS.map(g=>`<button data-nav="${g.pages.some(p=>p[0]===memory.children[g.id])?memory.children[g.id]:g.target}" ${g===group?'aria-current="true"':''}>${icon(g.icon)}<span>${g.label}</span></button>`).join('')}</nav>`);
   }
@@ -63,8 +64,10 @@ export function finishInterface({screen,started=false,state={},tutorialEnabled=t
     rail.innerHTML=`<span class="field-section-label">${group.label}</span>${group.pages.map(([id,label,i],index)=>`<button data-nav="${id}" ${screen===id?'aria-current="page"':''}>${icon(i)}<span>${label}</span><small>0${index+1}</small></button>`).join('')}<div class="field-rail-bottom"><span>BLACKLINE / PERSONAL SYSTEM</span><b>FURTHER<br>HORIZONS<br>STILL AWAIT.</b><i></i></div>`;
     body.appendChild(rail);
   }
-  if(started)memory.lesson(content,screen,tutorialEnabled);
-  if(screen==='settings'){const reset=document.createElement('button');reset.textContent='REPLAY FIRST-USE HINTS';reset.onclick=()=>{memory.dismissed={};memory.save();reset.textContent='HINTS WILL APPEAR NEXT TIME';};content.append(reset);}
+  if(started){memory.lesson(content,screen,tutorialEnabled);interactionGuide(content,state,screen,tutorialEnabled);}
+  if(screen==='guide'||screen==='settings'){const library=document.createElement('div');library.innerHTML=guideLibrary(state);library.querySelectorAll('[data-lesson-replay]').forEach(b=>b.onclick=()=>{if(state.lessons)delete state.lessons[b.dataset.lessonReplay];b.textContent='READY TO REPLAY';});content.append(library);}
+  content.querySelectorAll('.panelTop button[data-nav]').forEach(b=>{delete b.dataset.nav;b.setAttribute('data-back','');});
+  if(screen==='settings'){const reset=document.createElement('button');reset.textContent='REPLAY FIRST-USE HINTS';reset.onclick=()=>{memory.dismissed={};state.lessons={};memory.save();reset.textContent='HINTS WILL APPEAR NEXT TIME';};content.append(reset);}
   body.appendChild(content);shell.appendChild(body);
   const foot=document.createElement('div');foot.className='field-bottom';
   foot.innerHTML=`<span>${started?'SECTOR '+String(state.leg||1).padStart(2,'0')+' / '+Math.floor((state.elapsed||0)/60)+' MIN':'RIDE / SCOUT / SCAVENGE / SURVIVE'}</span><span>${context?'LOCAL INTERFACE':home?'GHOST SIGNAL':'FIELD UNIT'}<i>●</i></span>`;

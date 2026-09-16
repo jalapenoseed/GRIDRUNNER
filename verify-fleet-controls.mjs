@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {AIRCRAFT,FORMATIONS,formationSlot,validFormation} from './dist/squadron.js';
 import {createDrone,commandDrone,updateDrone} from './dist/drone-system.js';
 
-assert.deepEqual(FORMATIONS,['WEDGE','TRAIL','LINE','ORBIT','RELAY OUTPOST']);
+assert.deepEqual(FORMATIONS,['WEDGE','TRAIL','LINE','ORBIT','RELAY OUTPOST','STAGGERED','HIGH / LOW','PROTECTIVE RING','OVERWATCH','SEARCH GRID','BUZZ PASS']);
 assert.equal(validFormation('LINE'),'LINE');
 assert.equal(validFormation('unknown'),'WEDGE');
 

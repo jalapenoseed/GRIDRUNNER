@@ -1,7 +1,7 @@
 import {createDrone,migrateDrone} from './drone-system.js';
 import {createAircraftRecord,validateAircraftTask} from './fleet-tasks.js';
 export const AIRCRAFT=['scout','cargo','engineer','relay'];
-export const FORMATIONS=['WEDGE','TRAIL','LINE','ORBIT','RELAY OUTPOST'];
+export const FORMATIONS=['WEDGE','TRAIL','LINE','ORBIT','RELAY OUTPOST','STAGGERED','HIGH / LOW','PROTECTIVE RING','OVERWATCH','SEARCH GRID','BUZZ PASS'];
 const localToWorld=([right,up,forward],yaw)=>[
  Math.cos(yaw)*right-Math.sin(yaw)*forward,
  up,
@@ -14,11 +14,21 @@ export function formationSlot(formation,id,yaw=0,elapsed=0){
   WEDGE:[[0,8,-8],[-7,9,-15],[7,9,-15],[0,12,-23]],
   TRAIL:[[0,8,-8],[0,9,-16],[0,10,-24],[0,11,-32]],
   LINE:[[-12,9,-10],[-4,9,-10],[4,9,-10],[12,9,-10]],
+  STAGGERED:[[-5,8,-9],[5,10,-18],[-5,8,-27],[5,12,-36]],
+  'HIGH / LOW':[[-8,7,-10],[8,13,-10],[-8,13,-22],[8,7,-22]],
+  OVERWATCH:[[-12,22,-8],[12,26,-8],[-12,22,-24],[12,26,-24]],
   ORBIT:[[0,10,0],[0,12,0],[0,14,0],[0,16,0]]
  };
- if(formation==='ORBIT'){
+ if(formation==='SEARCH GRID'){
+  const points=[[-18,-12],[18,-12],[18,-22],[-18,-22],[-18,-32],[18,-32],[18,-42],[-18,-42]],phase=elapsed/12+index*2,step=Math.floor(phase),mix=phase-step,a=points[step%points.length],b=points[(step+1)%points.length];
+  return localToWorld([a[0]+(b[0]-a[0])*mix,12+index*4,a[1]+(b[1]-a[1])*mix],yaw);
+ }
+ // An overhead pass, never a player collision course: >=8m lateral, >=9m up.
+ if(formation==='BUZZ PASS')return localToWorld([(index%2?1:-1)*(8+index*2),9+index*4,Math.sin(elapsed*.16+index*Math.PI/2)*22],yaw);
+ if(formation==='ORBIT'||formation==='PROTECTIVE RING'){
   const angle=elapsed*.28+index*Math.PI*.5,radius=13+index%2*4;
-  return [Math.sin(angle)*radius,slots.ORBIT[index][1],Math.cos(angle)*radius];
+  const r=formation==='PROTECTIVE RING'?10:radius;
+  return [Math.sin(angle)*r,slots.ORBIT[index][1],Math.cos(angle)*r];
  }
  return localToWorld((slots[formation]||slots.WEDGE)[index],yaw);
 }

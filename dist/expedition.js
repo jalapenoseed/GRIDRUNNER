@@ -1,3 +1,4 @@
+import {lessonState} from './field-flow.js';
 import {validateBatteryPacks} from './battery-packs.js';
 import {migrateCampaignProgress} from './campaign-progress.js';
 import {validateFleetPolicy} from './fleet-policy.js';
@@ -38,7 +39,7 @@ export function validateSave(r){
  if(s.puzzleLock!==undefined&&!number(s.puzzleLock,0,60))bad();
  if(s.ending!==undefined&&!['','restore','transmit'].includes(s.ending))bad();
  if(s.phaseStep!==undefined&&(!Number.isInteger(s.phaseStep)||s.phaseStep<0||s.phaseStep>3))bad();
- validateInventory(s.inv);for(const k of ['wire','cells','electronics','steel'])if(s.inv[k]===undefined)s.inv[k]=0;s.field=validateField(s.field);s.residents=residentState(s.residents);s.relayHouse=validateRelayHouse(s.relayHouse);s.experience=migrateExperience(s.experience);
+ validateInventory(s.inv);for(const k of ['wire','cells','electronics','steel'])if(s.inv[k]===undefined)s.inv[k]=0;s.field=validateField(s.field);s.residents=residentState(s.residents);s.relayHouse=validateRelayHouse(s.relayHouse);s.lessons=lessonState(s.lessons);s.experience=migrateExperience(s.experience);
  if(s.airJobs===undefined||typeof s.airJobs!=='object')s.airJobs={inspect:false,cargo:false,repair:false,relay:false};
  else {const d={inspect:false,cargo:false,repair:false,relay:false};for(const k of Object.keys(d))d[k]=s.airJobs[k]===true;s.airJobs=d;}
  if(s.airSession!==undefined&&s.airSession!==null&&(typeof s.airSession!=='object'||typeof s.airSession.id!=='string'))s.airSession=null;
