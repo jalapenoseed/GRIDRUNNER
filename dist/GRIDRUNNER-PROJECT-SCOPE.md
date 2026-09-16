@@ -1,3 +1,7 @@
+# v7.26 current update
+
+Fleet now has quick airframe selection, staged Launch All and bounded local swarm steering. Scout/Utility UV reveals authored fluorescent maintenance clues; Utility thermal and Relay RF remain available. Sensor / YOLO Lab practices all three and compares actual pixel predictions with separate approximate person/bicycle reference boxes. See [v7.26 play guide and limits](GRIDRUNNER-v7.26-REPORT.md). Multi-instance fleets, trained swarm controllers and thermal/RF campaign contracts remain future work.
+
 # GRIDRUNNER — Project Scope, Build History & Future Paths
 
 > **v7.24 update, September 16, 2026:** Phases 1–3 below are now implemented and automatically checked. Human playtest acceptance remains open. Read [the current build report](GRIDRUNNER-v7.24-REPORT.md) and [milestone timeline](reports/GRIDRUNNER-v7.24-timeline.xlsx) for current state. The v7.23 inventory and history below are retained as the baseline; their descriptions of these phases as future work are superseded.

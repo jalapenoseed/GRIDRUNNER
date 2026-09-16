@@ -1,6 +1,8 @@
-# GRIDRUNNER v7.25 — Maintenance Cut / WATCH-01
+# GRIDRUNNER v7.26 — Swarm / Sensor Lab
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
+
+**New in v7.26:** Fleet opens with quick aircraft selection and **Launch All Drones** (Shift+Q). Autonomous formation flight adds local flocking and predictive spacing. **Flight Yard → Sensor / YOLO Lab** exercises UV, thermal and RF, with separate pixel-detection/reference comparison using the existing local YOLOX model. UV on Scout/Utility now reveals fluorescent Maintenance Cut clues; Utility retains thermal and Relay retains RF. Read the [play guide](dist/GRIDRUNNER-v7.26-REPORT.md), [research and next sensor mission ideas](SWARM-SENSORS-v7.26.md), and [changelog](CHANGELOG-v7.26.md). Practice stays separate from campaign saves.
 
 **New in v7.25:** After the opening guide, ride north past Mara and take the amber-marked Maintenance Cut on the west side of the road. A roofed bay provides real cover, a night-shift ledger explains the surveillance pattern, and repairing a latch panel (1 wire + 1 electronics) opens a finite supply locker farther south near the EV. Dismount and use the normal interaction control at each marker. Read notes again in the Journal.
 

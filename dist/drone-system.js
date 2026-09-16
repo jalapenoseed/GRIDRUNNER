@@ -1,3 +1,4 @@
+import {swarmVelocity} from './swarm-steering.js';
 import {sensorFor,SENSOR_SPECS,sensorReading,idleOffset} from './sensor-packages.js';
 // Drone 2.0: renderer-independent vehicle simulation. Distances are world metres.
 import {validLineAnchor,lineBody,lineRelease} from './power-lines.js';
@@ -93,7 +94,7 @@ function coveredReturnPlan(pos,home,solids,type='scout',payloadKg=0){
  }
  options.sort((a,b)=>a.length-b.length);return {home:[...home],points:options[0]?.points||[],blocked:!options.length};
 }
-export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',payloadKg=0,terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null,taskTarget=null,relayNodes=[],idleMotion=true,formationSpeed=Infinity}){
+export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',payloadKg=0,terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null,taskTarget=null,relayNodes=[],idleMotion=true,formationSpeed=Infinity,swarmPeers=[],swarmId=type}){
  d.collisionType=type;d.collisionPayload=payloadKg;
  dt=clamp(dt,0,.05);const homeVelocity=d.lastHome?home.map((v,i)=>clamp((v-d.lastHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastHome=[...home];const spec=dronePerformance(type,payloadKg),events=[];d.cooldown=Math.max(0,d.cooldown-dt);d.scanCooldown=Math.max(0,d.scanCooldown-dt);
  if(d.mode==='DOCK'){d.pos=[...home];d.velocity=[0,0,0];d.rates=[0,0,0];d.pitch=d.roll=d.thrust=0;d.yaw=wrapAngle(yaw);d.speed=0;d.altitude=home[1]-terrain(home[0],home[2]);d.range=0;d.signal=100;d.linkVia=null;return {battery,events};}
@@ -146,6 +147,7 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
  if(d.mode==='SCOUT AHEAD'&&taskTarget&&taskTarget[1]-terrain(taskTarget[0],taskTarget[2])<.85){
   desired[1]=Math.max(desired[1],-Math.min(2,Math.max(.15,(d.altitude-.65)*.7)));
  }
+ desired=swarmVelocity(d,desired,{id:swarmId,type,peers:swarmPeers,taskTarget,speed:Math.min(spec.speed,formationSpeed),climb:spec.climb});
  const old=[...d.pos];
  if(!auto&&flight==='acro'){
   // Simplified vectored-thrust FPV model: nose drive, body-up rotor lift,
@@ -204,5 +206,5 @@ export const wrapAngle=a=>Math.atan2(Math.sin(a),Math.cos(a));
 export function droneAxes({pitch=0,yaw=0,roll=0}){const sp=Math.sin(pitch),cp=Math.cos(pitch),sy=Math.sin(yaw),cy=Math.cos(yaw),sr=Math.sin(roll),cr=Math.cos(roll);return {nose:[-sy*cp,sp,-cy*cp],up:[-cy*sr+sy*sp*cr,cp*cr,sy*sr+cy*sp*cr]};}
 export function scanEntities(d,entities,{type='scout',solids=[],elapsed=0,leg=1,sensor='visible'}){
  if(d.scanCooldown>0)return [];d.scanCooldown=5;sensor=sensorFor(type,sensor);const spec=SENSOR_SPECS[sensor],radius=DRONE_CLASSES[type].scan*spec.range;
- return entities.filter(e=>(!spec.kinds||spec.kinds.includes(e.kind))&&distance(d.pos,[e.x,e.y,e.z])<=radius&&obstruction(d.pos,[e.x,e.y+1,e.z],solids)<(sensor==='rf'?2:1)).map(e=>({...e,at:elapsed,leg,...sensorReading(sensor,e,distance(d.pos,[e.x,e.y,e.z]),radius,obstruction(d.pos,[e.x,e.y+1,e.z],solids))}));
+ return entities.filter(e=>(sensor!=='uv'||e.sensors?.includes('uv'))&&(!e.sensors||e.sensors.includes(sensor))&&(!spec.kinds||spec.kinds.includes(e.kind))&&distance(d.pos,[e.x,e.y,e.z])<=radius&&obstruction(d.pos,[e.x,e.y+1,e.z],solids)<(sensor==='rf'?2:1)).map(e=>({...e,at:elapsed,leg,...sensorReading(sensor,e,distance(d.pos,[e.x,e.y,e.z]),radius,obstruction(d.pos,[e.x,e.y+1,e.z],solids))}));
 }

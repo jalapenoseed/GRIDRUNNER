@@ -8,7 +8,7 @@ export class MenuTrail {
 export const menuTrail=new MenuTrail();
 export const LESSONS=Object.freeze({
  scan:{title:'Read a field scan',page:'quick',anchor:'[data-nav="map"]',text:'R spends charge and records nearby contacts. Check the map or journal. A field scan uses world sensors; Y runs separate YOLO pixel detection.',ready:s=>!!s.intro?.maraMet||s.intro?.stage==='line'},
- sensor:{title:'Choose a sensor',page:'drones',anchor:'[data-command="MANUAL"]',text:'B cycles the selected airframe’s sensors. R measures with that sensor. Thermal finds heat, RF finds transmitters, and depth measures distance. Evidence is a simulated reading, not a quest solution.',ready:s=>true},
+ sensor:{title:'Choose a sensor',page:'drones',anchor:'[data-command="MANUAL"]',text:'B cycles the selected airframe’s sensors. R measures with that sensor. UV reveals fluorescent marks, thermal finds heat, RF finds transmitters, and depth measures distance. Evidence is a simulated reading, not a quest solution.',ready:s=>true},
  repair:{title:'Repair an airframe',page:'drones',anchor:'[data-repair-drone]',text:'Dock the selected drone, then spend one steel to restore up to 40 hull. Inspect hull before launching; low hull triggers a return.',ready:s=>s.droneSystem?.hp<100},
  load:{title:'Load a battery pack',page:'drones',anchor:'[data-pack-op]',text:'Stop beside the trailer. Load an available pack on the Utility drone before assigning a conductor harvest. Added mass changes flight.',ready:s=>!!s.engineerBuilt},
  perch:{title:'Perch on a conductor',page:'drones',anchor:'[data-fleet-task]',text:'Select Utility and assign a line task. It approaches, aligns and latches physically. Watch contact and reserve; HOLD interrupts the job safely.',ready:s=>!!s.engineerBuilt},
