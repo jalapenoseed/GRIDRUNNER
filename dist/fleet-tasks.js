@@ -94,9 +94,9 @@ export function controlTask(record,action,home,solids=[]){
 }
 export function cancelRegionTasks(s){for(const r of Object.values(s.squad||{}))if(hasLiveTask(r))finish(r,'CANCELLED','Region changed; assign a new local job');}
 
-export function advanceAircraftTask(record,dt,{home,solids=[],events=[],scan,state=null,squad={},terrain=()=>0,storm=false,jammed=false}={}){
+export function advanceAircraftTask(record,dt,{home,solids=[],events=[],scan,state=null,squad={},terrain=()=>0,storm=false,jammed=false,trailerHome=null,trailerStopped=false}={}){
  if(!hasLiveTask(record))return [];
- if(record.task.kind==='LINE')return advanceLineHarvest(record,dt,{state,home,solids,events});
+ if(record.task.kind==='LINE')return advanceLineHarvest(record,dt,{state,home,solids,events,trailerHome,trailerStopped});
  const t=record.task,d=record.system,out=[];dt=clamp(Number.isFinite(dt)?dt:0,0,.05);
  if(d.mode==='LANDED'){finish(record,'FAILED','Emergency landing: '+d.reason);return ['task-failed'];}
  if(events.includes('return')||d.mode==='RETURN HOME'&&(t.stage!=='RETURN'||t.state==='PAUSED')){finish(record,'FAILED','Safety return: '+d.reason);return ['task-failed'];}
