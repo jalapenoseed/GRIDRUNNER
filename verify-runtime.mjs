@@ -1,4 +1,31 @@
-import {GamePhysics} from './dist/physics-world.js';
+import {verifyMenuRepair} from './verify-menu-repair-integration.mjs';
+import {verifySwarmSensorsIntegration} from './verify-swarm-sensors-integration.mjs';
+import * as sensorLabModule from './dist/sensor-lab.js';
+import * as swarmSteering from './dist/swarm-steering.js';
+import * as sensorPackages from './dist/sensor-packages.js';
+import * as surveillance from './dist/surveillance.js';
+import * as openingRoute from './dist/opening-route.js';
+import {OpeningWorld} from './dist/opening-world.js';
+import {verifyPhase4Integration} from './verify-phase4-integration.mjs';
+import * as fieldFlow from './dist/field-flow.js';
+import {verifyPackIntegration} from './verify-pack-integration.mjs';
+import * as batteryPacks from './dist/battery-packs.js';
+import * as batteryPackUI from './dist/battery-pack-ui.js';
+import * as relayOutpost from './dist/relay-outpost.js';
+import {verifyLineHarvestIntegration} from './verify-line-harvest-integration.mjs';
+import {verifyRelayOutpostIntegration,verifyTutorialRecovery} from './verify-relay-outpost-integration.mjs';
+import * as powerLines from './dist/power-lines.js';
+import * as lineHarvest from './dist/line-harvest.js';
+import * as lineHarvestUI from './dist/line-harvest-ui.js';
+import * as campaignProgress from './dist/campaign-progress.js';
+import * as fleetPolicy from './dist/fleet-policy.js';
+import * as fleetPolicyUI from './dist/fleet-policy-ui.js';
+import * as fleetTasks from './dist/fleet-tasks.js';
+import * as fleetTaskUI from './dist/fleet-task-ui.js';
+import {riderGradeAllowed} from './dist/collision-shapes.js'; import {VisionDetector} from './dist/vision-detector.js'; import {beamSolids} from './dist/world-collision.js'; import {GamePhysics} from './dist/physics-world.js';
+import {verifyFlightIntegration} from './verify-flight-integration.mjs';
+import {verifyFleetTaskIntegration} from './verify-fleet-task-integration.mjs';
+import * as droneControls from './dist/drone-controls.js';
 import {AmbientResidents} from './dist/ambient-residents.js';
 import {buildCampRoutes} from './dist/camp-navigation.js';
 import * as onboarding from './dist/onboarding.js';
@@ -40,13 +67,17 @@ const playedNarration=[];w.Audio=class{constructor(src){this.src=src;this.curren
 w.HTMLCanvasElement.prototype.getContext=()=>context2d;
 w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};w.document.exitPointerLock=()=>{};w.HTMLCanvasElement.prototype.requestPointerLock=()=>Promise.resolve();
 let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={render:{calls:0}};}setPixelRatio(){}setSize(){}render(scene,camera){assert(scene.isScene&&camera.isPerspectiveCamera);frames++;}}
-const ctx=vm.createContext({...onboarding,Sensors,...fieldUpgrade,...squadron,SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
-ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
+const ctx=vm.createContext({...sensorPackages,...fieldFlow,...onboarding,Sensors,...fieldUpgrade,...squadron,SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
+Object.assign(ctx,{VisionDetector,beamSolids,riderGradeAllowed},batteryPacks,batteryPackUI,campaignProgress,fleetPolicy,fleetPolicyUI,droneControls,fleetTasks,fleetTaskUI,relayOutpost,powerLines,lineHarvest,lineHarvestUI);ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\n/gm,'');
+Object.assign(ctx,sensorLabModule,swarmSteering,surveillance,openingRoute,{OpeningWorld:class extends OpeningWorld{constructor(scene,solids){super(scene,solids,{assets:false});}}});
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 await run('spatial.ready');await run('ambientResidents.ready');assert.equal(run('spatial.status'),'ready');assert.equal(run('ambientResidents.status'),'ready');
 const tick=(seconds)=>{for(let i=0;i<seconds*50;i++)run('update(.02)');run('hud();loop(performance.now()+20)');};
 vm.runInContext(`function newCampaign(){newExpedition();s.intro=completedIntro();s.mode='bike';s.pos.set(bike.position.x,1.7,bike.position.z);hud();}`,ctx);
+if(process.argv.includes('--menu-repair')){verifyMenuRepair({run,tick,w});process.exit(0);}
+if(process.argv.includes('--swarm-sensors')){verifySwarmSensorsIntegration({run,tick,w});process.exit(0);}
+if(process.argv.includes('--phase4')){verifyPhase4Integration({run,tick,w});process.exit(0);}
 assert.equal(run('screen'),'prologue');assert.equal(run('started'),false);w.document.querySelector('[data-story-action=next]').click();assert.equal(run('storyPage'),1);w.document.querySelector('[data-story-action=next]').click();w.document.querySelector('[data-story-action=finish]').click();assert.equal(run('screen'),'start');assert.equal(run('started'),false);assert(w.document.querySelector('#panel').textContent.includes('v7'));
 verifyIntroIntegration({run,tick,w});
 run('newCampaign()');assert.equal(run('s.mode'),'bike');run("keys.w=true");tick(2);run('keys={}');assert(run('s.pos.z')<15,'Bike advances');
@@ -108,7 +139,9 @@ function relayAt(id,mode='foot'){run(`s.mode='${mode}';s.pos.set(...(()=>{const 
 relayAt('generator');run('interact()');assert(run('s.relayHouse.power'));relayAt('board');run('interact()');relayAt('bunk');run('interact()');relayAt('terminal');run('interact()');assert.equal(run('screen'),'relayTerminal');assert(!run('paused'),'Diegetic terminal leaves world ticking');const elapsed=run('s.elapsed');tick(.1);assert(run('s.elapsed')>elapsed);
 run('relayTerminal.run("login GHOST-147");relayTerminal.run("tune 147.20");relayTerminal.run("exit")');assert(run('s.relayHouse.loggedIn'));
 relayAt('bench');run('interact()');w.document.querySelector('[data-field=craft][data-item=radioCoil]').click();assert.equal(run('s.inv.radioCoil'),1);w.document.querySelector('[data-field=craft][data-item=signalFilter]').click();assert.equal(run('s.inv.signalFilter'),1);run('play()');
-relayAt('radio');run('interact()');assert(run('s.relayHouse.filterInstalled'));run('issueDrone("MANUAL")');relayAt('dish','drone');run('interact()');assert(run('s.relayHouse.dishAligned'));run('issueDrone("HOLD")');relayAt('radio');run('interact()');assert(run('s.relayHouse.discovered'));assert(run('s.towerCode'));assert.equal(run('s.relay'),false,'Original campaign relay flag remains distinct');assert(run('writeSave("manual1")'));run('s.relayHouse=createRelayHouse();restore(getSave("manual1"))');assert(run('s.relayHouse.discovered'));run('open("journal")');assert(w.document.querySelector('#panel').textContent.includes('Someone changed the message'));
+relayAt('radio');run('interact()');assert(run('s.relayHouse.filterInstalled'));run('issueDrone("MANUAL")');relayAt('dish','drone');run('interact()');assert(run('s.relayHouse.dishAligned'));run('issueDrone("HOLD")');relayAt('radio');run('interact()');assert(!run('s.relayHouse.discovered'),'Distribution bus must be commissioned');relayAt('terminal');run('interact()');
+function circuitRoute(branch,load){const el=w.document.querySelector('[data-circuit-branch='+branch+']');el.value=load;el.dispatchEvent(new w.Event('change',{bubbles:true}));}
+circuitRoute('A','fan');circuitRoute('B','transmitter');circuitRoute('C','receiver');w.document.querySelector('[data-circuit-test]').click();assert(!run('s.relayHouse.circuits.running'),'Startup surge trips full load');circuitRoute('A','off');w.document.querySelector('[data-circuit-test]').click();assert(run('s.relayHouse.circuits.running'));assert(run('writeSave("manual2")'));run('restore(getSave("manual2"));relayTerminal.open()');assert(run('s.relayHouse.circuits.running'),'Intermediate startup survives reload');circuitRoute('A','fan');w.document.querySelector('[data-circuit-test]').click();assert(run('s.relayHouse.circuits.solved'));run('relayTerminal.run("exit")');relayAt('radio');run('interact()');assert(run('s.relayHouse.discovered'));assert(run('s.towerCode'));assert.equal(run('s.relay'),false,'Original campaign relay flag remains distinct');assert(run('writeSave("manual1")'));run('s.relayHouse=createRelayHouse();restore(getSave("manual1"))');assert(run('s.relayHouse.discovered'));run('open("journal")');assert(w.document.querySelector('#panel').textContent.includes('Someone changed the message'));
 // Roof volume blocks the real simulation below the dish instead of a visual-only slab.
 run('newCampaign();issueDrone("MANUAL");s.droneSystem.pos=[-82,6,-96];s.droneSystem.velocity=[0,12,0];s.pos.fromArray(s.droneSystem.pos);keys[" "]=true;');tick(2);assert(run('s.droneSystem.pos[1]')<8.1,'Cannot fly through the cabin roof');
 const oldHouse=run('snapshot()');delete oldHouse.state.relayHouse;assert.equal(expedition.validateSave(oldHouse).state.relayHouse.discovered,false);
@@ -135,18 +168,19 @@ console.log('PASS: four-airframe hangar, cargo attach/drop, campaign restoration
 // Field menu behavior: one shell, native keyboard access, and mode-specific HUD.
 run("started=false;open('settings')");
 assert.equal(w.document.querySelectorAll('.field-shell').length,1);
-assert.equal(w.document.querySelectorAll('.field-primary button').length,5);
-const openSummary=w.document.querySelector('details[open] > summary');openSummary.focus();
-const tabKey=new w.KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true});openSummary.dispatchEvent(tabKey);assert(!tabKey.defaultPrevented,'Tab retains native menu traversal');
-const spaceKey=new w.KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true});openSummary.dispatchEvent(spaceKey);assert(!spaceKey.defaultPrevented,'Space retains native accordion toggle');
-const closedRange=w.document.querySelector('details:not([open]) input');
-assert(!run('menuControls(document.querySelector("#panel"))').includes(closedRange),'Closed accordion controls are excluded from controller and keyboard navigation');
-w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));assert.equal(run('screen'),'start');assert(run('paused'));assert(!run('started'));
+assert.equal(w.document.querySelectorAll('[data-menu-group]').length,5);
+assert.equal(w.document.querySelectorAll('.menu-pane:not([hidden])').length,1);
+const navButton=w.document.querySelector('[data-menu-group="system"]');navButton.focus();
+const tabKey=new w.KeyboardEvent('keydown',{key:'Tab',bubbles:true,cancelable:true});navButton.dispatchEvent(tabKey);assert(!tabKey.defaultPrevented,'Tab retains native menu traversal');
+const spaceKey=new w.KeyboardEvent('keydown',{key:' ',bubbles:true,cancelable:true});navButton.dispatchEvent(spaceKey);assert(!spaceKey.defaultPrevented,'Space retains native button behavior');
+const closedRange=w.document.querySelector('.menu-pane[hidden] input');
+assert(closedRange&&!run('menuControls(document.querySelector("#panel"))').includes(closedRange),'Hidden branch controls are excluded from controller and keyboard navigation');
+w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'Escape',bubbles:true,cancelable:true}));assert.equal(run('screen'),'locations','Escape restores the actual parent page');assert(run('paused'));assert(!run('started'));
 run("newCampaign();open('supplies')");assert.equal(w.document.querySelectorAll('.field-shell').length,1);assert(w.document.body.classList.contains('menu-open'));
 run('play();hud()');assert(!w.document.body.classList.contains('menu-open'));
 run("open('flightyard')");w.document.querySelector('[data-yard-drone=relay]').click();assert.equal(w.document.querySelectorAll('.field-shell').length,1);
 run("settings.weather='dusk';settings.sunHour=13.5;settings.nightVision=false;applySettings();loop(performance.now()+20)");assert(run('atmosphere.hemi[0].intensity')>1.6);
-console.log('PASS: single menu shell, five categories, native Tab/Space, closed accordion focus exclusion, prestart Escape safety, specialized rerenders and bright daylight integration.');
+console.log('PASS: single menu shell, five tree categories, native Tab/Space, hidden branch focus exclusion, prestart Escape safety, specialized rerenders and bright daylight integration.');
 
 // Inspect the new interaction model through DOM events, including filter/focus state.
 run('newCampaign();s.inv.toaster=1;s.inv.copper=2;open("inventory")');
@@ -192,15 +226,15 @@ assert.equal(run('s.inv.wire'),1);assert.equal(run('crates[0].items.wire'),1);as
 run('restore(JSON.parse(JSON.stringify(snapshot())));play();nearest={kind:"crate",index:0};interact()');
 assert.equal(run('crates[0].items.wire'),1);assert.equal(w.document.querySelectorAll('[data-loot]').length,3);
 run('takeLoot("all");play()');assert.equal(run('s.inv.wire'),2);assert.equal(run('crates[0].done'),true);
-run('newCampaign();s.pos.set(0,1.7,180);bike.position.set(0,0,180);issueDrone("SCOUT AHEAD")');tick(3);
+run('newCampaign();s.met=true;s.pos.set(0,1.7,180);bike.position.set(0,0,180);issueDrone("SCOUT AHEAD")');tick(3);
 run('open("drones")');w.document.querySelector('[data-drone=cargo]').click();run('issueDrone("FOLLOW");play()');tick(3);
 assert.equal(run('s.droneType'),'cargo');assert.equal(run('s.squad.scout.system.mode'),'SCOUT AHEAD');assert.equal(run('s.droneSystem.mode'),'FOLLOW');
 assert(run('s.squad.scout.battery')<100);assert(run('s.drone')<100);assert(run('fleet.meshes.scout.visible&&fleet.meshes.cargo.visible'));
 const scoutPosition=run('JSON.stringify(s.squad.scout.system.pos)');run('restore(JSON.parse(JSON.stringify(snapshot())))');assert.equal(run('JSON.stringify(s.squad.scout.system.pos)'),scoutPosition);
 run('open("drones")');w.document.querySelector('[data-drone=scout]').click();assert.equal(run('s.droneSystem.mode'),'SCOUT AHEAD');run('issueDrone("RETURN HOME");play()');tick(25);
 assert.equal(run('s.droneSystem.mode'),'DOCK');assert.equal(run('s.squad.cargo.system.mode'),'FOLLOW');
-run('newCampaign();play()');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'5',shiftKey:true}));assert.equal(run('fleetAll'),true);w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'1'}));assert.equal(run('s.squad.scout.system.mode'),'FOLLOW');assert.equal(run('s.squad.cargo.system.mode'),'FOLLOW');assert.equal(run('s.squad.relay.system.mode'),'FOLLOW');assert.equal(run('s.squad.engineer.system.mode'),'DOCK','Locked utility aircraft stays docked');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'8'}));assert.equal(run('s.fleetFormation'),'TRAIL');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'2',shiftKey:true}));assert.equal(run('s.droneType'),'cargo');assert.equal(run('fleetAll'),false);
-for(const mode of ['visible','night','thermal','rf']){run(`settings.sensorMode='${mode}';settings.nightVision=${mode==='night'};applySettings();loop(performance.now()+40)`);assert.equal(w.document.body.dataset.sensor,mode);}
+run('newCampaign();s.met=true;s.progression.relayHouseSolved=true;play()');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'5',shiftKey:true}));assert.equal(run('fleetAll'),true);w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'1'}));assert.equal(run('s.squad.scout.system.mode'),'FOLLOW');assert.equal(run('s.squad.cargo.system.mode'),'FOLLOW');assert.equal(run('s.squad.relay.system.mode'),'FOLLOW');assert.equal(run('s.squad.engineer.system.mode'),'DOCK','Locked utility aircraft stays docked');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'8'}));assert.equal(run('s.fleetFormation'),'TRAIL');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'2',shiftKey:true}));assert.equal(run('s.droneType'),'cargo');assert.equal(run('fleetAll'),false);
+for(const mode of ['visible','night','thermal','rf','acoustic','depth']){run(`s.droneType='${{visible:'scout',night:'scout',thermal:'engineer',rf:'relay',acoustic:'scout',depth:'cargo'}[mode]}';settings.sensorMode='${mode}';settings.nightVision=${mode==='night'};applySettings();loop(performance.now()+40)`);assert.equal(w.document.body.dataset.sensor,mode);}
 run('settings.sensorMode="visible";settings.nightVision=false;applySettings();action("droneLamp");loop(performance.now()+40)');assert.equal(run('settings.droneLamp'),true);
 const rngSettings={randomEnvironment:true};fieldUpgrade.randomEnvironment(rngSettings,()=>0);assert.equal(rngSettings.sunHour,0);fieldUpgrade.randomEnvironment(rngSettings,()=>.999);assert.equal(rngSettings.sunHour,23.9);assert.equal(rngSettings.weather,'sandstorm');
 console.log('PASS: selective loot persistence, two independently flying aircraft, per-aircraft saves and return, sensor rendering/restoration, light toggle, randomized day/night endpoints.');
@@ -216,3 +250,47 @@ run('open("rig")');w.document.querySelector('[data-rig-focus=cargo]').click();as
 run('settings.tutorialEnabled=false;newExpedition()');assert.equal(run('s.intro.stage'),'line');run('open("npc")');assert(w.document.querySelector('.maraDialogue'));assert(w.document.querySelector('.contactPortrait'));
 run('settings.graphics="LOW";applySettings()');assert.equal(run('fleet.quality'),'LOW');assert.equal(run('fleet.shouldStream("scout",s)'),false);
 console.log('PASS: four equipment lessons, camera framing/restoration, scout acquisition guide, recorded narration/mute, skip without loot duplication, trailer feature inspector and low-quality streaming gate.');
+verifyFlightIntegration({run,w});
+verifyFleetTaskIntegration({run,tick,w});
+verifyRelayOutpostIntegration({run,tick,w});
+verifyTutorialRecovery({run,w});
+verifyLineHarvestIntegration({run,tick,w});
+
+verifyPackIntegration({run,tick,w});
+
+// Policy must tick even when its docked Utility is not the selected aircraft.
+run(`newCampaign();s.engineerBuilt=true;s.progression.relayHouseSolved=true;s.progression.firstPackDelivered=true;s.trailer=0;settings.weather='clear';s.batteryPacks.serial=1;s.batteryPacks.packs=[{id:'pack-1',capacityWh:120,chargeWh:0,massKg:1.2,owner:'trailer'}];configureFleetPolicy(s,{enabled:true,targetPercent:60});`);
+tick(.1);assert.equal(run('s.droneType'),'scout');assert.equal(run('s.squad.engineer.task?.state'),'RUNNING','Unselected docked Utility dispatches policy');
+run("issueFleet('DOCK')");assert.equal(run('s.fleetPolicy.enabled'),false,'Fleet recall disarms repeat dispatch');
+run(`newCampaign();setFormation('RELAY OUTPOST')`);assert.notEqual(run('s.squad.relay.task?.state'),'RUNNING','Locked outpost cannot bypass campaign gate');
+assert(run("solids.some(b=>b.x===65&&b.z===-2358)"),'Spillway breaker cabinet registered');
+assert(run("solids.some(b=>b.kind==='capacitor'&&b.z===-4320)"),'Black Start capacitors registered');
+assert.equal(run("spatial.moveRider({x:0,y:1.7,z:-3500},0,-20,{mode:'bike'}).hit"),false,'Main later-chapter road remains rideable');
+run("newCampaign();settings.tutorialEnabled=false;open('rig')");assert(!w.document.querySelector('.firstUse'),'Tutorial OFF suppresses first-use cards');
+console.log('PASS: background docked policy scheduling, operator recall disarm, locked outpost protection, later-chapter solid props, clear road and tutorial preference.');
+
+run("open('drones')");w.document.querySelector('[data-menu-section="formations"]').click();const remembered=w.document.querySelector('[data-formation=TRAIL]');remembered.focus();run("open('rig');open('drones')");assert.equal(w.document.activeElement.dataset.formation,'TRAIL','real menu render retains the focused formation');
+console.log('PASS: actual rendered Fleet page restores focus without an unconditional focus override.');
+
+run("newCampaign();play();open('quick');open('drones')");
+w.document.querySelector('[data-formation=TRAIL]').focus();run("open('settings');backMenu()");
+assert.equal(run('screen'),'drones');assert.equal(w.document.activeElement.dataset.formation,'TRAIL');
+run("controller.menu({menu:[],actions:['cancel']})");assert.equal(run('screen'),'drones');assert.equal(w.document.querySelector('.menu-pane:not([hidden])').dataset.menuPane,'commands');run("controller.menu({menu:[],actions:['cancel']})");assert.equal(run('screen'),'quick');
+w.document.querySelector('[data-back]').click();assert.equal(run('screen'),'pause');run('backMenu()');assert(!run('paused'));
+run("settings.tutorialEnabled=true;s.lessons={};s.droneSystem.scanCooldown=0;action('scan')");assert.equal(run('s.lessons.scan'),'done');
+assert(run('writeSave("manual1")'));run('restore(getSave("manual1"))');assert.equal(run('s.lessons.scan'),'done');
+run("open('guide')");w.document.querySelector('[data-lesson-replay=scan]').click();assert.equal(run('s.lessons.scan'),undefined);assert.equal(run('s.intro.stage'),'line');
+run("s.met=true;settings.sensorMode='night';open('drones')");w.document.querySelector('[data-drone=cargo]').click();assert.equal(run('settings.sensorMode'),'visible','Changing airframe removes unsupported optics');
+run("selectFleetAircraft('scout');open('drones')");
+w.document.querySelector('[data-menu-section="sensors"]').click();
+assert(run('menuControls(document.querySelector("#panel"))').includes(w.document.querySelector('[data-sensor-mode="uv"]')));
+w.document.querySelector('[data-sensor-mode="uv"]').click();assert.equal(run('settings.sensorMode'),'uv');
+assert.equal(w.document.querySelector('.menu-pane:not([hidden])').dataset.menuPane,'sensors','changing sensor retains active branch');
+assert.equal(w.document.querySelector('[data-sensor-mode="uv"]').getAttribute('aria-pressed'),'true');
+run("selectFleetAircraft('cargo');renderPanel()");assert.equal(run('settings.sensorMode'),'visible');assert(!w.document.querySelector('[data-sensor-mode="uv"]'),'unsupported sensors are absent');
+console.log('PASS: keyboard/controller/touch parent history and focus, first scan completion/save/replay, campaign preservation and class sensor fallback.');
+verifyPhase4Integration({run,tick,w});
+
+verifySwarmSensorsIntegration({run,tick,w});
+
+verifyMenuRepair({run,tick,w});

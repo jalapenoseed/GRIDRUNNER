@@ -1,9 +1,11 @@
 import * as T from './three.js';
 export const YARD={x:160,z:90,home:[160,2,115]};
+export const YARD_CARGO_KG=6;
+export const flightPayload=(session,type)=>session?.carrying&&type==='cargo'?YARD_CARGO_KG:0;
 export const GATES=[[160,9,83],[160,13,52],[136,18,24],[104,12,18],[98,9,57],[126,7,85]];
 export const INSPECTIONS=[[132,9,52],[102,13,52],[122,17,22]];
-export const JOBS={circuit:{name:'Circuit / precision flight',hint:'Fly through the illuminated gates in order.'},inspect:{name:'Scout / inspection',hint:'Hold a steady hover near each amber inspection node.'},cargo:{name:'Cargo / recovery',hint:'Use at PICKUP to attach the crate; deliver it to DROP.'},repair:{name:'Utility / field repair',hint:'Hover by the breaker bank and hold position while the tool works.'},relay:{name:'Relay / uplink',hint:'Climb above the mast and hold a stable relay position.'}};
-export function createFlightSession(){return {job:'circuit',gate:0,elapsed:0,hold:0,carrying:false,complete:false,inspected:0,collisions:0,lastHP:100,previous:null};}
+export const JOBS={sensors:{name:'Sensor / YOLO Lab',hint:'B cycles payloads; R records a reading. UV: painted stripe. Thermal: warm housing. RF: test mast. Switch aircraft in Fleet. Y tests pixel detection in visible mode.'},circuit:{name:'Circuit / precision flight',hint:'Fly through the illuminated gates in order.'},inspect:{name:'Scout / inspection',hint:'Hold a steady hover near each amber inspection node.'},cargo:{name:'Cargo / recovery',hint:'Use at PICKUP to attach the crate; deliver it to DROP.'},repair:{name:'Utility / field repair',hint:'Hover by the breaker bank and hold position while the tool works.'},relay:{name:'Relay / uplink',hint:'Climb above the mast and hold a stable relay position.'}};
+export function createFlightSession(){return {job:'circuit',gate:0,elapsed:0,hold:0,carrying:false,complete:false,inspected:0,collisions:0,lastHP:100,previous:null,sensorReadings:[]};}
 const distance=(a,b)=>Math.hypot(...a.map((n,i)=>n-b[i]));
 export function stepFlightSession(f,d,dt,type){if(f.complete)return '';f.elapsed+=dt;if(d.hp<f.lastHP)f.collisions++;f.lastHP=d.hp;
  let message='';const p=d.pos;
@@ -20,7 +22,7 @@ export function stepFlightSession(f,d,dt,type){if(f.complete)return '';f.elapsed
 export function useFlightCargo(f,d,type){if(f.job!=='cargo'||f.complete)return 'Select a mission from Flight Yard.';if(type!=='cargo')return 'CARGO-01 is required for the recovery clamp.';if(d.speed>3)return 'Slow to a hover before operating the clamp.';
  const target=f.carrying?[104,4,84]:[170,4,52];if(distance(d.pos,target)>6)return f.carrying?'Carry the crate to DROP.':'Approach PICKUP to attach the crate.';
  if(f.carrying){f.carrying=false;f.complete=true;return 'DELIVERY COMPLETE · '+f.elapsed.toFixed(1)+' s';}f.carrying=true;return 'LOAD SECURED · fly to DROP';}
-export function flightProgress(f){if(f.complete)return 'COMPLETE · '+f.elapsed.toFixed(1)+' s · '+f.collisions+' impacts';return f.job==='circuit'?'GATE '+(f.gate+1)+' / '+GATES.length:f.job==='inspect'?'INSPECTION '+(f.inspected+1)+' / 3 · '+Math.floor(f.hold/2.5*100)+'%':f.job==='cargo'?f.carrying?'LOAD SECURED → DROP':'PICKUP → E / A / USE':'STABLE HOVER · '+Math.min(100,Math.floor(f.hold/5*100))+'%';}
+export function flightProgress(f){if(f.job==='sensors')return (f.complete?'SENSORS COMPLETE':(f.sensorReadings||[]).map(m=>m.toUpperCase()).join(' + ')||'NO READINGS')+' · '+(f.sensorReadings||[]).length+'/3 · B SENSOR / R READ / Y YOLO';if(f.complete)return 'COMPLETE · '+f.elapsed.toFixed(1)+' s · '+f.collisions+' impacts';return f.job==='circuit'?'GATE '+(f.gate+1)+' / '+GATES.length:f.job==='inspect'?'INSPECTION '+(f.inspected+1)+' / 3 · '+Math.floor(f.hold/2.5*100)+'%':f.job==='cargo'?f.carrying?'LOAD SECURED → DROP':'PICKUP → E / A / USE':'STABLE HOVER · '+Math.min(100,Math.floor(f.hold/5*100))+'%';}
 export class FlightYardWorld{
  constructor(scene,solids){this.root=new T.Group();scene.add(this.root);this.gates=[];const mats={};const mat=c=>mats[c]||(mats[c]=new T.MeshStandardMaterial({color:c,roughness:.75,metalness:.25}));
   const box=(p,size,c,solid=false)=>{const m=new T.Mesh(new T.BoxGeometry(...size),mat(c));m.position.set(...p);m.castShadow=m.receiveShadow=true;this.root.add(m);if(solid)solids.push({x:p[0],z:p[2],w:size[0]/2,d:size[2]/2,minY:p[1]-size[1]/2,maxY:p[1]+size[1]/2});return m;};

@@ -108,6 +108,6 @@ export function makeMaraShelter(solids=[]){
  for(const x of [47,61])box(g,x,2.5,-89.91,.15,.4,.018,palette.amber);
  g.userData.mara={x:54,z:-94};return combine(g);
 }
-export function detailWorld(scene,solids=[]){const g=new T.Group();scene.add(g);for(const [x,z]of [[90,-416],[155,-733]]){crate(g,x+3,1,z,1.3,2,1);for(let i=0;i<3;i++)mesh(g,new T.CircleGeometry(.12,10),x+2.7+i*.3,1.4,z+.51,i===0?palette.green:palette.amber,true);rod(g,[x+3,2,z],[x+3,3,z],.03,palette.steel);}
+export function detailWorld(scene,solids=[]){const g=new T.Group();scene.add(g);for(const [x,z]of [[90,-416],[155,-733]]){crate(g,x+3,1,z,1.3,2,1);solids.push({x:x+3,z,w:.65,d:.5,minY:0,maxY:2,kind:'cabinet'});for(let i=0;i<3;i++)mesh(g,new T.CircleGeometry(.12,10),x+2.7+i*.3,1.4,z+.51,i===0?palette.green:palette.amber,true);rod(g,[x+3,2,z],[x+3,3,z],.03,palette.steel);}
 g.add(makeMaraShelter(solids));
 for(const [x,z]of [[-85,-290],[90,-416],[155,-733]]){rod(g,[x+4,0,z+4],[x+4,3.7,z+4],.055,palette.steel);box(g,x+4,3.4,z+4,1.8,.6,.12,0x25383a);mesh(g,new T.SphereGeometry(.14,8,6),x+4,4,z+4,palette.cyan,true);}return combine(g);}

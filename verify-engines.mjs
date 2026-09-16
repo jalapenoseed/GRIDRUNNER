@@ -9,7 +9,7 @@ const solids=[{x:3,z:0,w:.1,d:5,minY:0,maxY:4},
   {x:0,z:12,w:3,d:3,minY:3,maxY:3.2},
   {x:0,z:-12,w:3,d:2,minY:0,maxY:8,drone:false}];
 const physics=new GamePhysics(solids);
-assert.equal(physics.moveRider({x:0,y:1.7,z:0},1,0),null,'Startup retains the existing collision path');
+assert.equal(physics.moveRider({x:0,y:1.7,z:0},1,0).hit,false,'Startup uses swept fallback movement');
 await physics.ready;assert.equal(physics.status,'ready');
 let moved=physics.moveRider({x:0,y:1.7,z:0},20,2);
 assert(moved.hit&&moved.x<2.8&&moved.x>2.6,'Swept rider cannot tunnel through a thin wall');

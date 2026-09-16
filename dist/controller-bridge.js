@@ -37,6 +37,6 @@ export class ControllerBridge{
    if(['left','right'].includes(direction)&&active?.matches('input[type=range],select')){const sign=direction==='right'?1:-1;if(active.tagName==='SELECT')active.selectedIndex=Math.max(0,Math.min(active.options.length-1,active.selectedIndex+sign));else active.value=String(Math.max(+active.min,Math.min(+active.max,+active.value+sign*+(active.step||1))));active.dispatchEvent(new Event('change',{bubbles:true}));}
    else{const sign=direction==='down'||direction==='right'?1:-1;i=(i+sign+controls.length)%controls.length;controls[i]?.focus();controls[i]?.scrollIntoView?.({block:'nearest'});}
   }
-  for(const action of f.actions){if(action==='interact'){const active=controls.includes(document.activeElement)?document.activeElement:controls[0];active?.click();}else if(action==='cancel'||action==='pause'){if(a.started())a.play();else a.open('start');}else if(action==='map'&&a.started())a.open('map');}
+  for(const action of f.actions){if(action==='interact'){const active=controls.includes(document.activeElement)?document.activeElement:controls[0];active?.click();}else if(action==='cancel'||action==='pause'){if(a.back)a.back();else if(a.started())a.play();else a.open('start');}else if(action==='map'&&a.started())a.open('map');}
  }
 }

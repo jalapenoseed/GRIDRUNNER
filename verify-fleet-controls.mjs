@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {AIRCRAFT,FORMATIONS,formationSlot,validFormation} from './dist/squadron.js';
 import {createDrone,commandDrone,updateDrone} from './dist/drone-system.js';
 
-assert.deepEqual(FORMATIONS,['WEDGE','TRAIL','LINE','ORBIT']);
+assert.deepEqual(FORMATIONS,['WEDGE','TRAIL','LINE','ORBIT','RELAY OUTPOST','STAGGERED','HIGH / LOW','PROTECTIVE RING','OVERWATCH','SEARCH GRID','BUZZ PASS']);
 assert.equal(validFormation('LINE'),'LINE');
 assert.equal(validFormation('unknown'),'WEDGE');
 
@@ -22,4 +22,4 @@ for(let frame=0;frame<600;frame++)for(const r of squad){
 for(let i=0;i<squad.length;i++)for(let j=i+1;j<squad.length;j++)assert(Math.hypot(...squad[i].d.pos.map((n,k)=>n-squad[j].d.pos[k]))>3.5,'Wedge aircraft converge without overlap');
 const before=formationSlot('ORBIT','scout',0,0),after=formationSlot('ORBIT','scout',0,5);
 assert.notDeepEqual(after,before,'Orbit formation advances around the rider');
-console.log('PASS: four fleet presets, stable per-aircraft slots, safe autonomous spacing and moving orbit formation.');
+console.log('PASS: fleet presets and outpost fallback slots, stable per-aircraft spacing and moving orbit formation.');
