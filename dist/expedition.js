@@ -1,4 +1,6 @@
 import {lessonState} from './field-flow.js';
+import {validateSurveillance} from './surveillance.js';
+import {validateOpeningRoute} from './opening-route.js';
 import {validateBatteryPacks} from './battery-packs.js';
 import {migrateCampaignProgress} from './campaign-progress.js';
 import {validateFleetPolicy} from './fleet-policy.js';
@@ -29,6 +31,7 @@ export function validateSave(r){
  const bad=()=>{throw Error('This save is incomplete or belongs to another game version.');};
  if(!r||r.version!==SAVE_VERSION||!r.state||!Number.isFinite(r.savedAt))bad();
  const s=r.state,number=(v,a,b)=>typeof v==='number'&&Number.isFinite(v)&&v>=a&&v<=b;
+ s.surveillance=validateSurveillance(s.surveillance);s.openingRoute=validateOpeningRoute(s.openingRoute);
  const vec=v=>Array.isArray(v)&&v.length===3&&v.every(n=>number(n,-10000,10000));
  if(!vec(s.pos)||!vec(r.bike)||!vec(r.trailer)||!['bike','foot','drone'].includes(s.mode))bad();
  for(const [k,a,b]of [['battery',0,100],['trailer',0,40],['drone',0,100],['hp',0,100],['stamina',0,100],['fuel',0,20],['elapsed',0,1e10],['yaw',-1e10,1e10],['pitch',-2,2],['ammo',0,100000],['ev',0,36],['solarEnergy',0,48],['gridEnergy',0,70],['lineEnergy',0,48]])if(!number(s[k],a,b))bad();

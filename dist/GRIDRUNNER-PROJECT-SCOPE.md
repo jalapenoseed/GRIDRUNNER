@@ -225,6 +225,8 @@ All electrical quantities and interactions are fictionalized gameplay. This is n
 
 ### Phase 4 — Meaningful density and enemy-drone prototype
 
+**v7.25 status:** First bounded route and one non-weaponized surveillance prototype implemented. Maintenance Cut adds real cover, repair/salvage decisions and a recoverable shift note; WATCH-01 loses line of sight, searches its last observation, and returns to a finite charger using existing aircraft collision and energy logic. Automated integration covers this slice. Human readability, GPU/device/audio acceptance and broader route expansion remain open. See `GRIDRUNNER-v7.25-REPORT.md`.
+
 **Goal:** add decisions and believable behavior, not simply more meshes.
 
 Create a small density pass around the opening route: readable landmarks, alternate access, solid cover, salvage decisions, repairable infrastructure, small mysteries and environmental stories. Protect the main road and NPC/quest approaches from random obstruction.

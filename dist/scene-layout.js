@@ -15,6 +15,7 @@ export const SETTLEMENT_LAYOUT=[
 const rect=(id,x,z,w,d)=>({id,x,z,w,d}); // w/d are HALF extents, in world metres.
 export const AUTHORED_FOOTPRINTS=[
  rect('opening-bike',0,24,23,28),
+ rect('maintenance-cut',-60,-265,12,78),rect('maintenance-entry',-38,-192,15,10),rect('watch-charger',-24,-352,7,8),
  rect('mara-shelter',54,-100,11,15),rect('mara-workshop',65,-125,17,13),rect('mara-store',107,-148,12,14),
  rect('first-salvage',38,-94,4,4),
  rect('relay-house-and-service-yard',-78,-83,33,32),

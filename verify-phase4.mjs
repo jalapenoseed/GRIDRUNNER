@@ -1,0 +1,42 @@
+import assert from 'node:assert/strict';
+import {createSurveillance,validateSurveillance,advanceSurveillance,watchCanSee,WATCH_HOME,WATCH_CAPACITY_WH} from './dist/surveillance.js';
+import {createOpeningRoute,validateOpeningRoute,useOpeningRoute,ROUTE_POINTS,ROUTE_STOCK} from './dist/opening-route.js';
+
+const options={active:true,target:[0,1.7,-250],solids:[],terrain:()=>0};
+const step=(w,seconds,ctx=options)=>{for(let t=0;t<seconds;t+=.02)advanceSurveillance(w,.02,ctx);};
+const watch=createSurveillance();
+const before=structuredClone(watch);step(watch,10,{...options,active:false});assert.deepEqual(watch,before,'Tutorial / practice / other chapter freezes every resource and timer');
+const eye=[0,12,-220],subject=[0,1.7,-245];
+assert(watchCanSee(eye,0,subject,options));assert(!watchCanSee(eye,Math.PI,subject,options),'Rear target is outside the camera cone');
+assert(!watchCanSee(eye,0,subject,{...options,solids:[{x:0,z:-236,w:5,d:1,minY:0,maxY:20}]}),'Opaque wall hides the target');
+assert(!watchCanSee(eye,0,subject,{...options,terrain:(x,z)=>z<-233&&z>-237?20:0}),'Terrain hides the target');
+watch.system.mode='SCOUT AHEAD';watch.system.pos=[...eye];watch.system.yaw=0;watch.waypoint=2;
+step(watch,4,{...options,target:subject});assert.equal(watch.phase,'OBSERVE');assert(watch.exposure>=.9);
+const lastKnown=[...watch.lastSeen];
+step(watch,3,{...options,target:[1000,1.7,-700]});assert.equal(watch.phase,'SEARCH');assert.deepEqual(watch.lastSeen,lastKnown,'Loss of sight never reveals the new player position');
+step(watch,20,{...options,target:[1000,1.7,-700]});assert(['RETREAT','RECHARGE'].includes(watch.phase),'Search has a bounded duration');
+const saved=validateSurveillance(JSON.parse(JSON.stringify(watch)));assert.deepEqual(saved.lastSeen,watch.lastSeen);assert.equal(saved.battery,watch.battery);
+assert.throws(()=>validateSurveillance({...saved,phase:'TELEPORT'}));assert.throws(()=>validateSurveillance({...saved,battery:Infinity}));
+assert.throws(()=>validateSurveillance({...saved,stationWh:99999}));
+assert.deepEqual(validateSurveillance(undefined),createSurveillance(),'Old saves migrate to an isolated patrol');
+// Physical return: no instant dock and no free recharge outside the station.
+const low=createSurveillance();low.system.mode='SCOUT AHEAD';low.system.pos=[20,10,-240];low.battery=18;
+advanceSurveillance(low,.02,options);assert.equal(low.phase,'RETREAT');assert.notDeepEqual(low.system.pos,WATCH_HOME);assert(low.battery<18);
+step(low,70,{...options,target:[1000,1.7,-700]});assert.equal(low.phase,'RECHARGE');
+const ledger=()=>low.battery/100*WATCH_CAPACITY_WH+low.stationWh;
+const energy=ledger();step(low,10,{...options,target:[1000,1.7,-700]});assert(Math.abs(ledger()-energy)<1e-8,'Charger conservation is exact');
+low.stationWh=.1;low.battery=15;step(low,20,options);assert.equal(low.stationWh,0);assert(low.battery<16);assert.equal(low.phase,'RECHARGE','An empty station does not relaunch');
+
+const state={openingRoute:createOpeningRoute(),inv:{wire:1,electronics:1},mode:'foot'};
+const near=id=>({position:[ROUTE_POINTS[id].x,1.7,ROUTE_POINTS[id].z],capacity:40,enabled:true});
+assert(!useOpeningRoute(state,'locker',near('locker')).ok,'The locker starts locked');
+assert(!useOpeningRoute(state,'repair',{...near('repair'),position:[0,1.7,0]}).ok,'No remote repair');
+state.mode='drone';assert(!useOpeningRoute(state,'repair',near('repair')).ok,'FPV cannot spend backpack supplies');state.mode='foot';
+assert(useOpeningRoute(state,'repair',near('repair')).ok);assert.equal(state.inv.wire,0);assert.equal(state.inv.electronics,0);
+assert(useOpeningRoute(state,'repair',near('repair')).ok);assert.equal(state.inv.wire,0,'Repair is idempotent');
+assert(!useOpeningRoute(state,'locker',{...near('locker'),capacity:0}).ok);assert.deepEqual(state.openingRoute.stock,ROUTE_STOCK,'Full pack leaves salvage in place');
+assert(useOpeningRoute(state,'locker',near('locker')).ok);const inventory={...state.inv};useOpeningRoute(state,'locker',near('locker'));assert.deepEqual(state.inv,inventory,'Salvage cannot be duplicated');
+useOpeningRoute(state,'notice',near('notice'));assert(state.openingRoute.read.includes('notice'));
+assert.deepEqual(validateOpeningRoute(JSON.parse(JSON.stringify(state.openingRoute))),state.openingRoute);
+assert.throws(()=>validateOpeningRoute({...state.openingRoute,stock:{...ROUTE_STOCK,cells:99}}));
+console.log('PASS: surveillance cone/terrain/cover, genuine last-known search, finite return/recharge, interruption and migration; proximity-safe repair and nonduplicating finite salvage.');

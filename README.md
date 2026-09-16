@@ -1,6 +1,10 @@
-# GRIDRUNNER v7.24 — Field systems and Relay House
+# GRIDRUNNER v7.25 — Maintenance Cut / WATCH-01
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
+
+**New in v7.25:** After the opening guide, ride north past Mara and take the amber-marked Maintenance Cut on the west side of the road. A roofed bay provides real cover, a night-shift ledger explains the surveillance pattern, and repairing a latch panel (1 wire + 1 electronics) opens a finite supply locker farther south near the EV. Dismount and use the normal interaction control at each marker. Read notes again in the Journal.
+
+WATCH-01 is a non-weaponized enemy prototype: it patrols, builds suspicion through camera-cone/terrain/solid visibility, observes, loses track, searches the last-known position and physically returns to a finite charger. It observes your rider even while you pilot FPV; no weapon damage or reinforcements are added. Threat information replaces the existing objective text only while relevant. Tutorial, menus, other chapters and Flight Yard do not advance its campaign state. See [v7.25 changes and acceptance checks](dist/GRIDRUNNER-v7.25-REPORT.md). GPU, audio and physical-device playtesting remain open.
 
 **New in v7.24:** Phases 1–3 add parent/back navigation and saved interaction guides, six more formations and class-specific sensor packages, and a clue-driven Relay House distribution puzzle with startup surge and persistent intermediate state. Existing completed expeditions remain completed. See the [current build report](dist/GRIDRUNNER-v7.24-REPORT.md) and [editable timeline](dist/reports/GRIDRUNNER-v7.24-timeline.xlsx). Automated regression checks pass; hands-on device and puzzle playtesting remains open.
 
