@@ -8,6 +8,8 @@
 .fleetTask dl{display:grid;grid-template-columns:minmax(90px,1fr) 3fr;gap:9px;}
 .fleetTask dd{margin:0;overflow-wrap:anywhere;}
 .fleetInfo .taskBadge,.fleetTask .taskBadge{font:10px/1.5 monospace!important;color:#d3ba89!important;min-height:0!important;}
+.fleetCard.locked{filter:saturate(.45);border-color:#8b72534d}.fleetCard.locked img{opacity:.48}.fleetCard.locked .taskBadge{color:#bd9970!important}
+.progressionGrid article{position:relative;border-left:2px solid #65736f}.progressionGrid article.complete{border-left-color:#75c99d;background:linear-gradient(135deg,#1d3b31,#132328)}.progressionGrid article.locked{border-left-color:#9b7855;background:linear-gradient(135deg,#302a24,#141f23)}.progressionGrid .eyebrow{color:#d1ad78}.progressionGrid .complete .eyebrow{color:#8fe0b2}
 @media(max-width:600px){.fleetTask{padding:12px;}.taskActions button{flex:1 1 125px;}.fleetTask dl{grid-template-columns:1fr;}}
 
 .beaconIdentity{display:inline-flex;align-items:center;gap:8px;color:var(--beacon)!important;font:12px/1.4 monospace!important;letter-spacing:.5px!important}.beaconIdentity:before{content:'';width:8px;height:8px;border-radius:50%;background:var(--beacon);box-shadow:0 0 6px var(--beacon)}

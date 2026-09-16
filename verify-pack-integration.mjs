@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 
 export function verifyPackIntegration({run,tick,w}){
- run("newCampaign();settings.randomEnvironment=false;settings.weather='heat';settings.movingSun=false;settings.sunHour=12;applySettings();s.engineerBuilt=true;selectFleetAircraft('engineer');s.drone=65;s.inv.cells=2;s.inv.wire=4;s.inv.electronics=2;s.inv.rubber=2;open('drones')");
+ run("newCampaign();s.progression.relayHouseSolved=true;s.relayHouse.schematicRead=true;settings.randomEnvironment=false;settings.weather='heat';settings.movingSun=false;settings.sunHour=12;applySettings();s.engineerBuilt=true;selectFleetAircraft('engineer');s.drone=65;s.inv.cells=2;s.inv.wire=4;s.inv.electronics=2;s.inv.rubber=2;open('drones')");
  const click=id=>{const b=w.document.querySelector('[data-pack-op='+id+']');assert(b&&!b.disabled,id+' available');b.click();};
  click('build');assert.equal(run('s.batteryPacks.serial'),1);assert.equal(run('s.inv.cells'),1);click('load');assert.equal(run('aircraftPayload("engineer")'),1.2);assert.equal(run('aircraftPayload("cargo")'),0);
  click('harvest');assert.equal(run('s.squad.engineer.task.packId'),'pack-1');

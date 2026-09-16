@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 
 export function verifyFleetTaskIntegration({run,tick,w}){
- run("newCampaign();settings.weather='heat';settings.movingSun=false;settings.randomEnvironment=false;settings.droneFlight='stabilized';applySettings();open('drones')");
+ run("newCampaign();s.progression.relayHouseSolved=true;settings.weather='heat';settings.movingSun=false;settings.randomEnvironment=false;settings.droneFlight='stabilized';applySettings();open('drones')");
  const firstButton=w.document.querySelector('[data-fleet-task=assign]');assert(firstButton&&!firstButton.disabled);firstButton.click();
  assert.equal(run('s.squad.scout.task.state'),'RUNNING');assert.equal(run('s.mode'),'bike');const firstJob=run('s.squad.scout.task.id');
  const elapsed=run('s.squad.scout.task.elapsed');run('loop(performance.now()+100)');assert.equal(run('s.squad.scout.task.elapsed'),elapsed,'Menus do not simulate jobs');
@@ -31,7 +31,7 @@ export function verifyFleetTaskIntegration({run,tick,w}){
  assert(run("operateFleetTask('assign')"));run('s.won=true;startLegTwo(false)');assert.equal(run('s.squad.scout.task.state'),'CANCELLED');assert(run('writeSave("manual1")'),'Cancelled old-region jobs remain valid history');
 
  // Practice owns a separate manifest; restore exactly the held expedition.
- run("newCampaign();operateFleetTask('assign');play()");tick(.4);const campaign=JSON.parse(run('JSON.stringify(snapshot())'));
+ run("newCampaign();s.progression.relayHouseSolved=true;operateFleetTask('assign');play()");tick(.4);const campaign=JSON.parse(run('JSON.stringify(snapshot())'));
  run("yardChoice='cargo';startFlightYard('cargo')");assert.equal(run("operateFleetTask('assign')"),false);assert.equal(run('s.squad.cargo.task'),null);tick(.2);run('leaveFlightYard()');
  assert.equal(run('s.squad.scout.task.id'),campaign.state.squad.scout.task.id);assert.equal(run('s.squad.scout.task.elapsed'),campaign.state.squad.scout.task.elapsed);assert.equal(run('s.squad.scout.battery'),campaign.state.squad.scout.battery);
  run("selectFleetAircraft('relay');operateFleetTask('assign');issueFleet('HOLD')");for(const type of ['scout','relay'])assert.equal(run(`s.squad.${type}.task.state`),'PAUSED','Fleet HOLD pauses each owned job');

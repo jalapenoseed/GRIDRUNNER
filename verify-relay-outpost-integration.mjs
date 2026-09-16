@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 
 export function verifyRelayOutpostIntegration({run,tick,w}){
- run("newCampaign();settings.weather='heat';settings.randomEnvironment=false;settings.movingSun=false;settings.sunHour=12;remap={};applySettings();open('drones')");
+ run("newCampaign();s.progression.relayHouseSolved=true;settings.weather='heat';settings.randomEnvironment=false;settings.movingSun=false;settings.sunHour=12;remap={};applySettings();open('drones')");
  const button=w.document.querySelector('[data-formation="RELAY OUTPOST"]');assert(button);button.click();
  assert.equal(run('s.fleetFormation'),'RELAY OUTPOST');assert.equal(run('s.squad.scout.task.stage'),'WAIT');assert.equal(run('s.squad.relay.task.kind'),'RELAY');
  assert(w.document.querySelector('[data-formation=ORBIT]').textContent.startsWith('0 '),'Orbit button shows the real hotkey');
@@ -15,7 +15,7 @@ export function verifyRelayOutpostIntegration({run,tick,w}){
  run("selectFleetAircraft('relay');open('drones')");assert(w.document.querySelector('.fleetTask').textContent.includes('Relay outpost'));assert.equal(run('s.droneSystem.mode'),'RELAY');
  const pos=Array.from(run('s.droneSystem.pos'));run("issueDrone('RETURN HOME');play()");assert.deepEqual(Array.from(run('s.droneSystem.pos')),pos);tick(45);assert.equal(run('s.droneSystem.mode'),'DOCK');
  // Real shifted key values are punctuation on a US keyboard, not digits.
- run('newCampaign();play()');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'$',code:'Digit4',shiftKey:true}));assert.equal(run('s.droneType'),'relay');
+ run('newCampaign();s.progression.relayHouseSolved=true;play()');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'$',code:'Digit4',shiftKey:true}));assert.equal(run('s.droneType'),'relay');
  w.dispatchEvent(new w.KeyboardEvent('keydown',{key:')',code:'Digit0',shiftKey:true}));assert.equal(run('s.fleetFormation'),'RELAY OUTPOST');assert.equal(run('s.squad.scout.task.stage'),'WAIT');
  const flying=run('JSON.stringify(s.squad)');run('startLegTwo(false);startLegThree(false)');assert.equal(run('JSON.stringify(s.squad)'),flying,'Unavailable chapters must not reset active aircraft or cancel their jobs');
  run('s.drone=5;update(.02)');assert.equal(run('s.squad.relay.task.state'),'FAILED');tick(.1);assert.equal(run('s.squad.scout.task.state'),'FAILED');

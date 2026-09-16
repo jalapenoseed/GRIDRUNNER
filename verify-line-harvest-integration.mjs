@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 
 export function verifyLineHarvestIntegration({run,tick,w}){
- run("newCampaign();settings.randomEnvironment=false;settings.weather='heat';settings.movingSun=false;settings.sunHour=12;applySettings();s.engineerBuilt=true;selectFleetAircraft('engineer');s.drone=45;open('drones')");
+ run("newCampaign();s.progression.relayHouseSolved=true;settings.randomEnvironment=false;settings.weather='heat';settings.movingSun=false;settings.sunHour=12;applySettings();s.engineerBuilt=true;selectFleetAircraft('engineer');s.drone=45;open('drones')");
  const button=w.document.querySelector('[data-fleet-task=line]');assert(button&&!button.disabled);button.click();assert.equal(run('s.squad.engineer.task.kind'),'LINE');assert.equal(run('s.mode'),'bike');
  const bank=run('s.lineGrid.remainingWh.south'),elapsed=run('s.squad.engineer.task.elapsed');run('loop(performance.now()+300)');assert.equal(run('s.lineGrid.remainingWh.south'),bank);assert.equal(run('s.squad.engineer.task.elapsed'),elapsed,'Menus cannot simulate harvesting');
  run('play();for(let i=0;i<2500&&s.squad.engineer.system.mode!=="PERCHED";i++)update(.02);hud()');assert.equal(run('s.squad.engineer.system.mode'),'PERCHED');assert.equal(run('s.squad.engineer.system.hp'),100);assert.equal(run('s.lineGrid.remainingWh.south'),bank,'No energy during approach or alignment');

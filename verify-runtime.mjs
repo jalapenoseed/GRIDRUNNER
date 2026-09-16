@@ -7,6 +7,9 @@ import {verifyRelayOutpostIntegration,verifyTutorialRecovery} from './verify-rel
 import * as powerLines from './dist/power-lines.js';
 import * as lineHarvest from './dist/line-harvest.js';
 import * as lineHarvestUI from './dist/line-harvest-ui.js';
+import * as campaignProgress from './dist/campaign-progress.js';
+import * as fleetPolicy from './dist/fleet-policy.js';
+import * as fleetPolicyUI from './dist/fleet-policy-ui.js';
 import * as fleetTasks from './dist/fleet-tasks.js';
 import * as fleetTaskUI from './dist/fleet-task-ui.js';
 import {GamePhysics} from './dist/physics-world.js';
@@ -55,7 +58,7 @@ w.HTMLCanvasElement.prototype.getContext=()=>context2d;
 w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};w.document.exitPointerLock=()=>{};w.HTMLCanvasElement.prototype.requestPointerLock=()=>Promise.resolve();
 let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={render:{calls:0}};}setPixelRatio(){}setSize(){}render(scene,camera){assert(scene.isScene&&camera.isPerspectiveCamera);frames++;}}
 const ctx=vm.createContext({...onboarding,Sensors,...fieldUpgrade,...squadron,SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
-Object.assign(ctx,batteryPacks,batteryPackUI,droneControls,fleetTasks,fleetTaskUI,relayOutpost,powerLines,lineHarvest,lineHarvestUI);ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
+Object.assign(ctx,batteryPacks,batteryPackUI,campaignProgress,fleetPolicy,fleetPolicyUI,droneControls,fleetTasks,fleetTaskUI,relayOutpost,powerLines,lineHarvest,lineHarvestUI);ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\n/gm,'');
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 await run('spatial.ready');await run('ambientResidents.ready');assert.equal(run('spatial.status'),'ready');assert.equal(run('ambientResidents.status'),'ready');
@@ -206,14 +209,14 @@ assert.equal(run('s.inv.wire'),1);assert.equal(run('crates[0].items.wire'),1);as
 run('restore(JSON.parse(JSON.stringify(snapshot())));play();nearest={kind:"crate",index:0};interact()');
 assert.equal(run('crates[0].items.wire'),1);assert.equal(w.document.querySelectorAll('[data-loot]').length,3);
 run('takeLoot("all");play()');assert.equal(run('s.inv.wire'),2);assert.equal(run('crates[0].done'),true);
-run('newCampaign();s.pos.set(0,1.7,180);bike.position.set(0,0,180);issueDrone("SCOUT AHEAD")');tick(3);
+run('newCampaign();s.met=true;s.pos.set(0,1.7,180);bike.position.set(0,0,180);issueDrone("SCOUT AHEAD")');tick(3);
 run('open("drones")');w.document.querySelector('[data-drone=cargo]').click();run('issueDrone("FOLLOW");play()');tick(3);
 assert.equal(run('s.droneType'),'cargo');assert.equal(run('s.squad.scout.system.mode'),'SCOUT AHEAD');assert.equal(run('s.droneSystem.mode'),'FOLLOW');
 assert(run('s.squad.scout.battery')<100);assert(run('s.drone')<100);assert(run('fleet.meshes.scout.visible&&fleet.meshes.cargo.visible'));
 const scoutPosition=run('JSON.stringify(s.squad.scout.system.pos)');run('restore(JSON.parse(JSON.stringify(snapshot())))');assert.equal(run('JSON.stringify(s.squad.scout.system.pos)'),scoutPosition);
 run('open("drones")');w.document.querySelector('[data-drone=scout]').click();assert.equal(run('s.droneSystem.mode'),'SCOUT AHEAD');run('issueDrone("RETURN HOME");play()');tick(25);
 assert.equal(run('s.droneSystem.mode'),'DOCK');assert.equal(run('s.squad.cargo.system.mode'),'FOLLOW');
-run('newCampaign();play()');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'5',shiftKey:true}));assert.equal(run('fleetAll'),true);w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'1'}));assert.equal(run('s.squad.scout.system.mode'),'FOLLOW');assert.equal(run('s.squad.cargo.system.mode'),'FOLLOW');assert.equal(run('s.squad.relay.system.mode'),'FOLLOW');assert.equal(run('s.squad.engineer.system.mode'),'DOCK','Locked utility aircraft stays docked');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'8'}));assert.equal(run('s.fleetFormation'),'TRAIL');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'2',shiftKey:true}));assert.equal(run('s.droneType'),'cargo');assert.equal(run('fleetAll'),false);
+run('newCampaign();s.met=true;s.progression.relayHouseSolved=true;play()');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'5',shiftKey:true}));assert.equal(run('fleetAll'),true);w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'1'}));assert.equal(run('s.squad.scout.system.mode'),'FOLLOW');assert.equal(run('s.squad.cargo.system.mode'),'FOLLOW');assert.equal(run('s.squad.relay.system.mode'),'FOLLOW');assert.equal(run('s.squad.engineer.system.mode'),'DOCK','Locked utility aircraft stays docked');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'8'}));assert.equal(run('s.fleetFormation'),'TRAIL');w.dispatchEvent(new w.KeyboardEvent('keydown',{key:'2',shiftKey:true}));assert.equal(run('s.droneType'),'cargo');assert.equal(run('fleetAll'),false);
 for(const mode of ['visible','night','thermal','rf']){run(`settings.sensorMode='${mode}';settings.nightVision=${mode==='night'};applySettings();loop(performance.now()+40)`);assert.equal(w.document.body.dataset.sensor,mode);}
 run('settings.sensorMode="visible";settings.nightVision=false;applySettings();action("droneLamp");loop(performance.now()+40)');assert.equal(run('settings.droneLamp'),true);
 const rngSettings={randomEnvironment:true};fieldUpgrade.randomEnvironment(rngSettings,()=>0);assert.equal(rngSettings.sunHour,0);fieldUpgrade.randomEnvironment(rngSettings,()=>.999);assert.equal(rngSettings.sunHour,23.9);assert.equal(rngSettings.weather,'sandstorm');
