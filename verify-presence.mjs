@@ -31,10 +31,16 @@ assert.equal(composer.enabled,false);
 composer.render();assert.equal(stub.calls,1,'LOW falls back to a single scene render');
 composer.apply({graphics:'HIGH',sensorMode:'visible'});
 assert.equal(composer.enabled,true);
+assert.equal(composer.ao,true,'HIGH enables contact AO');
+composer._boot(64,64);
+assert(composer.sceneTarget?.depthTexture,'Scene target keeps a depth texture for contact shadows');
 composer.apply({graphics:'ULTRA',sensorMode:'thermal'});
 assert.equal(composer.enabled,false,'Thermal keeps the sensor path');
+assert.equal(composer.ao,false);
 composer.apply({graphics:'HIGH',nightVision:true});
 assert.equal(composer.enabled,false);
+composer.apply({graphics:'LOW',sensorMode:'visible'});
+assert.equal(composer.ao,false,'LOW skips contact AO');
 
 const sensors=new Sensors();
 const before=stub.calls;
@@ -82,4 +88,4 @@ residents.update(.02,world);
 assert.equal(residents.actors[0].state,'WATCH');
 assert.equal(fieldRigStats(mara).clip,'watch');
 
-console.log('PASS: skeletal mixer, quality-gated bloom fallback, TRELLIS remesh collider, volume foliage, spatial audio, Recast-driven NPC clips.');
+console.log('PASS: skeletal mixer, quality-gated bloom+contact AO, TRELLIS remesh collider, volume foliage, spatial audio, Recast-driven NPC clips.');

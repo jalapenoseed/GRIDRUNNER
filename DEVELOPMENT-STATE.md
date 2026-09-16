@@ -1,6 +1,9 @@
 # GRIDRUNNER continuation state
 
-Date: 2026-09-16. Current slice: v7.29 Presence (look, bones, foliage, spatial audio, TRELLIS intake).
+Date: 2026-09-16. Current slice: v7.30 contact shadows (investigated N8AO, landed local view-space AO).
+
+v7.30 keeps the v7.29 presence composer. N8AO 2.0.1 was evaluated and not vendored. See CHANGELOG-v7.30.md.
+
 
 v7.29 is a graphical/interactive wave on top of the v7.28 fleet/sensor access repair. See CHANGELOG-v7.29.md. Canonical playable Site remains `gridrunner.goodyartist.chatgpt.site`; this GitHub `grok` branch now carries the presence modules.
 

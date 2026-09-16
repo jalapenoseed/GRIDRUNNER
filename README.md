@@ -1,8 +1,11 @@
-# GRIDRUNNER v7.29 — Presence
+# GRIDRUNNER v7.30 — Presence
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
 
+**New in v7.30:** HIGH/ULTRA contact shadows (half-res view-space AO) under people, crates and foliage. N8AO was investigated and not vendored; see [CHANGELOG-v7.30.md](CHANGELOG-v7.30.md).
+
 **New in v7.29:** HIGH/ULTRA bloom, Mixamo-named skeletons on Mara and the camp, volume oak crowns, spatial camp audio, and a TRELLIS remesh drop-in. See [CHANGELOG-v7.29.md](CHANGELOG-v7.29.md). Three.js r169, Rapier and Recast are unchanged.
+
 
 
 
