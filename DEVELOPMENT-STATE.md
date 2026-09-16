@@ -1,6 +1,8 @@
 # GRIDRUNNER continuation state
 
-Date: 2026-09-16. Current slice: v7.29 Presence (look, bones, foliage, spatial audio, TRELLIS intake).
+Date: 2026-09-16. Current slice: v7.30 Personal thermal and neon escort.
+
+v7.30 resumes GitHub `grok` commit `812380d` (Grok v7.29), restores independent personal optics, anchors escort flight to the operator, adds LOW-compatible neon airframe lights and repairs bloom output. See CHANGELOG-v7.30.md for validation and remaining limitations. The separate dirty v7.21 and prior sync worktrees were not used or overwritten.
 
 v7.29 is a graphical/interactive wave on top of the v7.28 fleet/sensor access repair. See CHANGELOG-v7.29.md. Canonical playable Site remains `gridrunner.goodyartist.chatgpt.site`; this GitHub `grok` branch now carries the presence modules.
 
