@@ -35,7 +35,7 @@ export function validateSquad(s){
   const savedSystem=migrateDrone(r.system,[0,2,15]),system=id===s.droneType?s.droneSystem:savedSystem;
   if((id!==s.droneType||s.mode!=='drone')&&system.mode==='MANUAL'){system.mode='HOLD';system.hold=[...system.pos];}
   const record=createAircraftRecord(id,system,id===s.droneType?s.drone:r.battery??100);
-  validateAircraftTask(record,r,s.leg||1);if(system.mode==='RELAY'&&(id!=='relay'||record.task?.kind!=='RELAY'||record.task.state!=='RUNNING'||record.task.stage!=='RELAY'))throw Error('Invalid relay outpost ownership');out[id]=record;
+  validateAircraftTask(record,r,s.leg||1);if(['PERCHED','RELEASE'].includes(system.mode)&&(id!=='engineer'||record.task?.kind!=='LINE'||system.perch?.spanId!==record.task.anchor.spanId||system.perch?.u!==record.task.anchor.u))throw Error('Invalid conductor owner');if(system.mode==='RELAY'&&(id!=='relay'||record.task?.kind!=='RELAY'||record.task.state!=='RUNNING'||record.task.stage!=='RELAY'))throw Error('Invalid relay outpost ownership');out[id]=record;
  }
  s.squad=out;syncSquad(s);return out;
 }

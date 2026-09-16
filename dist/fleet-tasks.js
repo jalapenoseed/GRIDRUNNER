@@ -1,5 +1,6 @@
 // Persistent jobs own references, not duplicate aircraft, charge, or cargo.
 // Four existing airframes retain class-keyed slots until multi-instance hangars.
+import {lineTaskTarget,validateLineHarvest,controlLineTask,advanceLineHarvest} from './line-harvest.js';
 import {commandDrone,droneLink} from './drone-system.js';
 export const TASK_STATES=['RUNNING','PAUSED','COMPLETED','CANCELLED','FAILED'];
 export const TASK_STAGES=['WAIT','TRANSIT','SURVEY','LAND','RELAY','RETURN','DONE'];
@@ -11,7 +12,7 @@ export const aircraftId=type=>'aircraft-'+type+'-01';
 export const aircraftBatteryId=type=>'battery-'+type+'-01';
 export const hasLiveTask=r=>!!r.task&&['RUNNING','PAUSED'].includes(r.task.state);
 export function taskDestination(record){
- const t=record.task;if(t?.state!=='RUNNING')return null;
+ const t=record.task;if(t?.state!=='RUNNING')return null;if(t.kind==='LINE')return lineTaskTarget(record);
  if(t.stage==='WAIT')return record.system.hold;
  if(t.kind==='RELAY'&&t.stage==='TRANSIT')return [t.destination[0],t.destination[1]+12,t.destination[2]];
  return ['TRANSIT','SURVEY','LAND'].includes(t.stage)?t.destination:null;
@@ -27,7 +28,8 @@ export function validateAircraftTask(record,source,leg=1){
  const serial=source.taskSerial??0;if(!Number.isSafeInteger(serial)||serial<0||serial>1e9)throw Error('Invalid fleet task sequence');record.taskSerial=serial;
  if(source.task===undefined||source.task===null)return record;
  const t=source.task;
- if(!t||t.version!==1||!['SURVEY','RELAY'].includes(t.kind)||t.id!==record.id+':task:'+serial||serial<1||t.aircraftId!==record.id||t.batteryId!==record.batteryId)throw Error('Invalid fleet task ownership');
+ if(!t||t.version!==1||!['SURVEY','RELAY','LINE'].includes(t.kind)||t.id!==record.id+':task:'+serial||serial<1||t.aircraftId!==record.id||t.batteryId!==record.batteryId)throw Error('Invalid fleet task ownership');
+ if(t.kind==='LINE')return validateLineHarvest(record,t,leg);
  if(!TASK_STATES.includes(t.state)||!TASK_STAGES.includes(t.stage)||!point(t.destination)||![1,2,3].includes(t.leg)||!finite(t.elapsed,0,1e10)||!finite(t.stageElapsed,0,1e10)||!finite(t.dwell,0,5)||typeof t.scanned!=='boolean'||!Number.isInteger(t.contacts)||t.contacts<0||t.contacts>1000||typeof t.reason!=='string'||t.reason.length>160)throw Error('Invalid fleet task record');
  if(t.destination[2]<(t.leg===3?-4720:t.leg===2?-3200:-1600)||['RUNNING','PAUSED'].includes(t.state)&&t.leg!==leg)throw Error('Fleet task belongs to another region');
  const relay=t.kind==='RELAY',relayId=t.relayId??null;
@@ -77,7 +79,7 @@ export function commandAircraft(record,command,home,solids=[]){
 }
 export function controlTask(record,action,home,solids=[]){
  if(!hasLiveTask(record))return {ok:false,reason:'No active job on this aircraft.'};
- const t=record.task;
+ const t=record.task;if(t.kind==='LINE')return controlLineTask(record,action,home,solids);
  if(action==='pause'){const ok=commandAircraft(record,'HOLD',home,solids);return {ok,reason:ok?'Job paused; aircraft holding.':'Aircraft cannot hold; recover it first.'};}
  if(action==='cancel'){
   finish(record,'CANCELLED',record.system.mode==='LANDED'?'Cancelled; recover the landed aircraft':record.system.mode==='DOCK'?'Cancelled; aircraft already docked':'Cancelled by operator; returning to bike');
@@ -92,8 +94,9 @@ export function controlTask(record,action,home,solids=[]){
 }
 export function cancelRegionTasks(s){for(const r of Object.values(s.squad||{}))if(hasLiveTask(r))finish(r,'CANCELLED','Region changed; assign a new local job');}
 
-export function advanceAircraftTask(record,dt,{home,solids=[],events=[],scan,squad={},terrain=()=>0,storm=false,jammed=false}={}){
+export function advanceAircraftTask(record,dt,{home,solids=[],events=[],scan,state=null,squad={},terrain=()=>0,storm=false,jammed=false}={}){
  if(!hasLiveTask(record))return [];
+ if(record.task.kind==='LINE')return advanceLineHarvest(record,dt,{state,home,solids,events});
  const t=record.task,d=record.system,out=[];dt=clamp(Number.isFinite(dt)?dt:0,0,.05);
  if(d.mode==='LANDED'){finish(record,'FAILED','Emergency landing: '+d.reason);return ['task-failed'];}
  if(events.includes('return')||d.mode==='RETURN HOME'&&(t.stage!=='RETURN'||t.state==='PAUSED')){finish(record,'FAILED','Safety return: '+d.reason);return ['task-failed'];}

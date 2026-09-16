@@ -1,3 +1,4 @@
+import {validateLineGrid} from './power-lines.js';
 import {validateSquad,validFormation} from './squadron.js';
 import {validateCrateContents} from './field-upgrade.js';
 import {migrateIntro,completedIntro} from './intro.js';
@@ -42,7 +43,7 @@ export function validateSave(r){
  if(s.powerTarget!==null&&!['ev','solar','grid','line','l2hydro','l3supply'].includes(s.powerTarget))bad();
  if(!number(s.temp,0,1000)||!number(s.chargeHeat,0,200))bad();
  if(!['scout','engineer','cargo','relay'].includes(s.droneType)||!['off','fuel','solar','water'].includes(s.generator))bad();
- s.fleetFormation=validFormation(s.fleetFormation);
+ s.fleetFormation=validFormation(s.fleetFormation);s.lineGrid=validateLineGrid(s.lineGrid);
  for(const k of ['trailerAttached','engineerBuilt','controller','interface','upgrade','solar','relay','met','scanned','won','dead','regenBuilt'])if(typeof s[k]!=='boolean')bad();
  if(!Array.isArray(r.crates)||r.crates.length!==4||r.crates.some(x=>typeof x!=='boolean'))bad();
  if(!Array.isArray(r.enemies)||r.enemies.length!==2||r.enemies.some(e=>!number(e.x,-2000,2000)||!number(e.z,-3000,3000)||!number(e.hp,-100,75)))bad();
