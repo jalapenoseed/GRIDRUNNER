@@ -1,8 +1,8 @@
-# GRIDRUNNER v7.30 — Personal thermal + neon escort
+# GRIDRUNNER v7.31 — Personal thermal + neon escort
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
 
-B selects personal thermal on foot or bike. Fleet → Formations → Protective Ring brings your aircraft around your character with cyan, amber, lime and magenta identification lights. FPV keeps its airframe-specific sensors; recall returns to the rig. See [CHANGELOG-v7.30.md](CHANGELOG-v7.30.md).
+B selects personal thermal on foot or bike. Fleet → Formations → Protective Ring brings your aircraft around your character with cyan, amber, lime and magenta identification lights. FPV keeps its airframe-specific sensors; recall returns to the rig. See [CHANGELOG-v7.31.md](CHANGELOG-v7.31.md).
 
 **New in v7.29:** HIGH/ULTRA bloom, Mixamo-named skeletons on Mara and the camp, volume oak crowns, spatial camp audio, and a TRELLIS remesh drop-in. See [CHANGELOG-v7.29.md](CHANGELOG-v7.29.md). Three.js r169, Rapier and Recast are unchanged.
 

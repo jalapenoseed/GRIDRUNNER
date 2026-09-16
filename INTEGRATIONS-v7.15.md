@@ -28,7 +28,7 @@ The browser smoke test passed on 2026-09-15 with Chromium/SwiftShader: 236 Rapie
 | Rapier | First collision/controller migration complete; vehicle suspension and trailer constraints remain. |
 | Recast | Camp navigation complete; broader navigation/crowds remain. |
 | Unified input | Existing `ControllerBridge` and action routing already handle keyboard/gamepad; extend this for calibrated FPV radios instead of adding another overlapping wrapper. |
-| Postprocessing | **v7.29:** local bloom + FXAA + vignette on HIGH/ULTRA. Thermal/NV/LOW/MEDIUM unchanged. `postprocessing@6.36.7` remains a future candidate if a shared effect stack is needed; not installed. |
+| Postprocessing | **v7.30:** local bloom + FXAA + vignette + half-res contact AO on HIGH/ULTRA. Thermal/NV/LOW/MEDIUM unchanged. `n8ao@2.0.1` is r169-legal but not installed (owns RenderPass, needs examples/jsm Pass, fog issue #54 on kilometre maps). `postprocessing@6.36.7` remains a future shared-stack candidate. |
 | Vegetation, water and weather | **v7.29:** instanced icosahedron oak crowns with wind. Grass cards and existing weather remain. |
 
 ## Additional libraries researched on 2026-09-15
