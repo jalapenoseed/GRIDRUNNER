@@ -1,4 +1,5 @@
 // Drone 2.0: renderer-independent vehicle simulation. Distances are world metres.
+import {validLineAnchor,lineBody,lineRelease} from './power-lines.js';
 import {solidList,segmentCandidates} from './spatial-index.js';
 export const DRONE_CLASSES = Object.freeze({
  scout: {name:'Scout',massKg:.95,payloadKg:.3,speed:48,climb:14,acceleration:18,drag:2.6,range:420,scan:150,drain:.12,abilities:['scan','relay'],available:true},
@@ -25,18 +26,27 @@ export function migrateDrone(value,pos,manual=false){
  const d=createDrone(pos);
  if(!value){if(manual){d.mode='MANUAL';d.pos=[...pos];}return d;}
  const vec=v=>Array.isArray(v)&&v.length===3&&v.every(n=>Number.isFinite(n)&&Math.abs(n)<=10000);
- if(value.version!==1||![...COMMANDS,'MANUAL','LANDED','RELAY'].includes(value.mode)||!vec(value.pos)||!vec(value.velocity)||!vec(value.hold))throw Error('Invalid drone record');
+ if(value.version!==1||![...COMMANDS,'MANUAL','LANDED','RELAY','PERCHED','RELEASE'].includes(value.mode)||!vec(value.pos)||!vec(value.velocity)||!vec(value.hold))throw Error('Invalid drone record');
  for(const k of ['hp','signal'])if(!Number.isFinite(value[k])||value[k]<0||value[k]>100)throw Error('Invalid drone telemetry');
  if(!Number.isFinite(value.travel)||value.travel<0||value.travel>1e10)throw Error('Invalid drone distance');
  for(const k of ['mode','pos','velocity','hold','hp','signal','travel'])d[k]=Array.isArray(value[k])?[...value[k]]:value[k];
  for(const k of ['pitch','yaw','roll']){if(value[k]!==undefined&&(!Number.isFinite(value[k])||Math.abs(value[k])>Math.PI*2))throw Error('Invalid drone attitude');d[k]=value[k]??0;}
  if(value.rates!==undefined){if(!vec(value.rates)||value.rates.some(n=>Math.abs(n)>5))throw Error('Invalid drone rates');d.rates=[...value.rates];}
- d.reason=d.mode==='DOCK'?'Docked':'Link restored';return d;
+ if(['PERCHED','RELEASE'].includes(d.mode)){
+  if(!validLineAnchor(value.perch)||d.mode==='PERCHED'&&distance(d.pos,lineBody(value.perch))>.22)throw Error('Invalid conductor attachment');
+  d.perch={spanId:value.perch.spanId,u:value.perch.u};
+  if(d.mode==='RELEASE'){if(!COMMANDS.includes(value.releaseOrder)||value.releaseOrder==='DOCK')throw Error('Invalid release order');d.releaseOrder=value.releaseOrder;}
+ }else if(value.perch)throw Error('Unexpected conductor attachment');
+ d.reason=d.mode==='DOCK'?'Docked':d.mode==='PERCHED'?'Perched; checking line state':'Link restored';return d;
 }
 export function commandDrone(d,command,home,battery,solids=[]){
  if(![...COMMANDS,'MANUAL'].includes(command))return false;
  if(d.mode==='LANDED'&&distance(d.pos,home)>9)return false;
+ if(['PERCHED','RELEASE'].includes(d.mode)&&command==='MANUAL'){d.reason='Release the conductor before entering FPV';return false;}
  if(!['DOCK','RETURN HOME'].includes(command)&&(battery<5||d.hp<10))return false;
+ if(d.perch&&['PERCHED','RELEASE'].includes(d.mode)){
+  d.mode='RELEASE';d.releaseOrder=command==='DOCK'?'RETURN HOME':command;d.returnPlan=null;d.reason='RELEASE / clearing conductor';return true;
+ }
  if(d.mode==='DOCK'||d.mode==='LANDED'){
   const clearance=solidList(solids).filter(b=>b.drone!==false).map(padded),launch=[...home];
   // A covered parking bay launches below its roof; deployment must never move
@@ -88,10 +98,14 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
  d.linkVia=link.via;d.signal+=(link.signal-d.signal)*(1-Math.exp(-dt*3));
  d.linkLost=d.signal<4?d.linkLost+dt:0;
  const reserve=4+d.range/spec.speed*spec.drain*2.8*difficulty;
- if(!['RETURN HOME','LANDED'].includes(d.mode)&&(battery<Math.max(10,reserve)||d.linkLost>1.2||d.hp<20)){
-  d.mode='RETURN HOME';d.reason=battery<Math.max(10,reserve)?'Battery reserve':d.hp<20?'Hull damage':'Link lost';events.push('return');
+ if(!['RETURN HOME','LANDED'].includes(d.mode)&&!(d.mode==='RELEASE'&&d.releaseOrder==='RETURN HOME')&&(battery<Math.max(10,reserve)||d.linkLost>1.2||d.hp<20)){
+  if(d.perch)commandDrone(d,'RETURN HOME',home,battery,solids);else d.mode='RETURN HOME';d.reason=battery<Math.max(10,reserve)?'Battery reserve':d.hp<20?'Hull damage':'Link lost';events.push('return');
  }
- if((battery<=0||d.hp<=0)&&d.mode!=='LANDED'){d.reason='Emergency landing';d.mode='LANDED';events.push('landing');}
+ if((battery<=0||d.hp<=0)&&d.mode!=='LANDED'){d.reason='Emergency landing';d.mode='LANDED';d.perch=null;d.releaseOrder=null;events.push('landing');}
+ if(d.mode==='PERCHED'){
+  if(!validLineAnchor(d.perch)||distance(d.pos,lineBody(d.perch))>.22){d.perch=null;d.mode='HOLD';d.hold=[...d.pos];d.reason='Conductor contact lost';}
+  else{d.velocity=[0,0,0];d.rates=[0,0,0];d.pitch=d.roll=d.thrust=d.speed=0;return {battery:Math.max(0,battery-.006*difficulty*dt),events,auto:true};}
+ }
  // A deliberate outpost is distinct from an emergency landing. Radio power is
  // finite; failsafes above can launch a physical return from this position.
  if(d.mode==='RELAY'){
@@ -104,7 +118,8 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
   desired=[(-Math.sin(yaw)*f+Math.cos(yaw)*t)*spec.speed,v*spec.climb,(-Math.cos(yaw)*f-Math.sin(yaw)*t)*spec.speed];
  }else if(d.mode==='LANDED')desired=[0,d.altitude>.65?-2:0,0];
  else{
-  if(d.mode==='HOLD')target.splice(0,3,...d.hold);
+  if(d.mode==='RELEASE')target.splice(0,3,...lineRelease(d.perch));
+  else if(d.mode==='HOLD')target.splice(0,3,...d.hold);
   else if(d.mode==='ORBIT'){if(formationOffset)target.splice(0,3,home[0]+formationOffset[0],home[1]+formationOffset[1],home[2]+formationOffset[2]);else{const angle=d.travel*.035;target.splice(0,3,home[0]+Math.sin(angle)*14,home[1]+12,home[2]+Math.cos(angle)*14);}}
   else if(d.mode==='SCOUT AHEAD'&&taskTarget)target.splice(0,3,...taskTarget);
   else if(d.mode==='FOLLOW'||d.mode==='SCOUT AHEAD'){const ahead=d.mode==='SCOUT AHEAD'?58:0,slot=formationOffset||[4,7,-7];target.splice(0,3,home[0]+slot[0]-Math.sin(yaw)*ahead,home[1]+slot[1]+(d.mode==='SCOUT AHEAD'?10:0),home[2]+slot[2]-Math.cos(yaw)*ahead);}
@@ -151,6 +166,7 @@ export function updateDrone(d,dt,{home,yaw=0,input=[0,0,0],attitude=[0,0,0],flig
  if(collision){const impact=Math.hypot(...d.velocity);if(d.cooldown===0&&impact>3){d.hp=clamp(d.hp-(impact-3)*1.2,0,100);d.cooldown=.8;events.push('damage');}d.velocity=d.velocity.map(v=>v*-.12);proposed=[...d.pos];proposed[1]=clamp(proposed[1],ground,200);}d.pos=proposed;
  d.speed=distance(d.pos,old)/Math.max(.001,dt);d.travel+=distance(d.pos,old);d.altitude=d.pos[1]-terrain(d.pos[0],d.pos[2]);
  if(d.mode==='RETURN HOME'&&distance(d.pos,home)<1.3&&Math.hypot(...d.velocity.map((v,i)=>v-homeVelocity[i]))<4){d.mode='DOCK';d.pos=[...home];d.velocity=[0,0,0];d.reason='Docked';events.push('dock');}
+ if(d.mode==='RELEASE'&&distance(d.pos,lineRelease(d.perch))<.35&&d.speed<1){const order=d.releaseOrder;d.perch=null;d.releaseOrder=null;commandDrone(d,order,home,battery,solids);events.push('release');}
  const airborne=d.mode!=='DOCK'&&(d.mode!=='LANDED'||d.altitude>.8);
  battery=Math.max(0,battery-(airborne?spec.drain*(1+d.speed/spec.speed*.55+Math.max(0,d.velocity[1])*.04+Math.max(0,d.thrust-1)*.3)*(storm?1.35:1)*difficulty*dt:0));
  return {battery,events,auto};

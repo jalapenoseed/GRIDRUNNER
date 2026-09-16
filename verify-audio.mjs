@@ -8,6 +8,7 @@ const audio=new FieldAudio();assert.equal(count,0);audio.start();audio.start();a
 const state={speed:20,mode:'bike',battery:50,powerMode:'FULL',generator:'off',pos:{x:0,z:0},leg:1,drone:100};audio.update(state,false,false);assert(audio.voices.motor.g.gain.value>0);assert.equal(audio.master.gain.value,.4);
 audio.update({...state,powerMode:'HUMAN'},false,false);assert.equal(audio.voices.motor.g.gain.value,0);audio.update({...state,mode:'drone'},false,false);assert(audio.voices.rotor.g.gain.value>0);
 audio.update({...state,droneSystem:{mode:'RELAY',range:1,thrust:0,speed:0,velocity:[0,0,0]}},false,false);assert.equal(audio.voices.rotor.g.gain.value,0);assert.equal(audio.voices.rotorBody.g.gain.value,0,'Landed relay motors are silent');
+audio.update({...state,droneSystem:{mode:'PERCHED',range:1,thrust:0,speed:0,velocity:[0,0,0]}},false,false);assert.equal(audio.voices.rotor.g.gain.value,0);assert.equal(audio.voices.rotorBody.g.gain.value,0,'Line-perched motors are silent');
 audio.update(state,true,false);assert.equal(audio.voices.motor.g.gain.value,0);assert.equal(audio.music.gain.value,0);assert.equal(audio.master.gain.value,.4,'Menu effects remain audible');
 for(const effect of ['ui','scan','drone','use','craft','shot','pulse','hit','save','radio','fail','success'])audio.event(effect);
 audio.setLevels({master:0});audio.update(state,false,false);assert.equal(audio.master.gain.value,0);

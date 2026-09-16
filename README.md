@@ -1,8 +1,12 @@
-# GRIDRUNNER v7.19 — Relay outposts (`grok`)
+# GRIDRUNNER v7.20 — Line harvest (`grok`)
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
 
-After onboarding, open **Fleet → Relay Outpost** or press **Shift+0**. Relay flies about 240 m ahead, lands and stops its rotors. Scout waits for that connection, surveys about 460 m ahead, scans and returns. The weaker of the two radio hops limits coverage; terrain, structures and weather still matter. Relay remains deployed with finite radio drain until recalled or forced home by reserve/signal/hull limits. Both aircraft need at least 40% battery, 30% hull and no active job. Move or turn the bike if no clear outpost is found. This is ground landing and radio support; line harvesting remains next.
+**New: physical conductor harvesting.** In Ghost Signal, fit the engineer module (1 wire + 1 electronics + 1 steel), select Utility, then choose **Fleet → Perch nearest live wire**. It approaches a clear point on the sagging wire, aligns, clamps on, stops its rotors and recharges its onboard battery to 90%. It stays perched until recalled. Use **Release & return** to clear the wire and fly home; release before entering FPV.
+
+The line feeds have finite saved reserves. Every credited Wh is deducted from its circuit; dead lines provide nothing. The southern feed starts live. Restore the substation relay and grid coupler to energize the northern feed. Move Utility near a different wire section before assignment to choose another valid attachment point. This slice supports Utility on Ghost Signal's 24 authored conductors, with at least 25% battery and 30% hull. It does not yet provide removable packs, multiple same-class harvesters or trailer unloading.
+
+After onboarding, open **Fleet → Relay Outpost** or press **Shift+0**. Relay flies about 240 m ahead, lands and stops its rotors. Scout waits for that connection, surveys about 460 m ahead, scans and returns. The weaker of the two radio hops limits coverage; terrain, structures and weather still matter. Relay remains deployed with finite radio drain until recalled or forced home by reserve/signal/hull limits. Both aircraft need at least 40% battery, 30% hull and no active job. Move or turn the bike if no clear outpost is found. This formation provides ground landing and radio support alongside the new conductor-harvesting job.
 
 Beacons are smaller, brighter points with a steady luminous core; returning aircraft remain amber, active outposts are pale blue. **Begin with tutorial** recovers the guided opening even if an older saved setting disabled it. Skipping the current introduction no longer disables future tutorials. Pause → Replay equipment guide revisits the lessons without resetting the campaign.
 
@@ -22,7 +26,7 @@ Planning, supplies and equipment use five menu groups. Riding instruments remain
 
 Run `npm ci` and `npm test`. Serve `dist/` for the playable game, or use `npm run dev`. Existing saves migrate; Flight Yard never replaces campaign saves.
 
-[v7.19 changelog and QA](CHANGELOG-v7.19.md) · [v7.18 changelog and QA](CHANGELOG-v7.18.md) · [v7.17 flight update](CHANGELOG-v7.17.md) · [Current/new systems roadmap](ROADMAP-2026-09-15.md) · [v7.16 changelog](CHANGELOG-v7.16.md) · [v7.15 engine integration notes](INTEGRATIONS-v7.15.md). The pinned engines are committed under `dist/vendor/`; regenerate with `npm run vendor:engines`. No CDN or runtime package install is required. A source commit does not automatically update the hosted playable build.
+[v7.20 changelog and QA](CHANGELOG-v7.20.md) · [v7.19 changelog and QA](CHANGELOG-v7.19.md) · [v7.18 changelog and QA](CHANGELOG-v7.18.md) · [v7.17 flight update](CHANGELOG-v7.17.md) · [Current/new systems roadmap](ROADMAP-2026-09-15.md) · [v7.16 changelog](CHANGELOG-v7.16.md) · [v7.15 engine integration notes](INTEGRATIONS-v7.15.md). The pinned engines are committed under `dist/vendor/`; regenerate with `npm run vendor:engines`. No CDN or runtime package install is required. A source commit does not automatically update the hosted playable build.
 
 [Field Edition changelog](CHANGELOG-v7.10.md) · [Quiet Start](QUIET-START-v7.8.md) · [Previous changelog](CHANGELOG-v7.8.md)
 
