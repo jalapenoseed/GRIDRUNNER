@@ -2,7 +2,7 @@ import {STARTER_AIRCRAFT} from './fleet-manifest.js';
 import {parseFormula,evaluateFormula} from './swarm-expressions.js';
 import {basicShape,samplePath,wordStrokes,validateStrokes} from './swarm-shapes.js';
 
-export const PROGRAM_SHAPES={ring:'Ring',wedge:'Wedge',line:'Line',grid:'Grid',word:'Word',drawing:'Drawing'};
+export const PROGRAM_SHAPES={ring:'Ring',wedge:'Wedge',line:'Line',grid:'Grid',column:'Column / trail','double-orbit':'Dual orbit',scatter:'Adaptive scatter',staggered:'Staggered','high-low':'High / low',overwatch:'Overwatch',word:'Word',drawing:'Drawing'};
 export const PROGRAM_FIELDS={none:'None',vortex:'Vortex / curl',attract:'Attraction',repel:'Repulsion',wave:'Traveling wave',lissajous:'Lissajous',spiral:'Rising spiral',braid:'Opening braid',twin:'Twin attractors',square:'Complex square',riemann:'Riemann sphere',custom:'Custom formula'};
 export const FIELD_FORMULAS={none:'No additional displacement.',vortex:'Δ = strength × (−z, 0, x) / max(1, √(x² + z²))',attract:'Δ points toward the origin; strength sets its length.',repel:'Δ points away from the origin; strength sets its length.',wave:'Δy = strength × sin(frequency × t + phase + i × 0.7)',lissajous:'Δ = strength × (sin(2q), 0.4 sin(3q), cos(3q)), q = frequency × t + phase + i × 0.7',spiral:'Δ = strength × (cos(q), 0.35 sin(q/2), sin(q))',braid:'Two opposed sine strands open and rejoin; q = frequency × t + i × 0.7.',twin:'Blend vectors toward two orbiting attractors.',square:'u = x / scale, v = z / scale; Δ = strength × (u² − v², 0, 2uv).',riemann:'u = x / scale, v = z / scale, d = 1 + u² + v²; Δ = strength × (2u/d, (u² + v² − 1)/d, 2v/d).',custom:'Δx, Δy, Δz are in metres. Variables: x, y, z, t (seconds), i (0-based), n, phase, pi, tau.'};
 export const PROGRAM_EXAMPLES={
@@ -11,10 +11,10 @@ export const PROGRAM_EXAMPLES={
  'Write GRID':'select all\nformation word\nword GRID\nheight 26\nscale 2\ntrace on\nwait 24\nword RUN\nrepeat 48',
  'Formula dance':'select all\nformation line\nheight 22\ninfluence custom 8 0.7\nformula x = 6 * sin(t * 0.7 + i)\nformula y = 4 * cos(t + i * 0.8)\nformula z = 8 * sin(t * 0.5 + i)\nshow dance\nrepeat 24'
 };
-const DEFAULTS={shape:'ring',word:'GRID',plane:'sky',spacing:14,height:20,moveX:0,moveZ:-25,rotation:0,scale:1,morph:4,trace:true,origin:'bike',pattern:'hold',team:'independent',field:'none',strength:8,frequency:.6,phase:0,fieldScale:20,blend:1,show:'none',countIn:2,offset:.35,formulaX:'6 * sin(t + i)',formulaY:'4 * cos(t + i)',formulaZ:'6 * cos(t + i)'};
+const DEFAULTS={shape:'ring',word:'GRID',plane:'sky',spacing:14,height:20,moveX:0,moveZ:-25,rotation:0,scale:1,morph:4,trace:true,origin:'bike',pattern:'hold',team:'independent',field:'none',strength:8,frequency:.6,phase:0,fieldScale:20,blend:1,show:'none',countIn:2,offset:.35,beatSync:false,bpm:120,formulaX:'6 * sin(t + i)',formulaY:'4 * cos(t + i)',formulaZ:'6 * cos(t + i)'};
 export function createSwarmProgram(){return {version:1,mode:'manual',ids:['scout-03','scout-04'],settings:{...DEFAULTS},strokes:[],source:PROGRAM_EXAMPLES['Guard + light show'],enabled:false,running:false,time:0,activeIds:[]};}
-export const PROGRAM_RANGES={spacing:[8,30],height:[8,70],moveX:[-120,120],moveZ:[-120,120],rotation:[-180,180],scale:[.25,3],morph:[0,12],strength:[0,24],frequency:[.05,3],phase:[-6.28,6.28],fieldScale:[5,80],blend:[0,1],countIn:[0,8],offset:[0,2]};
-const ENUMS={shape:Object.keys(PROGRAM_SHAPES),plane:['sky','ground'],origin:['operator','bike','objective','fixed'],pattern:['hold','orbit','wave','pulse','search'],team:['independent','pairs','leader','mesh'],field:Object.keys(PROGRAM_FIELDS),show:['none','flyby','roll','flip','dance']};
+export const PROGRAM_RANGES={spacing:[8,30],height:[8,70],moveX:[-120,120],moveZ:[-120,120],rotation:[-180,180],scale:[.25,3],morph:[0,12],strength:[0,24],frequency:[.05,3],phase:[-6.28,6.28],fieldScale:[5,80],blend:[0,1],countIn:[0,8],offset:[0,2],bpm:[40,220]};
+const ENUMS={shape:Object.keys(PROGRAM_SHAPES),plane:['sky','ground'],origin:['operator','bike','objective','fixed'],pattern:['hold','orbit','wave','weave','pulse','search'],team:['independent','pairs','leader','mesh'],field:Object.keys(PROGRAM_FIELDS),show:['none','flyby','roll','flip','dance']};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const mod=(v,n)=>(v%n+n)%n;
 export function validateSwarmProgram(raw,{reset=false,aircraft=STARTER_AIRCRAFT,groups={}}={}){
@@ -53,7 +53,7 @@ export function compileProgram(source,{aircraft=STARTER_AIRCRAFT,groups={}}={}){
   const [command,...args]=text.split(/\s+/);let patch={},assignment=null;
   try{
    if(repeat)throw Error('repeat must be the last command.');
-   const arity={select:1,wait:1,repeat:1,formation:1,word:null,plane:1,origin:1,pattern:1,team:1,show:1,trace:1,move:2,objective:2,influence:3,formula:null,assign:1};
+   const arity={select:1,wait:1,repeat:1,formation:1,word:null,plane:1,origin:1,pattern:1,team:1,show:1,trace:1,beat:1,move:2,objective:2,influence:3,formula:null,assign:1};
    if(Object.hasOwn(arity,command)&&arity[command]!==null&&args.length!==arity[command])throw Error(command+' expects '+arity[command]+' value(s).');
    if(command==='select'){const value=args[0];group=value==='all'?[...aircraft]:Object.hasOwn(groups,value)?[...groups[value]]:value==='scouts'?aircraft.filter(v=>v.startsWith('scout')):value==='relays'?aircraft.filter(v=>v.startsWith('relay')):value.split(',');if((!group.length&&!Object.hasOwn(groups,value))||group.some(id=>!aircraft.includes(id))||new Set(group).size!==group.length)throw Error('Unknown aircraft group.');continue;}
    if(command==='wait'){at+=number(args[0],.1,120,'wait');if(at>600)throw Error('Timeline is limited to 600 seconds.');continue;}
@@ -62,6 +62,7 @@ export function compileProgram(source,{aircraft=STARTER_AIRCRAFT,groups={}}={}){
    if(command==='formation')patch.shape=choice(args[0],ENUMS.shape,'formation');
    else if(['origin','pattern','team','show','plane'].includes(command))patch[command]=choice(args[0],ENUMS[command],command);
    else if(command==='word'){const word=args.join(' ').toUpperCase();if(!/^[A-Z0-9 -]{1,16}$/.test(word)||!word.trim())throw Error('word accepts 1–16 letters, numbers or hyphens.');patch.word=word;}
+   else if(command==='beat')patch.beatSync=choice(args[0],['on','off'],'beat')==='on';
    else if(command==='trace')patch.trace=choice(args[0],['on','off'],'trace')==='on';
    else if(command==='move'||command==='objective'){patch.moveX=number(args[0],-120,120,'x');patch.moveZ=number(args[1],-120,120,'z');if(command==='objective')patch.origin='objective';}
    else if(command==='influence'){patch.field=choice(args[0],ENUMS.field,'influence');patch.strength=number(args[1],0,24,'strength');patch.frequency=number(args[2],.05,3,'frequency');}
@@ -117,7 +118,7 @@ export function influenceVector(opts,point,time,index,count){
 export function sampleSwarmProgram(program,id,{time=program.time,reducedMotion=false}={}){
  const opts=programOptions(program,id,time),ids=program.ids,i=Math.max(0,ids.indexOf(id)),n=ids.length;
  const t=reducedMotion?0:Math.max(0,time-opts.countIn),phase=t+opts.phase,spacing=opts.spacing;
- const shapeSpacing=program.fleetIds&&n>6?(opts.shape==='ring'?spacing*Math.sqrt(n/6):['line','wedge'].includes(opts.shape)?spacing*Math.min(1,16/n):spacing):spacing;
+ const shapeSpacing=program.fleetIds&&n>6?(['ring','double-orbit'].includes(opts.shape)?spacing*Math.sqrt(n/6):['line','wedge','column','staggered'].includes(opts.shape)?spacing*Math.min(1,16/n):spacing):spacing;
  let local=basicShape(opts.shape,i,n,shapeSpacing),strokes=[];
  if(opts.shape==='word'||opts.shape==='drawing'){
   strokes=opts.shape==='word'?wordStrokes(opts.word):program.strokes;
@@ -127,6 +128,7 @@ export function sampleSwarmProgram(program,id,{time=program.time,reducedMotion=f
  }
  if(!reducedMotion){
   if(opts.pattern==='orbit'){const angle=phase*.25,[x,,z]=local;local[0]=x*Math.cos(angle)-z*Math.sin(angle);local[2]=x*Math.sin(angle)+z*Math.cos(angle);}
+  if(opts.pattern==='weave'){local[0]+=Math.sin(phase*1.8+i*.8)*spacing*.28;local[1]+=Math.cos(phase+i*.6)*2;}
   if(opts.pattern==='wave')local[1]+=Math.sin(phase+i*.8)*4;
   if(opts.pattern==='pulse')local=local.map((v,j)=>j===1?v:v*(1+Math.sin(phase*.6)*.25));
   if(opts.pattern==='search'){local[0]+=Math.sin(phase*.2)*spacing;local[2]+=Math.sin(phase*.1)*spacing;}
@@ -136,11 +138,11 @@ export function sampleSwarmProgram(program,id,{time=program.time,reducedMotion=f
  let field=[0,0,0],error='';try{field=influenceVector(opts,local,t,i,n);}catch(e){error=e.message;}
  let combined=local.map((v,j)=>v+field[j]),attitude={pitch:0,roll:0};
  if(opts.show!=='none'&&!reducedMotion&&time>=opts.countIn){
-  const beat=Math.max(0,t-i*opts.offset),cycle=mod(beat,12),spin=clamp((cycle-4)/2,0,1)*Math.PI*2;
+  const beat=Math.max(0,t-i*opts.offset)*(opts.beatSync?opts.bpm/60:1),cycle=mod(beat,opts.beatSync?16:12),spin=clamp((cycle-4)/2,0,1)*Math.PI*2;
   if(opts.show==='flyby'){combined[0]+=Math.sin(beat*Math.PI/8)*32;combined[2]+=Math.cos(beat*Math.PI/8)*10;attitude.roll=spin;}
   if(opts.show==='roll')attitude.roll=spin;
   if(opts.show==='flip')attitude.pitch=spin;
-  if(opts.show==='dance'){combined[1]+=Math.sin(beat*2)*3;combined[0]+=Math.sin(beat)*4;attitude.roll=Math.sin(beat*2)*.5;attitude.pitch=spin;}
+  if(opts.show==='dance'){const q=opts.beatSync?beat*Math.PI*2:beat*2;combined[1]+=(opts.beatSync?1-Math.cos(q):Math.sin(q))*3;combined[0]+=Math.sin(opts.beatSync?beat*Math.PI/2:beat)*4;attitude.roll=Math.sin(q*.5)*.5;attitude.pitch=spin;}
  }
  combined[0]+=opts.moveX;combined[1]+=opts.height;combined[2]+=opts.moveZ;
  const base=[local[0]+opts.moveX,local[1]+opts.height,local[2]+opts.moveZ];

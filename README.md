@@ -1,3 +1,11 @@
+# GRIDRUNNER v7.36 — In-world Fleet Commander
+
+**[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)** · **[Independent Commander](https://gridrunner.goodyartist.chatgpt.site/commander.html)**
+
+Start an expedition and press **F9**, or open **Menu → System → Settings → Reset & hints → Advanced / admin tools → In-game fleet test**. Choose up to **100** and **Spawn / replace & resume** to test the fleet in the actual game world.
+
+Both Commander modes now have **29 presets**, drawing and word formations, manual/scripted math influences, and **beat dance with BPM, tap tempo and an optional metronome**. Named fleets are shared between them. In-game test copies stay out of campaign saves. See [v7.36 controls and limits](CHANGELOG-v7.36.md). Run `npm run test:admin-fleet` for the focused world integration checks.
+
 # GRIDRUNNER v7.35 — Fleet Commander
 
 **[Play Fleet Commander](https://gridrunner.goodyartist.chatgpt.site/commander.html)** · **[Main game](https://gridrunner.goodyartist.chatgpt.site)**

@@ -1,6 +1,8 @@
 # GRIDRUNNER continuation state
 
-Date: 2026-09-17. Current slice: v7.35 Fleet Commander.
+Date: 2026-09-17. Current slice: v7.36 In-world Fleet Commander.
+
+v7.36 adds a hidden Settings / Reset & hints / Advanced admin entry and F9 for 1–100 temporary drones in the actual campaign scene. `in-world-commander.js` uses the regular aircraft controller with actual terrain, solids, radio, reserve returns and campaign peers; `in-world-commander-visuals.js` instances the existing airframes. Copies remain outside campaign snapshots and clear on world/session changes. Both Commander modes share 29 presets and saved setups, multi-stroke drawing and beat choreography with BPM/tap tempo/optional metronome. See CHANGELOG-v7.36.md and `npm run test:admin-fleet`. GPU/device acceptance remains open; main-game browser checks use the explicit CPU/HUD diagnostic, and standalone checks use the tactical fallback.
 
 v7.35 adds `commander.html`: an independent 1–100-drone arena with nine beacon colors, fleet builder, bounded grouped programs, named fleet JSON saves, drill/hunt/pass-and-play games, instanced reference models and a working canvas fallback. Campaign entry/return holds and restores the current expedition in session storage without overwriting named saves. Full regression and focused Commander simulation/DOM/handoff tests pass; desktop and 390 px browser controls are checked in the fallback because WebGL is unavailable in the browser. See CHANGELOG-v7.35.md for the measured CPU scope and unverified GPU limits. Discovery/parts-builder progression remains future work.
 

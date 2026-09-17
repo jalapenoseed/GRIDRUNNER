@@ -6,6 +6,7 @@ export const COMMANDER_TEAMS=['alpha','bravo','charlie','delta'];
 export const COMMANDER_MODES={sandbox:'Free flight',formation:'Formation drill',hunt:'Beacon hunt',party:'Party relay'};
 export const COMMANDER_OBSTACLES=[{x:-76,z:-32,w:12,d:16,h:17},{x:78,z:-58,w:10,d:14,h:30},{x:62,z:66,w:13,d:10,h:13}];
 export const COMMANDER_EXAMPLES={
+ 'Beat dance':'select all\nformation grid\nheight 28\nshow dance\nbeat on\nbpm 120\noffset 0\nrepeat 32',
  'Hundred-drone bloom':'select all\nformation ring\nspacing 14\nheight 32\npattern orbit\ninfluence riemann 14 0.5\nwait 12\ninfluence wave 8 0.7\nshow dance\nwait 12\nshow flyby\nrepeat 40',
  'Color wave':'select all\nformation grid\nheight 28\ninfluence wave 8 0.6\nshow dance\nselect cyan\nheight 40\nselect pink\nheight 22\nrepeat 32',
  'Write HELLO':'select all\nformation word\nword HELLO\nplane sky\nheight 35\nscale 3\ntrace off\nwait 16\nword GRID\nwait 16\nword RUN\nrepeat 48',

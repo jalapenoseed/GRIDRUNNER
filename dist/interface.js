@@ -43,11 +43,11 @@ export function finishInterface({screen,started=false,state={},tutorialEnabled=t
   const overlay=document.getElementById('overlay');
   overlay.dataset.screen=screen||'';
   overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');
-  overlay.setAttribute('aria-label',screen==='start'?'GRIDRUNNER main menu':`GRIDRUNNER ${screen||'field unit'}`);
+  overlay.setAttribute('aria-label',screen==='start'?'GRIDRUNNER main menu':`GRIDRUNNER ${screen==='adminFleet'?'in-game fleet test':screen||'field unit'}`);
   panel.querySelectorAll('.fieldNav').forEach(n=>n.remove());
   memory.attach(panel);memory.current='';const home=screen==='start'||screen==='pause';
   const context=contexts.has(screen);
-  const group=MENU_GROUPS.find(g=>g.pages.some(p=>p[0]===screen))||MENU_GROUPS[0];
+  const group=MENU_GROUPS.find(g=>screen==='adminFleet'?g.id==='system':g.pages.some(p=>p[0]===screen))||MENU_GROUPS[0];
   const content=document.createElement('div');content.className='field-content';content.id='fieldContent';
   while(panel.firstChild)content.appendChild(panel.firstChild);
   content.querySelectorAll('.mainMenu button, .quickGrid button').forEach(b=>{

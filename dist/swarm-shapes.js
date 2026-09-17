@@ -28,6 +28,11 @@ export function basicShape(shape,i,n,spacing){
  const mid=(n-1)/2,a=i/Math.max(1,n)*Math.PI*2;
  if(shape==='line')return [(i-mid)*spacing,0,0];
  if(shape==='wedge'){const row=Math.ceil(i/2);return [i===0?0:(i%2?-1:1)*row*spacing*.65,0,row*spacing*.7];}
+ if(shape==='column')return [0,0,(i-mid)*spacing];
+ if(shape==='staggered')return [(i%2?1:-1)*spacing*2,(i%3)*2,(Math.floor(i/2)-Math.floor(n/2)/2)*spacing];
+ if(shape==='double-orbit'){const ring=i%2,slots=ring?Math.floor(n/2):Math.ceil(n/2),angle=Math.floor(i/2)/Math.max(1,slots)*Math.PI*2,r=spacing*(ring?1.55:1);return [Math.cos(angle)*r,ring?5:-5,Math.sin(angle)*r];}
+ if(shape==='scatter'){const angle=i*2.399963,r=spacing*Math.sqrt(i+1)*.6;return [Math.cos(angle)*r,Math.sin(i*1.7)*5,Math.sin(angle)*r];}
+ if(['high-low','overwatch'].includes(shape)){const p=basicShape('grid',i,n,spacing);p[1]=(shape==='high-low'?(i%2?5:-5):6+i%3*3);return p;}
  if(shape==='grid'){const cols=Math.ceil(Math.sqrt(n)),rows=Math.ceil(n/cols);return [(i%cols-(cols-1)/2)*spacing,0,(Math.floor(i/cols)-(rows-1)/2)*spacing];}
  return [Math.cos(a)*spacing,0,Math.sin(a)*spacing];
 }

@@ -11,7 +11,7 @@ export function instanceParts(model,scene,capacity=100){
  model.traverse(source=>{if(!source.isMesh)return;const mesh=new T.InstancedMesh(source.geometry,source.material,capacity);mesh.count=0;mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;scene.add(mesh);parts.push({mesh,local:source.matrixWorld.clone()});});return parts;
 }
 const vector=new T.Vector3(),transform=new T.Matrix4(),combined=new T.Matrix4(),rotation=new T.Quaternion(),angles=new T.Euler(0,0,0,'YXZ'),unit=new T.Vector3(1,1,1);
-function fillInstances(parts,drones){for(const part of parts){part.mesh.count=drones.length;drones.forEach((d,i)=>{vector.fromArray(d.pos);angles.set(d.attitude.pitch,d.yaw,d.attitude.roll,'YXZ');rotation.setFromEuler(angles);transform.compose(vector,rotation,unit);combined.multiplyMatrices(transform,part.local);part.mesh.setMatrixAt(i,combined);});part.mesh.instanceMatrix.needsUpdate=true;}}
+export function fillInstances(parts,drones){for(const part of parts){part.mesh.count=drones.length;drones.forEach((d,i)=>{vector.fromArray(d.pos);angles.set(d.attitude.pitch,d.yaw,d.attitude.roll,'YXZ');rotation.setFromEuler(angles);transform.compose(vector,rotation,unit);combined.multiplyMatrices(transform,part.local);part.mesh.setMatrixAt(i,combined);});part.mesh.instanceMatrix.needsUpdate=true;}}
 export class CommanderRenderer{
  constructor(host,{onObjective=()=>{},onStatus=()=>{}}={}){
   this.host=host;this.onObjective=onObjective;this.onStatus=onStatus;this.view='orbit';this.azimuth=.25;this.elevation=.63;this.distance=240;this.center=new T.Vector3(0,12,0);this.selected='drone-001';this.detail={};this.proxy={};this.failed=new Set();this.disposed=false;this.lastFleet=null;
