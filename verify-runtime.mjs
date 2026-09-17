@@ -1,3 +1,9 @@
+import * as storyDiscoveries from './dist/story-discoveries.js';
+import {StoryStationsWorld} from './dist/story-stations-world.js';
+import * as storyCampaign from './dist/story-campaign.js';
+import * as storyOperations from './dist/story-operations.js';
+import * as storyUI from './dist/story-campaign-ui.js';
+import {verifyStoryIntegration} from './verify-story-integration.mjs';
 import {verifyAdminFleetIntegration} from './verify-admin-fleet-integration.mjs';
 import * as adminFleetCore from './dist/in-world-commander.js';
 import * as adminFleetVisuals from './dist/in-world-commander-visuals.js';
@@ -90,11 +96,12 @@ let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={rende
 const ctx=vm.createContext({...sensorPackages,...fieldFlow,...onboarding,Sensors,...fieldUpgrade,...squadron,SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,sessionStorage:w.sessionStorage,URLSearchParams,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
 Object.assign(ctx,{VisionDetector,beamSolids,riderGradeAllowed,PresenceComposer,ImportedProps,setFieldAction,updateFieldRig},batteryPacks,batteryPackUI,campaignProgress,fleetPolicy,fleetPolicyUI,droneControls,fleetTasks,fleetTaskUI,relayOutpost,powerLines,lineHarvest,lineHarvestUI);ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\r?\n/gm,'');
-Object.assign(ctx,adminFleetCore,adminFleetVisuals,adminFleetUI,commanderCore,commanderPresets,commanderStorage,swarmRhythm,swarmProgram,swarmProgramUI,swarmOps,swarmOpsUI,fleetManifest,sensorLabModule,swarmSteering,swarmCommand,surveillance,openingRoute,{OpeningWorld:class extends OpeningWorld{constructor(scene,solids){super(scene,solids,{assets:false});}}});
+Object.assign(ctx,storyDiscoveries,{StoryStationsWorld},storyCampaign,storyOperations,storyUI,adminFleetCore,adminFleetVisuals,adminFleetUI,commanderCore,commanderPresets,commanderStorage,swarmRhythm,swarmProgram,swarmProgramUI,swarmOps,swarmOpsUI,fleetManifest,sensorLabModule,swarmSteering,swarmCommand,surveillance,openingRoute,{OpeningWorld:class extends OpeningWorld{constructor(scene,solids){super(scene,solids,{assets:false});}}});
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 await run('spatial.ready');await run('ambientResidents.ready');assert.equal(run('spatial.status'),'ready');assert.equal(run('ambientResidents.status'),'ready');
 const tick=(seconds)=>{for(let i=0;i<seconds*50;i++)run('update(.02)');run('hud();loop(performance.now()+20)');};
 vm.runInContext(`function newCampaign(){newExpedition();s.intro=completedIntro();s.mode='bike';s.pos.set(bike.position.x,1.7,bike.position.z);hud();}`,ctx);
+if(process.argv.includes('--story')){verifyStoryIntegration({run,tick,w});process.exit(0);}
 if(process.argv.includes('--admin-fleet')){verifyAdminFleetIntegration({run,tick,w});process.exit(0);}
 if(process.argv.includes('--commander-bridge')){
  run('newCampaign();s.battery=41;s.squad["scout-02"].battery=62;open("swarmProgram")');
@@ -277,7 +284,7 @@ run('settings.tutorialEnabled=true;settings.narration=true;newExpedition();narra
 assert.equal(run('screen'),'bikeintro');run('loop(performance.now()+30)');assert.equal(run('camera.view.enabled'),true);
 for(let i=0;i<4;i++)w.document.querySelector('[data-brief=next]').click();assert(run('s.intro.trailerBriefed'));run('loop(performance.now()+30)');assert.equal(run('camera.view.enabled'),false);
 run('s.mode="foot";s.pos.set(38,1.7,-90);nearest={kind:"crate",index:0};interact();takeLoot("wire")');assert(w.document.querySelector('.scoutAcquisition').textContent.includes('RECOVERED'));
-w.document.querySelector('.lootActions [data-panel=play]').click();assert.equal(run('screen'),'scoutintro');assert(run('narrator.last.includes("four Scouts, two Relays")'));assert.equal(run('narrator.audio'),null,'outdated acquisition recording is not played');
+w.document.querySelector('.lootActions [data-panel=play]').click();assert.equal(run('screen'),'scoutintro');assert(run('narrator.last.includes("rebuilt Scout 01")'));assert.equal(run('narrator.audio'),null,'outdated acquisition recording is not played');
 w.document.querySelector('[data-tutorial=mute]').click();assert.equal(run('settings.narration'),false);assert.equal(run('narrator.audio'),null);
 w.document.querySelector('[data-tutorial=skip]').click();assert.equal(run('s.intro.stage'),'line');assert.equal(run('s.inv.wire'),1);
 run('open("rig")');w.document.querySelector('[data-rig-focus=cargo]').click();assert(w.document.querySelector('.rigExplanation').textContent.includes('60 kg'));

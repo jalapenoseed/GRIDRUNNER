@@ -21,7 +21,7 @@ export function syncCampaignProgress(s){
 export function campaignUnlocks(s){
  const p=syncCampaignProgress(s),later=(s.leg||1)>1;
  return {
-  airframes:{scout:true,cargo:p.metMara||later,engineer:!!s.engineerBuilt||later,relay:true},
+  airframes:{scout:true,cargo:p.metMara||later,engineer:!!s.engineerBuilt||later,relay:s.story?.mode!=='story'||p.relayHouseSolved||later},
   relayOutpost:p.relayHouseSolved||!!s.won||later,
   packFabrication:!!s.relayHouse?.schematicRead||later,
   lineHarvest:p.relayHouseSolved||later,
@@ -42,13 +42,13 @@ export function unlockReason(id){return ({
 export function progressionRows(s){
  const p=syncCampaignProgress(s),u=campaignUnlocks(s);
  return [
-  {id:'scout',title:'SCOUT-01–04',done:true,detail:'Four workshop-built Scouts / starter cluster'},
+  {id:'scout',title:s.story?.mode==='story'?'SCOUT-01':'SCOUT-01–04',done:true,detail:s.story?.mode==='story'?'Your first aircraft; recovered frames expand the fleet':'Four workshop-built Scouts / starter cluster'},
   {id:'cargo',title:'CARGO-01',done:u.airframes.cargo,detail:'Meet Mara at the first camp'},
   {id:'engineer',title:'UTILITY-01',done:u.airframes.engineer,detail:'Fabricate the engineer module'},
   {id:'packs',title:'Removable packs',done:u.packFabrication,detail:'Recover the Relay House schematic'},
   {id:'line',title:'Conductor harvesting',done:u.lineHarvest,detail:'Decode the hidden carrier'},
   {id:'policy',title:'Reserve automation',done:u.reservePolicy,detail:'Deliver the first charged pack'},
-  {id:'relay',title:'RELAY-01–02',done:true,detail:'Two workshop-built Relays / starter cluster'},
+  {id:'relay',title:s.story?.mode==='story'?'RELAY-01':'RELAY-01–02',done:u.airframes.relay,detail:s.story?.mode==='story'?'Decode the Relay House to recover the first Relay':'Two workshop-built Relays / starter cluster'},
   {id:'leg2',title:'Leg 2 / The Spillway',done:u.chapters.leg2,detail:'Decode the northern radio tower'},
   {id:'leg3',title:'Leg 3 / Black Start',done:u.chapters.leg3,detail:'Restore the Spillway'}
  ];

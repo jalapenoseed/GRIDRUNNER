@@ -1,6 +1,12 @@
 # GRIDRUNNER continuation state
 
-Date: 2026-09-17. Current slice: v7.36 In-world Fleet Commander.
+Date: 2026-09-17. Current slice: v7.37 All the lights we carried.
+
+v7.37 connects the existing three-sector expedition to earned aircraft, eight Field link calls, six sourced bench exercises, four frame rebuilds, named Charger dispatch, six finite charging stations, saved aircraft placement across sector travel, three sensor recovery trails, a bounded fleet flight recorder and a finale using actual owned/available aircraft. New story expeditions start with one Scout. Old saves and Swarm Start keep legacy access. `dist/CAMPAIGN-ARC.md` records the larger seven-region direction and distinguishes current implementation from future regions, animated calls, deeper engineering curriculum, physical handheld and image/music import.
+
+Run `npm run test:story` for the focused real-scene/DOM checks. It is included in `npm test`. See CHANGELOG-v7.37.md for verification scope and controls. The new visual layouts have not passed browser acceptance because preview access was unavailable; no GPU or physical-device validation is claimed. Current implementation uses the existing assets and small station/cache meshes.
+
+Continuation: follow `dist/CAMPAIGN-ARC.md` next-implementation order. Keep aircraft and battery identity, finite energy ledgers, station ownership, old-save migration and independent practice modes intact. Do not claim that the full seven-region campaign, true RF triangulation or automatic picture/music interpretation is already built.
 
 v7.36 adds a hidden Settings / Reset & hints / Advanced admin entry and F9 for 1–100 temporary drones in the actual campaign scene. `in-world-commander.js` uses the regular aircraft controller with actual terrain, solids, radio, reserve returns and campaign peers; `in-world-commander-visuals.js` instances the existing airframes. Copies remain outside campaign snapshots and clear on world/session changes. Both Commander modes share 29 presets and saved setups, multi-stroke drawing and beat choreography with BPM/tap tempo/optional metronome. See CHANGELOG-v7.36.md and `npm run test:admin-fleet`. GPU/device acceptance remains open; main-game browser checks use the explicit CPU/HUD diagnostic, and standalone checks use the tactical fallback.
 

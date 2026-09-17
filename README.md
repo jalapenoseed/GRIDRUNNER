@@ -1,3 +1,13 @@
+# GRIDRUNNER v7.37 — All the lights we carried
+
+**[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
+
+Start **New expedition** for the one-Scout story progression. Press **U** for the new Field link: transmissions, Charger commands and the next field step. Rebuild aircraft in **Equipment → Field bench**, leave them at persistent stations in **Fleet → Fleet network**, and follow **Expedition → Sensor discoveries** for UV, thermal and RF recoveries. Fleet network also contains the saved flight recorder.
+
+Complete Black Start to stage a finale with your actual available fleet, then draw or script your show. Existing saves retain their fleet; Swarm Start, Flight Yard, standalone Commander and F9 experimentation remain available.
+
+Read the [release notes and verification limits](CHANGELOG-v7.37.md) and [full campaign arc](dist/CAMPAIGN-ARC.md). The seven-region expansion, animated calls, full component repair and image/music imports are future production work. `npm run test:story` runs the focused campaign integration checks; `npm test` includes the full regression suite.
+
 # GRIDRUNNER v7.36 — In-world Fleet Commander
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)** · **[Independent Commander](https://gridrunner.goodyartist.chatgpt.site/commander.html)**

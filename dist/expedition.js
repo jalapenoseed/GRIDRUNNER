@@ -1,3 +1,5 @@
+import {validateStoryDiscoveries} from './story-discoveries.js';
+import {validateStoryCampaign,validateStoryStations} from './story-campaign.js';
 import {AIRCRAFT} from './squadron.js';
 import {validateSwarmOps,validateCamo} from './swarm-ops.js';
 import {lessonState} from './field-flow.js';
@@ -32,6 +34,7 @@ export function generationStep(mode,{fuel,reserve,daylight,stopped,flowing=false
 export function validateSave(r){
  const bad=()=>{throw Error('This save is incomplete or belongs to another game version.');};
  if(!r||r.version!==SAVE_VERSION||!r.state||!Number.isFinite(r.savedAt))bad();
+ r.state.story=validateStoryCampaign(r.state.story);r.state.storyDiscoveries=validateStoryDiscoveries(r.state.storyDiscoveries);
  const s=r.state,number=(v,a,b)=>typeof v==='number'&&Number.isFinite(v)&&v>=a&&v<=b;
  s.surveillance=validateSurveillance(s.surveillance);s.openingRoute=validateOpeningRoute(s.openingRoute);
  const vec=v=>Array.isArray(v)&&v.length===3&&v.every(n=>number(n,-10000,10000));
@@ -59,6 +62,7 @@ export function validateSave(r){
  if(s.mode==='drone'&&(!r.origin||!vec(r.origin.pos)||!['bike','foot'].includes(r.origin.mode)||!number(r.origin.yaw,-1e10,1e10)))bad();
  s.droneSystem=migrateDrone(s.droneSystem,s.mode==='drone'?s.pos:[r.bike[0],r.bike[1]+2,r.bike[2]],s.mode==='drone');
  if(s.mode==='drone'&&s.droneSystem.mode!=='MANUAL')bad();validateSquad(s);s.swarmOps=validateSwarmOps(s.swarmOps);s.camo=validateCamo(s.camo);validateBatteryPacks(s);s.progression=migrateCampaignProgress(s.progression);s.fleetPolicy=validateFleetPolicy(s.fleetPolicy);validateCrateContents(r);
+ validateStoryStations(s);
  if(s.discoveries===undefined)s.discoveries=[];
  if(!Array.isArray(s.discoveries)||s.discoveries.length>100)bad();
  for(const p of s.discoveries)if(!p||!['id','name','kind'].every(k=>typeof p[k]==='string'&&p[k].length<=100)||!['HOSTILE','ENERGY','SIGNAL','OBJECTIVE','SALVAGE'].includes(p.kind)||![1,2,3].includes(p.leg)||!number(p.x,-10000,10000)||!number(p.y,-10000,10000)||!number(p.z,-10000,10000)||!number(p.at,0,1e10))bad();

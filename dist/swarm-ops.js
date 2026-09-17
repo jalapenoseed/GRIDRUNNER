@@ -1,4 +1,4 @@
-import {STARTER_AIRCRAFT,aircraftCode} from './fleet-manifest.js';
+import {STARTER_AIRCRAFT,FRAME_TYPES,EXTRA_AIRCRAFT,aircraftCode} from './fleet-manifest.js';
 import {commandAircraft,hasLiveTask} from './fleet-tasks.js';
 import {createSwarmProgram,validateSwarmProgram,applySwarmProgramTarget} from './swarm-program.js';
 
@@ -11,7 +11,7 @@ const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
 export function validateSwarmOps(raw){
  if(raw===undefined)return createSwarmOps();
  if(!raw||raw.version!==1||!['operator','bike','fixed','objective'].includes(raw.origin)||!SWARM_PATTERNS.includes(raw.pattern)||!Number.isFinite(raw.spacing)||raw.spacing<8||raw.spacing>30||raw.objective!==null&&!point(raw.objective)||raw.fixed!==null&&!point(raw.fixed)||!Number.isSafeInteger(raw.contacts)||raw.contacts<0)throw Error('Invalid swarm program');
- return {...createSwarmOps(),...raw,program:validateSwarmProgram(raw.program)};
+ return {...createSwarmOps(),...raw,program:validateSwarmProgram(raw.program,{aircraft:[...FRAME_TYPES,...EXTRA_AIRCRAFT]})};
 }
 export function validateCamo(raw){
  if(raw===undefined)return createCamo();
