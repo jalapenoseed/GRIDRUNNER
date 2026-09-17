@@ -1,3 +1,4 @@
+import {aircraftType} from './fleet-manifest.js';
 import {swarmVelocity} from './swarm-steering.js';
 import {sensorFor,SENSOR_SPECS,sensorReading,idleOffset} from './sensor-packages.js';
 // Drone 2.0: renderer-independent vehicle simulation. Distances are world metres.
@@ -17,7 +18,7 @@ const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
 // Gameplay tuning, not manufacturer specifications. Dry mass includes the
 // aircraft's own battery. Payload is real attached cargo, never rider inventory.
 export function dronePerformance(type='scout',payloadKg=0){
- const base=DRONE_CLASSES[type]||DRONE_CLASSES.scout;
+ const base=DRONE_CLASSES[aircraftType(type)]||DRONE_CLASSES.scout;
  const payload=clamp(Number.isFinite(payloadKg)?payloadKg:0,0,base.payloadKg),massKg=base.massKg+payload,ratio=massKg/base.massKg;
  return {...base,dryMassKg:base.massKg,massKg,loadKg:payload,
   speed:base.speed/Math.sqrt(ratio),climb:base.climb/Math.sqrt(ratio),acceleration:base.acceleration/ratio,
@@ -192,10 +193,10 @@ export function radioQuality(a,b,range,{solids=[],terrain=()=>0,storm=false,jamm
  return clamp(100-100*(distance(a,b)/effective)**1.65-blocked*24,0,100);
 }
 export function droneLink(pos,home,{type='scout',relayNodes=[],...environment}={}){
- const spec=DRONE_CLASSES[type]||DRONE_CLASSES.scout;
+ const spec=DRONE_CLASSES[aircraftType(type)]||DRONE_CLASSES.scout;
  let signal=radioQuality(home,pos,spec.range,environment),via=null;
  for(const node of relayNodes){
-  if(type==='relay'||node.battery<10||node.hp<20)continue;
+  if(aircraftType(type)==='relay'||node.battery<10||node.hp<20)continue;
   const signalAtRelay=radioQuality(home,node.pos,DRONE_CLASSES.relay.range,environment);
   const hop=radioQuality(node.pos,pos,spec.range,environment),candidate=Math.min(signalAtRelay,hop)*.95;
   if(candidate>signal){signal=candidate;via=node.id;}
@@ -205,6 +206,6 @@ export function droneLink(pos,home,{type='scout',relayNodes=[],...environment}={
 export const wrapAngle=a=>Math.atan2(Math.sin(a),Math.cos(a));
 export function droneAxes({pitch=0,yaw=0,roll=0}){const sp=Math.sin(pitch),cp=Math.cos(pitch),sy=Math.sin(yaw),cy=Math.cos(yaw),sr=Math.sin(roll),cr=Math.cos(roll);return {nose:[-sy*cp,sp,-cy*cp],up:[-cy*sr+sy*sp*cr,cp*cr,sy*sr+cy*sp*cr]};}
 export function scanEntities(d,entities,{type='scout',solids=[],elapsed=0,leg=1,sensor='visible'}){
- if(d.scanCooldown>0)return [];d.scanCooldown=5;sensor=sensorFor(type,sensor);const spec=SENSOR_SPECS[sensor],radius=(type==='personal'?60:DRONE_CLASSES[type].scan)*spec.range;
+ if(d.scanCooldown>0)return [];d.scanCooldown=5;sensor=sensorFor(type,sensor);const spec=SENSOR_SPECS[sensor],radius=(type==='personal'?60:DRONE_CLASSES[aircraftType(type)].scan)*spec.range;
  return entities.filter(e=>(sensor!=='uv'||e.sensors?.includes('uv'))&&(!e.sensors||e.sensors.includes(sensor))&&(!spec.kinds||spec.kinds.includes(e.kind))&&distance(d.pos,[e.x,e.y,e.z])<=radius&&obstruction(d.pos,[e.x,e.y+1,e.z],solids)<(sensor==='rf'?2:1)).map(e=>({...e,at:elapsed,leg,...sensorReading(sensor,e,distance(d.pos,[e.x,e.y,e.z]),radius,obstruction(d.pos,[e.x,e.y+1,e.z],solids))}));
 }

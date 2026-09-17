@@ -9,7 +9,7 @@ const scene=new T.Scene(),camera=new T.PerspectiveCamera(75,1.6,.1,2000);camera.
 const fleet=new DroneFleet(scene,{assets:false}),bike=new T.Group(),trailer=new T.Group();
 const s={droneType:'scout',droneSystem:createDrone(),drone:100,mode:'foot',elapsed:1};syncSquad(s);
 assert.equal(new Set(Object.values(BEACONS).map(b=>b.color)).size,4);
-for(const [i,r]of Object.values(s.squad).entries()){r.system.mode=['HOLD','RETURN HOME','PERCHED','RELAY'][i];r.system.pos=[(i-1)*8,3,-[20,150,460,900][i]];}
+for(const [i,r]of Object.values(s.squad).entries()){r.system.mode=['HOLD','RETURN HOME','PERCHED','RELAY'][i%4];r.system.pos=[(i-1)*8,3,-[20,150,460,900][i%4]];}
 fleet.update(.02,s,trailer,bike,camera);
 for(const [id,r]of Object.entries(fleet.records)){assert(r.root.visible);const b=r.root.userData.beacon;assert(b.visible);assert.equal(b.material.color.getHex(),BEACONS[id].color);assert(b.material.depthTest&&!b.material.depthWrite&&!b.material.fog&&!b.material.toneMapped);assert(b.material.opacity>.9);assert(r.root.userData.neon.visible);const halo=r.root.userData.beaconHalo;assert(halo.scale.x>b.scale.x*3);assert.equal(halo.material.blending,T.AdditiveBlending);assert(halo.material.depthTest&&!halo.material.depthWrite);assert.equal(halo.material.color.getHex(),BEACONS[id].color);}
 for(const h of [390,800,1440])for(const distance of [150,460,900]){const p=new T.Vector3(0,0,-distance),size=beaconScale(camera,p,h),pixels=size/distance/(2*Math.tan(camera.fov*Math.PI/360))*h;assert(Math.abs(pixels-10)<1e-6);}

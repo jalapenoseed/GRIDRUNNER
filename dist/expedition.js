@@ -1,3 +1,5 @@
+import {AIRCRAFT} from './squadron.js';
+import {validateSwarmOps,validateCamo} from './swarm-ops.js';
 import {lessonState} from './field-flow.js';
 import {validateSurveillance} from './surveillance.js';
 import {validateOpeningRoute} from './opening-route.js';
@@ -49,14 +51,14 @@ export function validateSave(r){
  s.intro=s.leg>1?completedIntro():migrateIntro(s.intro);
  if(s.powerTarget!==null&&!['ev','solar','grid','line','l2hydro','l3supply'].includes(s.powerTarget))bad();
  if(!number(s.temp,0,1000)||!number(s.chargeHeat,0,200))bad();
- if(!['scout','engineer','cargo','relay'].includes(s.droneType)||!['off','fuel','solar','water'].includes(s.generator))bad();
+ if(!AIRCRAFT.includes(s.droneType)||!['off','fuel','solar','water'].includes(s.generator))bad();
  s.fleetFormation=validFormation(s.fleetFormation);s.lineGrid=validateLineGrid(s.lineGrid);
  for(const k of ['trailerAttached','engineerBuilt','controller','interface','upgrade','solar','relay','met','scanned','won','dead','regenBuilt'])if(typeof s[k]!=='boolean')bad();
  if(!Array.isArray(r.crates)||r.crates.length!==4||r.crates.some(x=>typeof x!=='boolean'))bad();
  if(!Array.isArray(r.enemies)||r.enemies.length!==2||r.enemies.some(e=>!number(e.x,-2000,2000)||!number(e.z,-3000,3000)||!number(e.hp,-100,75)))bad();
  if(s.mode==='drone'&&(!r.origin||!vec(r.origin.pos)||!['bike','foot'].includes(r.origin.mode)||!number(r.origin.yaw,-1e10,1e10)))bad();
  s.droneSystem=migrateDrone(s.droneSystem,s.mode==='drone'?s.pos:[r.bike[0],r.bike[1]+2,r.bike[2]],s.mode==='drone');
- if(s.mode==='drone'&&s.droneSystem.mode!=='MANUAL')bad();validateSquad(s);validateBatteryPacks(s);s.progression=migrateCampaignProgress(s.progression);s.fleetPolicy=validateFleetPolicy(s.fleetPolicy);validateCrateContents(r);
+ if(s.mode==='drone'&&s.droneSystem.mode!=='MANUAL')bad();validateSquad(s);s.swarmOps=validateSwarmOps(s.swarmOps);s.camo=validateCamo(s.camo);validateBatteryPacks(s);s.progression=migrateCampaignProgress(s.progression);s.fleetPolicy=validateFleetPolicy(s.fleetPolicy);validateCrateContents(r);
  if(s.discoveries===undefined)s.discoveries=[];
  if(!Array.isArray(s.discoveries)||s.discoveries.length>100)bad();
  for(const p of s.discoveries)if(!p||!['id','name','kind'].every(k=>typeof p[k]==='string'&&p[k].length<=100)||!['HOSTILE','ENERGY','SIGNAL','OBJECTIVE','SALVAGE'].includes(p.kind)||![1,2,3].includes(p.leg)||!number(p.x,-10000,10000)||!number(p.y,-10000,10000)||!number(p.z,-10000,10000)||!number(p.at,0,1e10))bad();

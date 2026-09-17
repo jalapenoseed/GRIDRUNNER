@@ -1,6 +1,8 @@
-# GRIDRUNNER v7.31 — Personal thermal + neon escort
+# GRIDRUNNER v7.33 — Swarm field operations
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
+
+**Swarm Command → Play Swarm Start** puts you beside the bike with four Scouts, two Relays and a deployed camouflage cloth. **Protect + Scout** splits guarding, scouting and airborne relay duties; use each row’s **FLY** button for FPV. Existing saves gain the starter cluster. Open **SWARM** during play to change orders or return the fleet. See [the release notes](CHANGELOG-v7.33.md) and [next-update programming notes](SWARM-NEXT-UPDATE.md).
 
 B selects personal thermal on foot or bike. Fleet → Formations → Protective Ring brings your aircraft around your character with cyan, amber, lime and magenta identification lights. FPV keeps its airframe-specific sensors; recall returns to the rig. See [CHANGELOG-v7.31.md](CHANGELOG-v7.31.md).
 

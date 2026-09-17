@@ -1,5 +1,6 @@
+import {aircraftType} from './fleet-manifest.js';
 // Conservative axis-aligned shells matched to the rendered airframe spans.
-export function droneHull(type='scout',payloadKg=0){const sizes={scout:[.3,.18,.3],relay:[.38,.22,.38],engineer:[.4,.25,.4],cargo:[1,.55,1]};const h=[...(sizes[type]||sizes.scout)];if(payloadKg>0)h[1]+=.15;return h;}
+export function droneHull(type='scout',payloadKg=0){const sizes={scout:[.3,.18,.3],relay:[.38,.22,.38],engineer:[.4,.25,.4],cargo:[1,.55,1]};const h=[...(sizes[aircraftType(type)]||sizes.scout)];if(payloadKg>0)h[1]+=.15;return h;}
 export function validSolid(b){return b&&[b.x,b.z,b.w,b.d,b.minY??0,b.maxY??12].every(Number.isFinite)&&b.w>0&&b.d>0&&b.w<10000&&b.d<10000&&Math.abs(b.x)<100000&&Math.abs(b.z)<100000&&(b.maxY??12)>(b.minY??0);}
 export function blocksRider(b){return b.rider!==false&&b.surface!=='rideable'&&b.surface!=='soft';}
 export function hullIntersectsSegment(a,b,box,h=[0,0,0]){

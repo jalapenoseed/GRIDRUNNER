@@ -1,6 +1,7 @@
+import {FRAME_TYPES,EXTRA_AIRCRAFT,aircraftType} from './fleet-manifest.js';
 import {createDrone,migrateDrone} from './drone-system.js';
 import {createAircraftRecord,validateAircraftTask} from './fleet-tasks.js';
-export const AIRCRAFT=['scout','cargo','engineer','relay'];
+export const AIRCRAFT=[...FRAME_TYPES,...EXTRA_AIRCRAFT];
 export const FORMATIONS=['WEDGE','TRAIL','LINE','ORBIT','RELAY OUTPOST','STAGGERED','HIGH / LOW','PROTECTIVE RING','OVERWATCH','SEARCH GRID','BUZZ PASS'];
 const localToWorld=([right,up,forward],yaw)=>[
  Math.cos(yaw)*right-Math.sin(yaw)*forward,
@@ -28,9 +29,9 @@ export function formationSlot(formation,id,yaw=0,elapsed=0){
  if(formation==='ORBIT'||formation==='PROTECTIVE RING'){
   const angle=elapsed*.28+index*Math.PI*.5,radius=13+index%2*4;
   const r=formation==='PROTECTIVE RING'?10:radius;
-  return [Math.sin(angle)*r,formation==='PROTECTIVE RING'?4+index:slots.ORBIT[index][1],Math.cos(angle)*r];
+  return [Math.sin(angle)*r,formation==='PROTECTIVE RING'?4+index:6+index*2,Math.cos(angle)*r];
  }
- return localToWorld((slots[formation]||slots.WEDGE)[index],yaw);
+ const slot=[...(slots[formation]||slots.WEDGE)[index%4]];if(index>=4){slot[1]+=3;slot[2]-=28;}return localToWorld(slot,yaw);
 }
 export function validFormation(value){return FORMATIONS.includes(value)?value:'WEDGE';}
 export function syncSquad(s){s.squad||={};for(const id of AIRCRAFT){const r=s.squad[id];if(!r)s.squad[id]=createAircraftRecord(id,createDrone());else if(!r.id)s.squad[id]={...createAircraftRecord(id,r.system,r.battery),...r};}const selected=s.squad[s.droneType];selected.system=s.droneSystem;selected.battery=s.drone;return s.squad;}
@@ -45,7 +46,7 @@ export function validateSquad(s){
   const savedSystem=migrateDrone(r.system,[0,2,15]),system=id===s.droneType?s.droneSystem:savedSystem;
   if((id!==s.droneType||s.mode!=='drone')&&system.mode==='MANUAL'){system.mode='HOLD';system.hold=[...system.pos];}
   const record=createAircraftRecord(id,system,id===s.droneType?s.drone:r.battery??100);
-  validateAircraftTask(record,r,s.leg||1);if(['PERCHED','RELEASE'].includes(system.mode)&&(id!=='engineer'||record.task?.kind!=='LINE'||system.perch?.spanId!==record.task.anchor.spanId||system.perch?.u!==record.task.anchor.u))throw Error('Invalid conductor owner');if(system.mode==='RELAY'&&(id!=='relay'||record.task?.kind!=='RELAY'||record.task.state!=='RUNNING'||record.task.stage!=='RELAY'))throw Error('Invalid relay outpost ownership');out[id]=record;
+  validateAircraftTask(record,r,s.leg||1);if(['PERCHED','RELEASE'].includes(system.mode)&&(id!=='engineer'||record.task?.kind!=='LINE'||system.perch?.spanId!==record.task.anchor.spanId||system.perch?.u!==record.task.anchor.u))throw Error('Invalid conductor owner');if(system.mode==='RELAY'&&(aircraftType(id)!=='relay'||record.task?.kind!=='RELAY'||record.task.state!=='RUNNING'||record.task.stage!=='RELAY'))throw Error('Invalid relay outpost ownership');if(r.swarmOrder!=null&&!['formation','operator','bike','scout','relay'].includes(r.swarmOrder))throw Error('Invalid swarm assignment');if(r.swarmOrder==='relay'&&record.type!=='relay')throw Error('Invalid relay assignment');record.swarmOrder=r.swarmOrder??null;out[id]=record;
  }
  s.squad=out;syncSquad(s);return out;
 }

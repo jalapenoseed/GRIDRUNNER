@@ -21,7 +21,8 @@ export function syncCampaignProgress(s){
 export function campaignUnlocks(s){
  const p=syncCampaignProgress(s),later=(s.leg||1)>1;
  return {
-  airframes:{scout:true,cargo:p.metMara||later,engineer:!!s.engineerBuilt||later,relay:p.relayHouseSolved||!!s.won||later},
+  airframes:{scout:true,cargo:p.metMara||later,engineer:!!s.engineerBuilt||later,relay:true},
+  relayOutpost:p.relayHouseSolved||!!s.won||later,
   packFabrication:!!s.relayHouse?.schematicRead||later,
   lineHarvest:p.relayHouseSolved||later,
   reservePolicy:p.firstPackDelivered,
@@ -32,7 +33,7 @@ export function campaignUnlocks(s){
 export function unlockReason(id){return ({
  cargo:'Meet Mara at the first camp.',
  engineer:'Fabricate the engineer module at a workbench.',
- relay:'Decode the Relay House hidden carrier.',
+ relayOutpost:'Decode the Relay House hidden carrier to unlock a landed outpost.',
  packFabrication:'Read the operator notebook in the Relay House.',
  lineHarvest:'Solve the Relay House and decode its carrier.',
  reservePolicy:'Complete one manual Harvest & Deliver run.'
@@ -41,13 +42,13 @@ export function unlockReason(id){return ({
 export function progressionRows(s){
  const p=syncCampaignProgress(s),u=campaignUnlocks(s);
  return [
-  {id:'scout',title:'SCOUT-01',done:true,detail:'Opening equipment / tutorial'},
+  {id:'scout',title:'SCOUT-01–04',done:true,detail:'Four workshop-built Scouts / starter cluster'},
   {id:'cargo',title:'CARGO-01',done:u.airframes.cargo,detail:'Meet Mara at the first camp'},
   {id:'engineer',title:'UTILITY-01',done:u.airframes.engineer,detail:'Fabricate the engineer module'},
   {id:'packs',title:'Removable packs',done:u.packFabrication,detail:'Recover the Relay House schematic'},
   {id:'line',title:'Conductor harvesting',done:u.lineHarvest,detail:'Decode the hidden carrier'},
   {id:'policy',title:'Reserve automation',done:u.reservePolicy,detail:'Deliver the first charged pack'},
-  {id:'relay',title:'RELAY-01',done:u.airframes.relay,detail:'Complete the Relay House signal puzzle'},
+  {id:'relay',title:'RELAY-01–02',done:true,detail:'Two workshop-built Relays / starter cluster'},
   {id:'leg2',title:'Leg 2 / The Spillway',done:u.chapters.leg2,detail:'Decode the northern radio tower'},
   {id:'leg3',title:'Leg 3 / Black Start',done:u.chapters.leg3,detail:'Restore the Spillway'}
  ];

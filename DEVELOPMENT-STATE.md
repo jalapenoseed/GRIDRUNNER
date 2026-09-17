@@ -1,6 +1,10 @@
 # GRIDRUNNER continuation state
 
-Date: 2026-09-16. Current slice: v7.31 Personal thermal and neon escort.
+Date: 2026-09-17. Current slice: v7.33 Swarm field operations.
+
+v7.33 integrates six starter aircraft (four Scouts and two Relays), live guard/scout/relay assignments, per-instance saves and FPV, and physical camouflage cover. The canonical Sites checkout is `/workspace/sites/gridrunner-swarm-live`, resumed from published `df10466`. Full tests pass; browser command UI was checked at desktop and 390 px, with WebGL unavailable in that browser. See CHANGELOG-v7.33.md. The user’s requested programming, formula influences, dance flybys, word formations and drawings are recorded in SWARM-NEXT-UPDATE.md for the next update. The PC worktree `GRIDRUNNER-swarm-command` remains at its prior sandbox revision; it was inspected but not overwritten by this Site release.
+
+v7.32 adds an optional virtual Swarm Command sandbox beside Flight Yard. Players can vary the four current airframe counts, place origin/objective points, and combine formations, motion patterns, missions, origin logic, intelligence and teammate rules. It keeps practice preferences device-local and does not mutate expedition saves, hull, charge, tasks or discoveries. See CHANGELOG-v7.32.md.
 
 v7.31 resumes GitHub `grok` commit `812380d` (Grok v7.29), restores independent personal optics, anchors escort flight to the operator, adds LOW-compatible neon airframe lights and repairs bloom output. See CHANGELOG-v7.31.md for validation and remaining limitations. Concurrent Grok v7.30 contact AO (`90fa399`) is also retained, with HDR output corrections. The separate dirty v7.21 and prior sync worktrees were not used or overwritten.
 

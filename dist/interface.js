@@ -27,14 +27,14 @@ export function icon(name, extra='') {
 export const MENU_GROUPS = Object.freeze([
   {id:'expedition',label:'Expedition',icon:'compass',target:'quick',pages:[['quick','Field overview','objective'],['journal','Journal','journal'],['story','Story archive','guide'],['guide','Field manual','guide'],['saves','Save / load','saves'],['chapters','Chapters','guide']]},
   {id:'equipment',label:'Equipment',icon:'inventory',target:'inventory',pages:[['inventory','Backpack','inventory'],['workshop','Workshop','craft'],['supplies','Cargo & recovery','supplies'],['rig','Bike & trailer','bike']]},
-  {id:'fleet',label:'Fleet',icon:'drones',target:'drones',pages:[['drones','Fleet operations','drones'],['flightyard','Flight Yard','tower']]},
+  {id:'fleet',label:'Fleet',icon:'drones',target:'drones',pages:[['drones','Fleet operations','drones'],['flightyard','Flight Yard','tower'],['swarm','Swarm Command','drones'],['swarmLab','Formation lab','drones']]},
   {id:'world',label:'World',icon:'map',target:'map',pages:[['map','Sector map','map'],['locations','Settlements','camp']]},
   {id:'system',label:'System',icon:'settings',target:'settings',pages:[['settings','Settings','settings'],['environment','Light & weather','day'],['controls','Controls','controls'],['reference','Reference archive','journal']]}
 ]);
 
 const escape=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const contexts=new Set(['prologue','resident','npc','cal','relayTerminal','phase','antenna','core','confirmNew','dead','win','leg2brief','leg2win','leg3brief','leg3win']);
-const buttonIcons={flightyard:'drones',quick:'compass',inventory:'inventory',supplies:'supplies',rig:'bike',drones:'drones',map:'map',locations:'camp',settings:'settings',environment:'day',saves:'saves',controls:'controls',guide:'guide',reference:'journal',journal:'journal',story:'guide',chapters:'guide',play:'play',new:'new',continue:'play'};
+const buttonIcons={flightyard:'drones',swarm:'drones',quick:'compass',inventory:'inventory',supplies:'supplies',rig:'bike',drones:'drones',map:'map',locations:'camp',settings:'settings',environment:'day',saves:'saves',controls:'controls',guide:'guide',reference:'journal',journal:'journal',story:'guide',chapters:'guide',play:'play',new:'new',continue:'play'};
 
 export function finishInterface({screen,started=false,state={},tutorialEnabled=true}={}) {
   const panel=document.getElementById('panel');if(!memory){let storage;try{storage=window.localStorage;}catch{}memory=new MenuMemory(storage);}

@@ -27,10 +27,10 @@ export function validateSurveillance(raw){
  return {...createSurveillance(),...raw,system,lastSeen:raw.lastSeen?[...raw.lastSeen]:null};
 }
 
-export function watchCanSee(eye,yaw,target,{solids=[],terrain=()=>0,storm=false}={}){
+export function watchCanSee(eye,yaw,target,{solids=[],terrain=()=>0,storm=false,visibility=1}={}){
  if(!target)return false;
  const delta=target.map((v,i)=>v-eye[i]),range=distance(eye,target),horizontal=Math.hypot(delta[0],delta[2]);
- if(range>(storm?42:68)||range<.01||Math.abs(delta[1])>Math.max(18,horizontal*1.7))return false;
+ if(range>(storm?42:68)*Math.max(.2,Math.min(1,visibility))||range<.01||Math.abs(delta[1])>Math.max(18,horizontal*1.7))return false;
  if(horizontal>4&&(-Math.sin(yaw)*delta[0]-Math.cos(yaw)*delta[2])/horizontal<Math.cos(Math.PI*.36))return false;
  if(obstruction(eye,target,solids))return false;
  const samples=Math.max(2,Math.ceil(range/1.5));
@@ -38,7 +38,7 @@ export function watchCanSee(eye,yaw,target,{solids=[],terrain=()=>0,storm=false}
  return true;
 }
 
-export function advanceSurveillance(w,dt,{active=false,target=null,solids=[],terrain=()=>0,storm=false}={}){
+export function advanceSurveillance(w,dt,{active=false,target=null,solids=[],terrain=()=>0,storm=false,visibility=1}={}){
  if(!active||!Number.isFinite(dt)||dt<=0)return [];
  dt=Math.min(dt,.05);const events=[],d=w.system;
  const phase=next=>{if(w.phase===next)return;w.phase=next;w.phaseTime=0;events.push(next);};
@@ -55,7 +55,7 @@ export function advanceSurveillance(w,dt,{active=false,target=null,solids=[],ter
  if(w.battery<22||d.hp<30||d.mode==='RETURN HOME')phase('RETREAT');
  // Retreat never follows the target. The charger has a finite independent bank.
  if(w.phase!=='RETREAT'){
-  const visible=watchCanSee(d.pos,d.yaw,target,{solids,terrain,storm});
+  const visible=watchCanSee(d.pos,d.yaw,target,{solids,terrain,storm,visibility});
   if(visible){w.lastSeen=[...target];w.lostFor=0;w.exposure=clamp(w.exposure+dt*.32,0,1);}
   else{w.lostFor+=dt;w.exposure=Math.max(0,w.exposure-dt*.12);}
   if(visible&&w.exposure>=.95&&w.phase!=='OBSERVE'){w.encounters++;phase('OBSERVE');}

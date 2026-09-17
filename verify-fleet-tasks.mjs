@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import {createDrone,migrateDrone,updateDrone} from './dist/drone-system.js';
 import {AIRCRAFT,syncSquad,selectAircraft,validateSquad} from './dist/squadron.js';
-import {createAircraftRecord,validateAircraftTask,assignSurvey,commandAircraft,controlTask,advanceAircraftTask,taskDestination,cancelRegionTasks} from './dist/fleet-tasks.js';
+import {aircraftId,aircraftBatteryId,createAircraftRecord,validateAircraftTask,assignSurvey,commandAircraft,controlTask,advanceAircraftTask,taskDestination,cancelRegionTasks} from './dist/fleet-tasks.js';
 import {renderFleetTask} from './dist/fleet-task-ui.js';
 const home=[0,2,0],destination=[0,20,-70];
 const fresh=(type='scout')=>createAircraftRecord(type,createDrone(home));
 const copy=v=>JSON.parse(JSON.stringify(v));
-const reload=r=>validateAircraftTask(createAircraftRecord(r.type,migrateDrone(copy(r.system),home),r.battery),copy(r));
+const reload=r=>validateAircraftTask(createAircraftRecord(AIRCRAFT.find(id=>aircraftId(id)===r.id),migrateDrone(copy(r.system),home),r.battery),copy(r));
 let scans=0;
 function tick(r,seconds=.02,extra={}){
  for(let t=0;t<seconds;t+=.02){
@@ -20,7 +20,7 @@ for(const type of AIRCRAFT){
  for(let i=0;i<4000&&r.task.state==='RUNNING';i++){tick(r);if(i===300)r=reload(r);}
  assert.equal(r.task.state,'COMPLETED',type+' finishes survey and docks');assert.equal(r.system.mode,'DOCK');assert.equal(scans,1);assert.equal(r.task.contacts,4);
  const charge=r.battery;r=reload(r);tick(r,1);assert.equal(scans,1);assert.equal(r.battery,charge,'Restoring a completed job neither scans nor drains');
- assert.equal(r.id,'aircraft-'+type+'-01');assert.equal(r.batteryId,'battery-'+type+'-01');
+ assert.equal(r.id,aircraftId(type));assert.equal(r.batteryId,aircraftBatteryId(type));
 }
 
 // Scan debit is exactly once across the survey/return persistence boundary.
