@@ -1,3 +1,11 @@
+# GRIDRUNNER v7.35 — Fleet Commander
+
+**[Play Fleet Commander](https://gridrunner.goodyartist.chatgpt.site/commander.html)** · **[Main game](https://gridrunner.goodyartist.chatgpt.site)**
+
+An independent arena for **1–100 drones**, with four existing airframes, eight beacon colors plus white, editable groups, manual/scripted formations, math influences, words and drawing. Click **Launch all**, then try **Program** or **Games**. The main menu and Fleet directory also launch Commander and hold your expedition for the return trip.
+
+**Saves** keeps named fleet setups and supports JSON export/import. Try free flight, formation drills, beacon hunts or a 2–4 player local pass-and-play relay. Six starters remain four Scouts and two Relays. See [v7.35 release notes](CHANGELOG-v7.35.md) for controls, validation and limits. `npm run test:commander` runs the focused simulation/UI/handoff checks.
+
 # GRIDRUNNER v7.34 — Programmable swarms
 
 Open **Swarm Command → Program Swarm**. Choose aircraft, preview hand inputs or a cue script, then **Apply to Live Fleet → Resume Field Run**. Four Scouts and two Relays remain the starter kit; Scouts 03/04 are the editor default so existing guards and links keep working.

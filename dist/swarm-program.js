@@ -17,10 +17,10 @@ export const PROGRAM_RANGES={spacing:[8,30],height:[8,70],moveX:[-120,120],moveZ
 const ENUMS={shape:Object.keys(PROGRAM_SHAPES),plane:['sky','ground'],origin:['operator','bike','objective','fixed'],pattern:['hold','orbit','wave','pulse','search'],team:['independent','pairs','leader','mesh'],field:Object.keys(PROGRAM_FIELDS),show:['none','flyby','roll','flip','dance']};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const mod=(v,n)=>(v%n+n)%n;
-export function validateSwarmProgram(raw,{reset=false}={}){
+export function validateSwarmProgram(raw,{reset=false,aircraft=STARTER_AIRCRAFT,groups={}}={}){
  if(raw===undefined)return createSwarmProgram();
  const base=createSwarmProgram();
- if(!raw||raw.version!==1||!['manual','script'].includes(raw.mode)||!Array.isArray(raw.ids)||raw.ids.length<1||raw.ids.length>6||new Set(raw.ids).size!==raw.ids.length||raw.ids.some(id=>!STARTER_AIRCRAFT.includes(id)))throw Error('Choose one to six starter aircraft.');
+ if(!raw||raw.version!==1||!['manual','script'].includes(raw.mode)||!Array.isArray(raw.ids)||raw.ids.length<1||raw.ids.length>aircraft.length||new Set(raw.ids).size!==raw.ids.length||raw.ids.some(id=>!aircraft.includes(id)))throw Error('Choose valid aircraft from this fleet.');
  const input=raw.settings;if(!input||typeof input!=='object')throw Error('Program settings are missing.');
  const settings={};
  for(const [key,value]of Object.entries(DEFAULTS)){
@@ -33,18 +33,19 @@ export function validateSwarmProgram(raw,{reset=false}={}){
   settings[key]=v;
  }
  if(typeof raw.source!=='string'||raw.source.length>6000)throw Error('Script must fit within 6000 characters.');
- if(raw.mode==='script')compileProgram(raw.source);
+ if(raw.mode==='script')compileProgram(raw.source,{aircraft,groups});
  const strokes=validateStrokes(raw.strokes);
- if(!reset&&(typeof raw.enabled!=='boolean'||typeof raw.running!=='boolean'||!Number.isFinite(raw.time)||raw.time<0||raw.time>1e8||!Array.isArray(raw.activeIds)||raw.activeIds.length>6||raw.activeIds.some(id=>!raw.ids.includes(id))))throw Error('Invalid program playback state.');
- return {...base,mode:raw.mode,ids:[...raw.ids],settings,strokes,source:raw.source,...(!reset?{enabled:raw.enabled,running:raw.running,time:raw.time,activeIds:[...new Set(raw.activeIds)]}:{})};
+ if(!reset&&(typeof raw.enabled!=='boolean'||typeof raw.running!=='boolean'||!Number.isFinite(raw.time)||raw.time<0||raw.time>1e8||!Array.isArray(raw.activeIds)||raw.activeIds.length>aircraft.length||raw.activeIds.some(id=>!raw.ids.includes(id))))throw Error('Invalid program playback state.');
+ return {...base,mode:raw.mode,ids:[...raw.ids],settings,strokes,source:raw.source,...(aircraft!==STARTER_AIRCRAFT?{fleetIds:[...aircraft],groups:Object.fromEntries(Object.entries(groups).map(([key,ids])=>[key,[...ids]]))}:{}),...(!reset?{enabled:raw.enabled,running:raw.running,time:raw.time,activeIds:[...new Set(raw.activeIds)]}:{})};
 }
 const compileCache=new Map(),formulaCache=new Map();
 function formula(source){if(!formulaCache.has(source)){if(formulaCache.size>64)formulaCache.clear();formulaCache.set(source,parseFormula(source));}return formulaCache.get(source);}
-export function compileProgram(source){
- if(compileCache.has(source))return compileCache.get(source);
+export function compileProgram(source,{aircraft=STARTER_AIRCRAFT,groups={}}={}){
+ const key=aircraft===STARTER_AIRCRAFT?source:source+JSON.stringify([aircraft,groups]);
+ if(compileCache.has(key))return compileCache.get(key);
  if(typeof source!=='string'||source.length>6000)throw Error('Script must fit within 6000 characters.');
  const lines=source.split('\n');if(lines.length>96)throw Error('Script is limited to 96 lines.');
- const cues=[];let at=0,group=[...STARTER_AIRCRAFT],repeat=0,countIn=null;
+ const cues=[];let at=0,group=[...aircraft],repeat=0,countIn=null;
  function number(value,min,max,label){const n=Number(value);if(value===undefined||!Number.isFinite(n)||n<min||n>max)throw Error(label+' must be between '+min+' and '+max+'.');return n;}
  function choice(value,allowed,label){if(!allowed.includes(value))throw Error(label+': choose '+allowed.join(', ')+'.');return value;}
  for(let row=0;row<lines.length;row++){
@@ -54,7 +55,7 @@ export function compileProgram(source){
    if(repeat)throw Error('repeat must be the last command.');
    const arity={select:1,wait:1,repeat:1,formation:1,word:null,plane:1,origin:1,pattern:1,team:1,show:1,trace:1,move:2,objective:2,influence:3,formula:null,assign:1};
    if(Object.hasOwn(arity,command)&&arity[command]!==null&&args.length!==arity[command])throw Error(command+' expects '+arity[command]+' value(s).');
-   if(command==='select'){const value=args[0];group=value==='all'?[...STARTER_AIRCRAFT]:value==='scouts'?STARTER_AIRCRAFT.filter(v=>v.startsWith('scout')):value==='relays'?STARTER_AIRCRAFT.filter(v=>v.startsWith('relay')):value.split(',');if(!group.length||group.some(id=>!STARTER_AIRCRAFT.includes(id))||new Set(group).size!==group.length)throw Error('Unknown aircraft group.');continue;}
+   if(command==='select'){const value=args[0];group=value==='all'?[...aircraft]:Object.hasOwn(groups,value)?[...groups[value]]:value==='scouts'?aircraft.filter(v=>v.startsWith('scout')):value==='relays'?aircraft.filter(v=>v.startsWith('relay')):value.split(',');if((!group.length&&!Object.hasOwn(groups,value))||group.some(id=>!aircraft.includes(id))||new Set(group).size!==group.length)throw Error('Unknown aircraft group.');continue;}
    if(command==='wait'){at+=number(args[0],.1,120,'wait');if(at>600)throw Error('Timeline is limited to 600 seconds.');continue;}
    if(command==='repeat'){repeat=number(args[0],Math.max(1,at+.1),600,'repeat period');continue;}
    if(command==='countIn'){if(at!==0||args.length!==1)throw Error('countIn takes one number before the first wait.');countIn=number(args[0],0,8,'countIn');continue;}
@@ -72,23 +73,25 @@ export function compileProgram(source){
   }catch(error){throw Error('Line '+(row+1)+': '+error.message);}
  }
  if(!cues.length)throw Error('Add at least one formation, influence or assignment command.');
- const result={cues,repeat,countIn,duration:Math.max(at,repeat,1)};if(compileCache.size>16)compileCache.clear();compileCache.set(source,result);return result;
+ const result={cues,repeat,countIn,duration:Math.max(at,repeat,1)};if(compileCache.size>16)compileCache.clear();compileCache.set(key,result);return result;
 }
+const programCache=new WeakMap();
+function compiledFor(program){const cached=programCache.get(program);if(cached&&cached.source===program.source&&cached.ids===program.fleetIds&&cached.groups===program.groups)return cached.script;const script=compileProgram(program.source,{aircraft:program.fleetIds||STARTER_AIRCRAFT,groups:program.groups||{}});programCache.set(program,{source:program.source,ids:program.fleetIds,groups:program.groups,script});return script;}
 export function programOptions(program,id,time=program.time){
  const opts={...program.settings};
- if(program.mode==='script'){const script=compileProgram(program.source);opts.countIn=script.countIn??opts.countIn;const t=script.repeat?mod(Math.max(0,time-opts.countIn),script.repeat):Math.max(0,time-opts.countIn);for(const cue of script.cues)if(cue.at<=t&&cue.ids.includes(id))Object.assign(opts,cue.patch);}
+ if(program.mode==='script'){const script=compiledFor(program);opts.countIn=script.countIn??opts.countIn;const t=script.repeat?mod(Math.max(0,time-opts.countIn),script.repeat):Math.max(0,time-opts.countIn);for(const cue of script.cues)if(cue.at<=t&&cue.ids.includes(id))Object.assign(opts,cue.patch);}
  return opts;
 }
 export function initialProgramOrders(program){
  const orders=Object.fromEntries(program.ids.map(id=>[id,'formation']));
- if(program.mode==='script')for(const cue of compileProgram(program.source).cues)if(cue.at===0&&cue.assignment)for(const id of cue.ids)if(id in orders)orders[id]=cue.assignment;
+ if(program.mode==='script')for(const cue of compiledFor(program).cues)if(cue.at===0&&cue.assignment)for(const id of cue.ids)if(id in orders)orders[id]=cue.assignment;
  return orders;
 }
 export function advanceSwarmProgram(program,dt){
  if(!program.enabled||!program.running)return [];
  const previous=program.time;program.time=Math.min(1e8,previous+clamp(dt,0,1));
  if(program.mode!=='script')return [];
- const script=compileProgram(program.source),countIn=script.countIn??program.settings.countIn,from=previous-countIn,to=program.time-countIn,events=[];
+ const script=compiledFor(program),countIn=script.countIn??program.settings.countIn,from=previous-countIn,to=program.time-countIn,events=[];
  if(to<0)return events;
  const cycle=script.repeat?Math.floor(Math.max(0,from)/script.repeat):0,end=script.repeat?Math.floor(to/script.repeat):0;
  for(let c=cycle;c<=end;c++)for(const cue of script.cues){const at=cue.at+c*script.repeat;if(cue.assignment&&at>from&&at<=to&&!(c===0&&cue.at===0))events.push(cue);}
@@ -114,10 +117,11 @@ export function influenceVector(opts,point,time,index,count){
 export function sampleSwarmProgram(program,id,{time=program.time,reducedMotion=false}={}){
  const opts=programOptions(program,id,time),ids=program.ids,i=Math.max(0,ids.indexOf(id)),n=ids.length;
  const t=reducedMotion?0:Math.max(0,time-opts.countIn),phase=t+opts.phase,spacing=opts.spacing;
- let local=basicShape(opts.shape,i,n,spacing),strokes=[];
+ const shapeSpacing=program.fleetIds&&n>6?(opts.shape==='ring'?spacing*Math.sqrt(n/6):['line','wedge'].includes(opts.shape)?spacing*Math.min(1,16/n):spacing):spacing;
+ let local=basicShape(opts.shape,i,n,shapeSpacing),strokes=[];
  if(opts.shape==='word'||opts.shape==='drawing'){
   strokes=opts.shape==='word'?wordStrokes(opts.word):program.strokes;
-  const progress=opts.trace&&!reducedMotion?mod(t/24+i*.06,1):n===1?.5:i/(n-1),[x,z]=samplePath(strokes,progress);
+  const progress=opts.trace&&!reducedMotion?mod(t/24+i*Math.min(.06,1/n),1):n===1?.5:i/(n-1),[x,z]=samplePath(strokes,progress);
   const shaped=opts.plane==='sky'?[x*spacing*2,-z*spacing*2,0]:[x*spacing*2,0,z*spacing*2],start=basicShape('ring',i,n,spacing),blend=opts.morph?clamp(t/opts.morph,0,1):1;
   local=shaped.map((value,j)=>start[j]+(value-start[j])*blend);
  }

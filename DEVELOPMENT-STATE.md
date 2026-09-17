@@ -1,6 +1,8 @@
 # GRIDRUNNER continuation state
 
-Date: 2026-09-17. Current slice: v7.34 Programmable swarms.
+Date: 2026-09-17. Current slice: v7.35 Fleet Commander.
+
+v7.35 adds `commander.html`: an independent 1–100-drone arena with nine beacon colors, fleet builder, bounded grouped programs, named fleet JSON saves, drill/hunt/pass-and-play games, instanced reference models and a working canvas fallback. Campaign entry/return holds and restores the current expedition in session storage without overwriting named saves. Full regression and focused Commander simulation/DOM/handoff tests pass; desktop and 390 px browser controls are checked in the fallback because WebGL is unavailable in the browser. See CHANGELOG-v7.35.md for the measured CPU scope and unverified GPU limits. Discovery/parts-builder progression remains future work.
 
 v7.34 adds the live program bench, bounded arithmetic/script interpreter, group timeline, layered mathematical fields, show attitudes, words and drawn paths, and device-local presets. Source remains `/workspace/sites/gridrunner-swarm-live`; the other dirty checkout and remote PC / GitHub worktrees are untouched. See CHANGELOG-v7.34.md for checks and limitations.
 
