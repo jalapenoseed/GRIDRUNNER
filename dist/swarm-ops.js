@@ -1,16 +1,17 @@
 import {STARTER_AIRCRAFT,aircraftCode} from './fleet-manifest.js';
 import {commandAircraft,hasLiveTask} from './fleet-tasks.js';
+import {createSwarmProgram,validateSwarmProgram,applySwarmProgramTarget} from './swarm-program.js';
 
 export const SWARM_ORDERS={formation:'Formation',operator:'Guard operator',bike:'Guard bike',scout:'Scout area',relay:'Relay link',standby:'Stand by'};
 export const SWARM_PATTERNS=['Hold','Orbit','Weave','Pulse','Search'];
-export function createSwarmOps(){return {version:1,origin:'operator',pattern:'Hold',spacing:14,objective:null,fixed:null,contacts:0};}
+export function createSwarmOps(){return {version:1,origin:'operator',pattern:'Hold',spacing:14,objective:null,fixed:null,contacts:0,program:createSwarmProgram()};}
 export function createCamo(){return {version:1,deployed:false,position:null,yaw:0};}
 const point=p=>Array.isArray(p)&&p.length===3&&p.every(Number.isFinite)&&Math.abs(p[0])<=600&&p[1]>=0&&p[1]<=200&&p[2]>=-4720&&p[2]<=230;
 const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
 export function validateSwarmOps(raw){
  if(raw===undefined)return createSwarmOps();
  if(!raw||raw.version!==1||!['operator','bike','fixed','objective'].includes(raw.origin)||!SWARM_PATTERNS.includes(raw.pattern)||!Number.isFinite(raw.spacing)||raw.spacing<8||raw.spacing>30||raw.objective!==null&&!point(raw.objective)||raw.fixed!==null&&!point(raw.fixed)||!Number.isSafeInteger(raw.contacts)||raw.contacts<0)throw Error('Invalid swarm program');
- return {...createSwarmOps(),...raw};
+ return {...createSwarmOps(),...raw,program:validateSwarmProgram(raw.program)};
 }
 export function validateCamo(raw){
  if(raw===undefined)return createCamo();
@@ -49,7 +50,8 @@ export function swarmOrigin(program,{operator,bike}){
 }
 // Assignment targets are offsets passed into the regular flight controller.
 // Physics, obstacle avoidance, finite batteries and emergency returns still own motion.
-export function swarmOffset(record,program,{operator,bike,yaw=0,elapsed=0,squad,slot,terrain=()=>0,floor=-1600}){
+export function swarmOffset(record,program,{operator,bike,yaw=0,elapsed=0,squad,slot,terrain=()=>0,floor=-1600,reducedMotion=false}){
+ record.showAttitude={pitch:0,roll:0};record.programStatus='';
  const order=record.swarmOrder;if(!order||hasLiveTask(record)||!['FOLLOW','ORBIT'].includes(record.system.mode))return null;
  const peers=Object.values(squad).filter(r=>r.swarmOrder===order),index=Math.max(0,peers.indexOf(record)),n=Math.max(1,peers.length),spacing=program.spacing;
  const base=swarmOrigin(program,{operator,bike}),objective=program.objective||[base[0]-Math.sin(yaw)*85,base[1],base[2]-Math.cos(yaw)*85];
@@ -70,7 +72,10 @@ export function swarmOffset(record,program,{operator,bike,yaw=0,elapsed=0,squad,
   if(program.pattern==='Search'){x+=Math.sin(t)*spacing*2;z+=Math.sin(t*.5)*spacing;}
   target=[base[0]+x,base[1]+y,base[2]+z];
  }
- target[0]=Math.max(-550,Math.min(550,target[0]));target[2]=Math.max(floor+10,Math.min(210,target[2]));target[1]=Math.max(terrain(target[0],target[2])+5,Math.min(175,target[1]));
+ const id=Object.keys(squad).find(key=>squad[key]===record),authored=applySwarmProgramTarget(program.program,{id,order,assignmentTarget:target,operator,bike,objective:program.objective,fixed:program.fixed,squad,reducedMotion});
+ target=authored.target;record.showAttitude=authored.attitude;record.programStatus=authored.error;
+ const before=[...target];target[0]=Math.max(-550,Math.min(550,target[0]));target[2]=Math.max(floor+10,Math.min(210,target[2]));target[1]=Math.max(terrain(target[0],target[2])+5,Math.min(175,target[1]));
+ if(before.some((v,i)=>v!==target[i]))record.programStatus='Terrain / sector clearance overrides target';
  return target.map((v,i)=>v-operator[i]);
 }
 export function nearbyGuards(squad,position){return Object.values(squad).filter(r=>['operator','bike'].includes(r.swarmOrder)&&['FOLLOW','ORBIT'].includes(r.system.mode)&&r.battery>=10&&r.system.hp>=20&&r.system.signal>8&&distance(r.system.pos,position)<30);}
@@ -80,7 +85,7 @@ export function airborneRelays(squad){return Object.values(squad).filter(r=>r.ty
 export function renderSwarmOps({state:s,started=false,available=()=>true,notice='',covered=false}={}){
  const p=s.swarmOps||createSwarmOps(),sq=s.squad||{};
  return `<div class="swarmOps"><div class="panelTop"><div><div class="eyebrow">BLACKLINE / LIVE FLEET</div><h2>Swarm Command</h2></div><button data-back>← Back</button></div><p class="lead">Your workshop-built cluster: four Scouts, two Relays, one rider.</p>
- <p>Guard your body and bike while other aircraft scout. Orders take effect when you resume the world.</p>
+ <p>Guard your body and bike while other aircraft scout. Orders take effect when you resume the world.</p><button class="primary" data-nav="swarmProgram">PROGRAM SWARM · WORDS / DRAW / MATH</button>
  ${!started?'<button class="primary" data-swarm-start>PLAY SWARM START</button><p>Start a new expedition with the six-drone kit ready to fly. Continue an existing save from the main menu to add it to that expedition.</p>':`<div class="commandGrid"><button class="primary" data-swarm-split>PROTECT + SCOUT</button><button data-swarm-resume>RESUME FIELD RUN →</button><button data-swarm-recall>RECALL CLUSTER</button></div><p class="hint">Protect + Scout: Scout 01 guards you, Scout 02 guards the bike, Scouts 03–04 survey, and both Relays maintain airborne links. Active jobs and FPV pilots keep control.</p>`}
  <p role="status" class="swarmNotice">${notice}</p>
  <div class="swarmOpsGrid"><section><h3>Operations map</h3><canvas id="swarmOpsMap" width="680" height="360" tabindex="0" aria-label="Swarm map. Click to set the scout objective; arrow keys move it by ten metres."></canvas><p class="hint">Cyan: Scouts · magenta: Relays · white: operator · gold: bike · ring: objective. Click or tap to place a scout objective. Keyboard: arrow keys.</p><button data-swarm-ahead>OBJECTIVE 85 m AHEAD</button>

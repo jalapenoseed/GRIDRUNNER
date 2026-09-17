@@ -1,0 +1,30 @@
+// Stroke font on a 3 × 3 grid; disconnected strokes stay disconnected when sampled.
+const LETTERS={A:['60128','345'],B:['630125478','345'],C:['2103678'],D:['630125876'],E:['2103678','345'],F:['63012','345'],G:['210367854'],H:['036','258','345'],I:['012','147','678'],J:['258763'],K:['036','243','48'],L:['03678'],M:['6304258'],N:['630852'],O:['012587630'],P:['63012543'],Q:['012587630','48'],R:['63012543','48'],S:['210345876'],T:['012','147'],U:['0367852'],V:['03752'],W:['0364752'],X:['048','246'],Y:['047','24'],Z:['0124678'],0:['012587630'],1:['147','678'],2:['012543678'],3:['0125876','345'],4:['0345','258'],5:['210345876'],6:['103678543'],7:['01247'],8:['012587630','345'],9:['543012587'],'-':['345']};
+const grid=key=>[Number(key)%3/2,Math.floor(Number(key)/3)/2];
+export function wordStrokes(text){
+ const chars=String(text).toUpperCase().replace(/[^A-Z0-9 -]/g,'').slice(0,16),width=Math.max(1,chars.length*1.4-.4),result=[];
+ for(let i=0;i<chars.length;i++)for(const path of LETTERS[chars[i]]||[])result.push([...path].map(key=>{const [x,y]=grid(key);return [(x+i*1.4-width/2)/width*2,(y-.5)/width*2];}));
+ return result;
+}
+export function pathMetrics(strokes){
+ let length=0;const segments=[];
+ for(const stroke of strokes)for(let i=1;i<stroke.length;i++){const a=stroke[i-1],b=stroke[i],d=Math.hypot(b[0]-a[0],b[1]-a[1]);if(d>.00001){segments.push({a,b,start:length,length:d});length+=d;}}
+ return {segments,length};
+}
+export function samplePath(strokes,fraction){
+ const {segments,length}=pathMetrics(strokes);if(!length)return [0,0];
+ const d=Math.max(0,Math.min(1,fraction))*length,seg=segments.find(s=>d<=s.start+s.length)||segments.at(-1),t=Math.max(0,Math.min(1,(d-seg.start)/seg.length));
+ return seg.a.map((v,i)=>v+(seg.b[i]-v)*t);
+}
+export function validateStrokes(strokes){
+ if(!Array.isArray(strokes)||strokes.length>24||strokes.reduce((n,s)=>n+(Array.isArray(s)?s.length:1000),0)>512)throw Error('Drawing is limited to 24 strokes and 512 points.');
+ for(const stroke of strokes)if(!Array.isArray(stroke)||stroke.some(p=>!Array.isArray(p)||p.length!==2||p.some(v=>!Number.isFinite(v)||Math.abs(v)>1)))throw Error('Invalid drawing points.');
+ return strokes.map(s=>s.map(p=>[...p]));
+}
+export function basicShape(shape,i,n,spacing){
+ const mid=(n-1)/2,a=i/Math.max(1,n)*Math.PI*2;
+ if(shape==='line')return [(i-mid)*spacing,0,0];
+ if(shape==='wedge'){const row=Math.ceil(i/2);return [i===0?0:(i%2?-1:1)*row*spacing*.65,0,row*spacing*.7];}
+ if(shape==='grid'){const cols=Math.ceil(Math.sqrt(n)),rows=Math.ceil(n/cols);return [(i%cols-(cols-1)/2)*spacing,0,(Math.floor(i/cols)-(rows-1)/2)*spacing];}
+ return [Math.cos(a)*spacing,0,Math.sin(a)*spacing];
+}

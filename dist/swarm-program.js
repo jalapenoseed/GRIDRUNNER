@@ -1,0 +1,162 @@
+import {STARTER_AIRCRAFT} from './fleet-manifest.js';
+import {parseFormula,evaluateFormula} from './swarm-expressions.js';
+import {basicShape,samplePath,wordStrokes,validateStrokes} from './swarm-shapes.js';
+
+export const PROGRAM_SHAPES={ring:'Ring',wedge:'Wedge',line:'Line',grid:'Grid',word:'Word',drawing:'Drawing'};
+export const PROGRAM_FIELDS={none:'None',vortex:'Vortex / curl',attract:'Attraction',repel:'Repulsion',wave:'Traveling wave',lissajous:'Lissajous',spiral:'Rising spiral',braid:'Opening braid',twin:'Twin attractors',square:'Complex square',riemann:'Riemann sphere',custom:'Custom formula'};
+export const FIELD_FORMULAS={none:'No additional displacement.',vortex:'Δ = strength × (−z, 0, x) / max(1, √(x² + z²))',attract:'Δ points toward the origin; strength sets its length.',repel:'Δ points away from the origin; strength sets its length.',wave:'Δy = strength × sin(frequency × t + phase + i × 0.7)',lissajous:'Δ = strength × (sin(2q), 0.4 sin(3q), cos(3q)), q = frequency × t + phase + i × 0.7',spiral:'Δ = strength × (cos(q), 0.35 sin(q/2), sin(q))',braid:'Two opposed sine strands open and rejoin; q = frequency × t + i × 0.7.',twin:'Blend vectors toward two orbiting attractors.',square:'u = x / scale, v = z / scale; Δ = strength × (u² − v², 0, 2uv).',riemann:'u = x / scale, v = z / scale, d = 1 + u² + v²; Δ = strength × (2u/d, (u² + v² − 1)/d, 2v/d).',custom:'Δx, Δy, Δz are in metres. Variables: x, y, z, t (seconds), i (0-based), n, phase, pi, tau.'};
+export const PROGRAM_EXAMPLES={
+ 'Guard + light show':'select scout\nassign operator\nselect scout-02\nassign bike\nselect relays\nassign relay\nselect scout-03,scout-04\nassign formation\nformation ring\norigin bike\nheight 20\nmove 0 -28\ninfluence wave 5 0.7\nshow dance\nwait 12\nshow flyby\nwait 16\nshow none\nrepeat 32',
+ 'Riemann bloom':'select all\nformation ring\nspacing 18\nheight 24\ninfluence riemann 12 0.5\npattern orbit\nwait 12\ninfluence square 8 0.5\nwait 12\ninfluence vortex 10 0.6\nrepeat 36',
+ 'Write GRID':'select all\nformation word\nword GRID\nheight 26\nscale 2\ntrace on\nwait 24\nword RUN\nrepeat 48',
+ 'Formula dance':'select all\nformation line\nheight 22\ninfluence custom 8 0.7\nformula x = 6 * sin(t * 0.7 + i)\nformula y = 4 * cos(t + i * 0.8)\nformula z = 8 * sin(t * 0.5 + i)\nshow dance\nrepeat 24'
+};
+const DEFAULTS={shape:'ring',word:'GRID',plane:'sky',spacing:14,height:20,moveX:0,moveZ:-25,rotation:0,scale:1,morph:4,trace:true,origin:'bike',pattern:'hold',team:'independent',field:'none',strength:8,frequency:.6,phase:0,fieldScale:20,blend:1,show:'none',countIn:2,offset:.35,formulaX:'6 * sin(t + i)',formulaY:'4 * cos(t + i)',formulaZ:'6 * cos(t + i)'};
+export function createSwarmProgram(){return {version:1,mode:'manual',ids:['scout-03','scout-04'],settings:{...DEFAULTS},strokes:[],source:PROGRAM_EXAMPLES['Guard + light show'],enabled:false,running:false,time:0,activeIds:[]};}
+export const PROGRAM_RANGES={spacing:[8,30],height:[8,70],moveX:[-120,120],moveZ:[-120,120],rotation:[-180,180],scale:[.25,3],morph:[0,12],strength:[0,24],frequency:[.05,3],phase:[-6.28,6.28],fieldScale:[5,80],blend:[0,1],countIn:[0,8],offset:[0,2]};
+const ENUMS={shape:Object.keys(PROGRAM_SHAPES),plane:['sky','ground'],origin:['operator','bike','objective','fixed'],pattern:['hold','orbit','wave','pulse','search'],team:['independent','pairs','leader','mesh'],field:Object.keys(PROGRAM_FIELDS),show:['none','flyby','roll','flip','dance']};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const mod=(v,n)=>(v%n+n)%n;
+export function validateSwarmProgram(raw,{reset=false}={}){
+ if(raw===undefined)return createSwarmProgram();
+ const base=createSwarmProgram();
+ if(!raw||raw.version!==1||!['manual','script'].includes(raw.mode)||!Array.isArray(raw.ids)||raw.ids.length<1||raw.ids.length>6||new Set(raw.ids).size!==raw.ids.length||raw.ids.some(id=>!STARTER_AIRCRAFT.includes(id)))throw Error('Choose one to six starter aircraft.');
+ const input=raw.settings;if(!input||typeof input!=='object')throw Error('Program settings are missing.');
+ const settings={};
+ for(const [key,value]of Object.entries(DEFAULTS)){
+  const v=input[key]??value;
+  if(PROGRAM_RANGES[key]){const [min,max]=PROGRAM_RANGES[key];if(!Number.isFinite(v)||v<min||v>max)throw Error(key+' must be between '+min+' and '+max+'.');}
+  else if(ENUMS[key]){if(!ENUMS[key].includes(v))throw Error('Invalid '+key+'.');}
+  else if(key==='word'){if(typeof v!=='string'||!/^[A-Z0-9 -]{1,16}$/.test(v)||!v.trim())throw Error('Use 1–16 letters, numbers, spaces or hyphens.');}
+  else if(key.startsWith('formula'))parseFormula(v);
+  else if(typeof v!==typeof value)throw Error('Invalid '+key+'.');
+  settings[key]=v;
+ }
+ if(typeof raw.source!=='string'||raw.source.length>6000)throw Error('Script must fit within 6000 characters.');
+ if(raw.mode==='script')compileProgram(raw.source);
+ const strokes=validateStrokes(raw.strokes);
+ if(!reset&&(typeof raw.enabled!=='boolean'||typeof raw.running!=='boolean'||!Number.isFinite(raw.time)||raw.time<0||raw.time>1e8||!Array.isArray(raw.activeIds)||raw.activeIds.length>6||raw.activeIds.some(id=>!raw.ids.includes(id))))throw Error('Invalid program playback state.');
+ return {...base,mode:raw.mode,ids:[...raw.ids],settings,strokes,source:raw.source,...(!reset?{enabled:raw.enabled,running:raw.running,time:raw.time,activeIds:[...new Set(raw.activeIds)]}:{})};
+}
+const compileCache=new Map(),formulaCache=new Map();
+function formula(source){if(!formulaCache.has(source)){if(formulaCache.size>64)formulaCache.clear();formulaCache.set(source,parseFormula(source));}return formulaCache.get(source);}
+export function compileProgram(source){
+ if(compileCache.has(source))return compileCache.get(source);
+ if(typeof source!=='string'||source.length>6000)throw Error('Script must fit within 6000 characters.');
+ const lines=source.split('\n');if(lines.length>96)throw Error('Script is limited to 96 lines.');
+ const cues=[];let at=0,group=[...STARTER_AIRCRAFT],repeat=0,countIn=null;
+ function number(value,min,max,label){const n=Number(value);if(value===undefined||!Number.isFinite(n)||n<min||n>max)throw Error(label+' must be between '+min+' and '+max+'.');return n;}
+ function choice(value,allowed,label){if(!allowed.includes(value))throw Error(label+': choose '+allowed.join(', ')+'.');return value;}
+ for(let row=0;row<lines.length;row++){
+  const text=lines[row].split('#')[0].trim();if(!text)continue;
+  const [command,...args]=text.split(/\s+/);let patch={},assignment=null;
+  try{
+   if(repeat)throw Error('repeat must be the last command.');
+   const arity={select:1,wait:1,repeat:1,formation:1,word:null,plane:1,origin:1,pattern:1,team:1,show:1,trace:1,move:2,objective:2,influence:3,formula:null,assign:1};
+   if(Object.hasOwn(arity,command)&&arity[command]!==null&&args.length!==arity[command])throw Error(command+' expects '+arity[command]+' value(s).');
+   if(command==='select'){const value=args[0];group=value==='all'?[...STARTER_AIRCRAFT]:value==='scouts'?STARTER_AIRCRAFT.filter(v=>v.startsWith('scout')):value==='relays'?STARTER_AIRCRAFT.filter(v=>v.startsWith('relay')):value.split(',');if(!group.length||group.some(id=>!STARTER_AIRCRAFT.includes(id))||new Set(group).size!==group.length)throw Error('Unknown aircraft group.');continue;}
+   if(command==='wait'){at+=number(args[0],.1,120,'wait');if(at>600)throw Error('Timeline is limited to 600 seconds.');continue;}
+   if(command==='repeat'){repeat=number(args[0],Math.max(1,at+.1),600,'repeat period');continue;}
+   if(command==='countIn'){if(at!==0||args.length!==1)throw Error('countIn takes one number before the first wait.');countIn=number(args[0],0,8,'countIn');continue;}
+   if(command==='formation')patch.shape=choice(args[0],ENUMS.shape,'formation');
+   else if(['origin','pattern','team','show','plane'].includes(command))patch[command]=choice(args[0],ENUMS[command],command);
+   else if(command==='word'){const word=args.join(' ').toUpperCase();if(!/^[A-Z0-9 -]{1,16}$/.test(word)||!word.trim())throw Error('word accepts 1–16 letters, numbers or hyphens.');patch.word=word;}
+   else if(command==='trace')patch.trace=choice(args[0],['on','off'],'trace')==='on';
+   else if(command==='move'||command==='objective'){patch.moveX=number(args[0],-120,120,'x');patch.moveZ=number(args[1],-120,120,'z');if(command==='objective')patch.origin='objective';}
+   else if(command==='influence'){patch.field=choice(args[0],ENUMS.field,'influence');patch.strength=number(args[1],0,24,'strength');patch.frequency=number(args[2],.05,3,'frequency');}
+   else if(command==='formula'){const match=text.match(/^formula ([xyz])\s*=\s*(.+)$/);if(!match)throw Error('Use formula x = expression (or y / z).');parseFormula(match[2]);patch['formula'+match[1].toUpperCase()]=match[2];}
+   else if(command==='assign')assignment=choice(args[0],['formation','operator','bike','scout','relay','standby'],'assign');
+   else if(Object.hasOwn(PROGRAM_RANGES,command)){if(args.length!==1)throw Error(command+' expects one number.');patch[command]=number(args[0],...PROGRAM_RANGES[command],command);}
+   else throw Error('Unknown command '+command+'.');
+   cues.push({at,line:row+1,ids:[...group],patch,assignment});
+  }catch(error){throw Error('Line '+(row+1)+': '+error.message);}
+ }
+ if(!cues.length)throw Error('Add at least one formation, influence or assignment command.');
+ const result={cues,repeat,countIn,duration:Math.max(at,repeat,1)};if(compileCache.size>16)compileCache.clear();compileCache.set(source,result);return result;
+}
+export function programOptions(program,id,time=program.time){
+ const opts={...program.settings};
+ if(program.mode==='script'){const script=compileProgram(program.source);opts.countIn=script.countIn??opts.countIn;const t=script.repeat?mod(Math.max(0,time-opts.countIn),script.repeat):Math.max(0,time-opts.countIn);for(const cue of script.cues)if(cue.at<=t&&cue.ids.includes(id))Object.assign(opts,cue.patch);}
+ return opts;
+}
+export function initialProgramOrders(program){
+ const orders=Object.fromEntries(program.ids.map(id=>[id,'formation']));
+ if(program.mode==='script')for(const cue of compileProgram(program.source).cues)if(cue.at===0&&cue.assignment)for(const id of cue.ids)if(id in orders)orders[id]=cue.assignment;
+ return orders;
+}
+export function advanceSwarmProgram(program,dt){
+ if(!program.enabled||!program.running)return [];
+ const previous=program.time;program.time=Math.min(1e8,previous+clamp(dt,0,1));
+ if(program.mode!=='script')return [];
+ const script=compileProgram(program.source),countIn=script.countIn??program.settings.countIn,from=previous-countIn,to=program.time-countIn,events=[];
+ if(to<0)return events;
+ const cycle=script.repeat?Math.floor(Math.max(0,from)/script.repeat):0,end=script.repeat?Math.floor(to/script.repeat):0;
+ for(let c=cycle;c<=end;c++)for(const cue of script.cues){const at=cue.at+c*script.repeat;if(cue.assignment&&at>from&&at<=to&&!(c===0&&cue.at===0))events.push(cue);}
+ return events;
+}
+export function influenceVector(opts,point,time,index,count){
+ const [x,y,z]=point,t=time,q=t*opts.frequency+opts.phase+index*.7,a=opts.strength*opts.blend,r=Math.max(1,Math.hypot(x,z));let v=[0,0,0];
+ if(opts.field==='vortex')v=[-z/r,0,x/r];
+ if(opts.field==='attract')v=[-x/r,0,-z/r];
+ if(opts.field==='repel')v=[x/r,0,z/r];
+ if(opts.field==='wave')v=[0,Math.sin(q),0];
+ if(opts.field==='lissajous')v=[Math.sin(q*2),Math.sin(q*3)*.4,Math.cos(q*3)];
+ if(opts.field==='spiral')v=[Math.cos(q),Math.sin(q*.5)*.35,Math.sin(q)];
+ if(opts.field==='braid'){const side=index%2?1:-1;v=[Math.sin(q)*side*(.4+.6*(1+Math.sin(t*.3))/2),Math.cos(q)*.35,Math.sin(q*.5)*.5];}
+ if(opts.field==='twin'){const a1=[Math.cos(t*.4)*25,Math.sin(t*.4)*25],a2=[-a1[0],-a1[1]],weight=(1+Math.sin(q))/2;v=[(a1[0]*weight+a2[0]*(1-weight)-x)/40,.25*Math.sin(q),(a1[1]*weight+a2[1]*(1-weight)-z)/40];}
+ if(opts.field==='square'||opts.field==='riemann'){const u=x/opts.fieldScale,w=z/opts.fieldScale,d=1+u*u+w*w;v=opts.field==='square'?[u*u-w*w,0,2*u*w]:[2*u/d,(u*u+w*w-1)/d,2*w/d];}
+ if(opts.field==='custom'){
+  const vars={x,y,z,t,i:index,n:count,phase:opts.phase};
+  v=['formulaX','formulaY','formulaZ'].map(key=>evaluateFormula(formula(opts[key]),vars)*opts.blend);
+ }else v=v.map(value=>value*a);
+ const magnitude=Math.hypot(...v);return magnitude>32?v.map(value=>value*32/magnitude):v;
+}
+export function sampleSwarmProgram(program,id,{time=program.time,reducedMotion=false}={}){
+ const opts=programOptions(program,id,time),ids=program.ids,i=Math.max(0,ids.indexOf(id)),n=ids.length;
+ const t=reducedMotion?0:Math.max(0,time-opts.countIn),phase=t+opts.phase,spacing=opts.spacing;
+ let local=basicShape(opts.shape,i,n,spacing),strokes=[];
+ if(opts.shape==='word'||opts.shape==='drawing'){
+  strokes=opts.shape==='word'?wordStrokes(opts.word):program.strokes;
+  const progress=opts.trace&&!reducedMotion?mod(t/24+i*.06,1):n===1?.5:i/(n-1),[x,z]=samplePath(strokes,progress);
+  const shaped=opts.plane==='sky'?[x*spacing*2,-z*spacing*2,0]:[x*spacing*2,0,z*spacing*2],start=basicShape('ring',i,n,spacing),blend=opts.morph?clamp(t/opts.morph,0,1):1;
+  local=shaped.map((value,j)=>start[j]+(value-start[j])*blend);
+ }
+ if(!reducedMotion){
+  if(opts.pattern==='orbit'){const angle=phase*.25,[x,,z]=local;local[0]=x*Math.cos(angle)-z*Math.sin(angle);local[2]=x*Math.sin(angle)+z*Math.cos(angle);}
+  if(opts.pattern==='wave')local[1]+=Math.sin(phase+i*.8)*4;
+  if(opts.pattern==='pulse')local=local.map((v,j)=>j===1?v:v*(1+Math.sin(phase*.6)*.25));
+  if(opts.pattern==='search'){local[0]+=Math.sin(phase*.2)*spacing;local[2]+=Math.sin(phase*.1)*spacing;}
+ }
+ const angle=opts.rotation*Math.PI/180,[x,y,z]=local;
+ local=[(x*Math.cos(angle)-z*Math.sin(angle))*opts.scale,y*opts.scale,(x*Math.sin(angle)+z*Math.cos(angle))*opts.scale];
+ let field=[0,0,0],error='';try{field=influenceVector(opts,local,t,i,n);}catch(e){error=e.message;}
+ let combined=local.map((v,j)=>v+field[j]),attitude={pitch:0,roll:0};
+ if(opts.show!=='none'&&!reducedMotion&&time>=opts.countIn){
+  const beat=Math.max(0,t-i*opts.offset),cycle=mod(beat,12),spin=clamp((cycle-4)/2,0,1)*Math.PI*2;
+  if(opts.show==='flyby'){combined[0]+=Math.sin(beat*Math.PI/8)*32;combined[2]+=Math.cos(beat*Math.PI/8)*10;attitude.roll=spin;}
+  if(opts.show==='roll')attitude.roll=spin;
+  if(opts.show==='flip')attitude.pitch=spin;
+  if(opts.show==='dance'){combined[1]+=Math.sin(beat*2)*3;combined[0]+=Math.sin(beat)*4;attitude.roll=Math.sin(beat*2)*.5;attitude.pitch=spin;}
+ }
+ combined[0]+=opts.moveX;combined[1]+=opts.height;combined[2]+=opts.moveZ;
+ const base=[local[0]+opts.moveX,local[1]+opts.height,local[2]+opts.moveZ];
+ return {target:combined,base,field,attitude,opts,error,strokes};
+}
+export function applySwarmProgramTarget(program,{id,order,assignmentTarget,operator,bike,objective,fixed,squad,reducedMotion=false}){
+ if(!program?.enabled||!program.activeIds.includes(id))return {target:assignmentTarget,attitude:{pitch:0,roll:0},error:''};
+ const sample=sampleSwarmProgram(program,id,{reducedMotion}),{opts}=sample;
+ let target;
+ if(order==='formation'){
+  const base=opts.origin==='operator'?operator:opts.origin==='objective'?(objective||operator):opts.origin==='fixed'?(fixed||bike):bike;
+  target=sample.target.map((v,j)=>v+base[j]);
+  if(opts.team!=='independent'&&!['word','drawing'].includes(opts.shape)){
+   const i=program.ids.indexOf(id),others=program.activeIds.filter(other=>other!==id),buddy=opts.team==='pairs'?program.ids[i%2?i-1:i+1]:opts.team==='leader'?program.ids[0]:others[0],peer=squad?.[buddy];
+   if(peer&&['FOLLOW','ORBIT'].includes(peer.system.mode))for(const j of [0,2])target[j]+=clamp((peer.system.pos[j]-target[j])*.05,-2,2);
+  }
+ }else target=assignmentTarget.map((v,j)=>v+clamp(sample.field[j],-4,4));
+ // Choreography is a visual attitude offset; the flight body, collision controller
+ // and FPV camera keep their own orientation. Minimum rider/bike clearance is 12 m.
+ if(order==='formation')for(const center of [operator,bike]){const dx=target[0]-center[0],dz=target[2]-center[2],distance=Math.hypot(dx,dz);if(distance<12){const angle=distance>.001?Math.atan2(dz,dx):program.ids.indexOf(id)*Math.PI/3;target[0]=center[0]+Math.cos(angle)*12;target[2]=center[2]+Math.sin(angle)*12;}}
+ const canShow=order==='formation'&&[operator,bike].every(p=>Math.hypot(...p.map((v,j)=>v-(squad?.[id]?.system.pos[j]??target[j])))>12);
+ return {target,attitude:canShow?sample.attitude:{pitch:0,roll:0},error:sample.error};
+}

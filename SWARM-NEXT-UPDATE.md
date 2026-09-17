@@ -35,4 +35,4 @@ Compose assignment → formation → influence field → choreography. An influe
 - Let the player move, rotate, scale and raise the result, then morph from one saved shape to another.
 - Support multiple strokes, limited fleet size and a clear preview of which letters or details six drones can represent. Offer animated tracing when there are too few drones to hold the whole word.
 
-These are follow-up requirements, not claims that scripting, formula editing or word/drawing formations are already implemented in the current release.
+Implemented in v7.34: hand inputs, bounded cue scripts and expressions, group orders, origin/formation/pattern controls, fields, choreography, words/drawings, preview controls, and preset/save support. Morphing currently starts from a ring; arbitrary saved-shape-to-saved-shape blending and automatic obstacle-aware braid opening remain follow-ups. The braid preset is a periodic field layered beneath normal collision avoidance. See CHANGELOG-v7.34.md.

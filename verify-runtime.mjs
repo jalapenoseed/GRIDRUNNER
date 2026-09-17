@@ -1,3 +1,6 @@
+import {verifySwarmProgramIntegration} from './verify-swarm-program-integration.mjs';
+import * as swarmProgram from './dist/swarm-program.js';
+import * as swarmProgramUI from './dist/swarm-program-ui.js';
 import {verifySwarmOpsIntegration} from './verify-swarm-ops-integration.mjs';
 import * as swarmOps from './dist/swarm-ops.js';
 import * as swarmOpsUI from './dist/swarm-ops-ui.js';
@@ -79,11 +82,12 @@ let frames=0;class NullRenderer{constructor(){this.shadowMap={};this.info={rende
 const ctx=vm.createContext({...sensorPackages,...fieldFlow,...onboarding,Sensors,...fieldUpgrade,...squadron,SurfaceMaterials:class extends SurfaceMaterials{constructor(){super({textures:false});}},...fieldBook,...backpack,...fieldInterface,...sceneLayout,...intro,...weather,...yard,...fleetModule,DroneFleet:class extends fleetModule.DroneFleet{constructor(scene){super(scene,{assets:false});}},EnvironmentDetail:class extends EnvironmentDetail{constructor(scene){super(scene,{textures:false});}},...relay,...relayWorldModule,...relayUI,makeRelayHouseWorld:(scene,solids)=>relayWorldModule.makeRelayHouseWorld(scene,solids,{assets:false}),machineSettings,drawInstruments,ControllerBridge,menuControls,...experience,CameraManager,augmentPOVPanel(){},...settlements,...survival,T:{...Three,WebGLRenderer:NullRenderer},...drone,...immersion,...leg2,...leg3,...expedition,...visuals,FieldAudio,console,performance,Math,Date,JSON,Number,Map,Set,Float32Array,window:w,document:w.document,localStorage:w.localStorage,matchMedia:()=>({matches:false}),devicePixelRatio:1,innerWidth:1280,innerHeight:800,requestAnimationFrame(){},setTimeout(){},URL,Blob,location:{reload(){}},confirm:()=>true});
 Object.assign(ctx,{VisionDetector,beamSolids,riderGradeAllowed,PresenceComposer,ImportedProps,setFieldAction,updateFieldRig},batteryPacks,batteryPackUI,campaignProgress,fleetPolicy,fleetPolicyUI,droneControls,fleetTasks,fleetTaskUI,relayOutpost,powerLines,lineHarvest,lineHarvestUI);ctx.SpatialIndex=SpatialIndex;ctx.GamePhysics=GamePhysics;ctx.AmbientResidents=class extends AmbientResidents{constructor(mara,settlements,solids){super(mara,settlements,solids,{build:buildCampRoutes});}};
 const source=fs.readFileSync('dist/game.js','utf8').replace(/^import .*;\r?\n/gm,'');
-Object.assign(ctx,swarmOps,swarmOpsUI,fleetManifest,sensorLabModule,swarmSteering,swarmCommand,surveillance,openingRoute,{OpeningWorld:class extends OpeningWorld{constructor(scene,solids){super(scene,solids,{assets:false});}}});
+Object.assign(ctx,swarmProgram,swarmProgramUI,swarmOps,swarmOpsUI,fleetManifest,sensorLabModule,swarmSteering,swarmCommand,surveillance,openingRoute,{OpeningWorld:class extends OpeningWorld{constructor(scene,solids){super(scene,solids,{assets:false});}}});
 vm.runInContext(source,ctx);const run=code=>vm.runInContext(code,ctx);
 await run('spatial.ready');await run('ambientResidents.ready');assert.equal(run('spatial.status'),'ready');assert.equal(run('ambientResidents.status'),'ready');
 const tick=(seconds)=>{for(let i=0;i<seconds*50;i++)run('update(.02)');run('hud();loop(performance.now()+20)');};
 vm.runInContext(`function newCampaign(){newExpedition();s.intro=completedIntro();s.mode='bike';s.pos.set(bike.position.x,1.7,bike.position.z);hud();}`,ctx);
+if(process.argv.includes('--swarm-program')){verifySwarmProgramIntegration({run,tick,w});process.exit(0);}
 if(process.argv.includes('--swarm-ops')){verifySwarmOpsIntegration({run,tick,w});process.exit(0);}
 if(process.argv.includes('--personal-fleet')){verifyPersonalFleet({run,tick,w});process.exit(0);}
 if(process.argv.includes('--menu-repair')){verifyMenuRepair({run,tick,w});process.exit(0);}

@@ -1,6 +1,8 @@
 # GRIDRUNNER continuation state
 
-Date: 2026-09-17. Current slice: v7.33 Swarm field operations.
+Date: 2026-09-17. Current slice: v7.34 Programmable swarms.
+
+v7.34 adds the live program bench, bounded arithmetic/script interpreter, group timeline, layered mathematical fields, show attitudes, words and drawn paths, and device-local presets. Source remains `/workspace/sites/gridrunner-swarm-live`; the other dirty checkout and remote PC / GitHub worktrees are untouched. See CHANGELOG-v7.34.md for checks and limitations.
 
 v7.33 integrates six starter aircraft (four Scouts and two Relays), live guard/scout/relay assignments, per-instance saves and FPV, and physical camouflage cover. The canonical Sites checkout is `/workspace/sites/gridrunner-swarm-live`, resumed from published `df10466`. Full tests pass; browser command UI was checked at desktop and 390 px, with WebGL unavailable in that browser. See CHANGELOG-v7.33.md. The user’s requested programming, formula influences, dance flybys, word formations and drawings are recorded in SWARM-NEXT-UPDATE.md for the next update. The PC worktree `GRIDRUNNER-swarm-command` remains at its prior sandbox revision; it was inspected but not overwritten by this Site release.
 

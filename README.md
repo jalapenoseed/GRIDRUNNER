@@ -1,3 +1,11 @@
+# GRIDRUNNER v7.34 — Programmable swarms
+
+Open **Swarm Command → Program Swarm**. Choose aircraft, preview hand inputs or a cue script, then **Apply to Live Fleet → Resume Field Run**. Four Scouts and two Relays remain the starter kit; Scouts 03/04 are the editor default so existing guards and links keep working.
+
+New: bounded formula editor; 11 mathematical influence choices; timed group assignments; flyby, roll, flip and dance choreography; upright or horizontal word/drawing formations; multi-stroke mouse/touch/keyboard drawing; preview Run/Pause/Step/Reset; and local preset save/import/export.
+
+See [v7.34 release notes](CHANGELOG-v7.34.md).
+
 # GRIDRUNNER v7.33 — Swarm field operations
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**

@@ -94,7 +94,7 @@ export function controlTask(record,action,home,solids=[]){
  if(!commandDrone(record.system,t.stage==='RETURN'?'RETURN HOME':'SCOUT AHEAD',home,record.battery,solids))return {ok:false,reason:'Aircraft cannot resume.'};
  t.state='RUNNING';t.stageElapsed=0;t.dwell=0;t.reason='Job resumed';return {ok:true,reason:t.reason};
 }
-export function cancelRegionTasks(s){for(const r of Object.values(s.squad||{})){r.swarmOrder=null;if(hasLiveTask(r))finish(r,'CANCELLED','Region changed; assign a new local job');}if(s.swarmOps){s.swarmOps.objective=null;s.swarmOps.fixed=null;}if(s.camo)s.camo.deployed=false;}
+export function cancelRegionTasks(s){for(const r of Object.values(s.squad||{})){r.swarmOrder=null;if(hasLiveTask(r))finish(r,'CANCELLED','Region changed; assign a new local job');}if(s.swarmOps){s.swarmOps.objective=null;s.swarmOps.fixed=null;if(s.swarmOps.program){s.swarmOps.program.enabled=false;s.swarmOps.program.running=false;s.swarmOps.program.activeIds=[];}}if(s.camo)s.camo.deployed=false;}
 
 export function advanceAircraftTask(record,dt,{home,solids=[],events=[],scan,state=null,squad={},terrain=()=>0,storm=false,jammed=false,trailerHome=null,trailerStopped=false}={}){
  if(!hasLiveTask(record))return [];
