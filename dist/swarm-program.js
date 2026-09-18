@@ -1,6 +1,8 @@
 import {STARTER_AIRCRAFT} from './fleet-manifest.js';
 import {parseFormula,evaluateFormula} from './swarm-expressions.js';
-import {basicShape,samplePath,wordStrokes,validateStrokes} from './swarm-shapes.js';
+import {basicShape,samplePath,wordStrokes,validateStrokes,pathMetrics,largeFleetShape} from './swarm-shapes.js';
+
+import {sequenceWords,wordSequenceState} from './word-sequence.js';
 
 export const PROGRAM_SHAPES={ring:'Ring',wedge:'Wedge',line:'Line',grid:'Grid',column:'Column / trail','double-orbit':'Dual orbit',scatter:'Adaptive scatter',staggered:'Staggered','high-low':'High / low',overwatch:'Overwatch',word:'Word',drawing:'Drawing'};
 export const PROGRAM_FIELDS={none:'None',vortex:'Vortex / curl',attract:'Attraction',repel:'Repulsion',wave:'Traveling wave',lissajous:'Lissajous',spiral:'Rising spiral',braid:'Opening braid',twin:'Twin attractors',square:'Complex square',riemann:'Riemann sphere',custom:'Custom formula'};
@@ -11,16 +13,16 @@ export const PROGRAM_EXAMPLES={
  'Write GRID':'select all\nformation word\nword GRID\nheight 26\nscale 2\ntrace on\nwait 24\nword RUN\nrepeat 48',
  'Formula dance':'select all\nformation line\nheight 22\ninfluence custom 8 0.7\nformula x = 6 * sin(t * 0.7 + i)\nformula y = 4 * cos(t + i * 0.8)\nformula z = 8 * sin(t * 0.5 + i)\nshow dance\nrepeat 24'
 };
-const DEFAULTS={shape:'ring',word:'GRID',plane:'sky',spacing:14,height:20,moveX:0,moveZ:-25,rotation:0,scale:1,morph:4,trace:true,origin:'bike',pattern:'hold',team:'independent',field:'none',strength:8,frequency:.6,phase:0,fieldScale:20,blend:1,show:'none',countIn:2,offset:.35,beatSync:false,bpm:120,formulaX:'6 * sin(t + i)',formulaY:'4 * cos(t + i)',formulaZ:'6 * cos(t + i)'};
+const DEFAULTS={shape:'ring',word:'GRID',sequenceEnabled:false,sequenceWords:'HELLO\nWORLD',sequenceHold:8,sequenceTransition:10,sequenceLoop:true,plane:'sky',spacing:14,height:20,moveX:0,moveZ:-25,rotation:0,scale:1,morph:4,trace:true,origin:'bike',pattern:'hold',team:'independent',field:'none',strength:8,frequency:.6,phase:0,fieldScale:20,blend:1,show:'none',countIn:2,offset:.35,beatSync:false,bpm:120,formulaX:'6 * sin(t + i)',formulaY:'4 * cos(t + i)',formulaZ:'6 * cos(t + i)'};
 export function createSwarmProgram(){return {version:1,mode:'manual',ids:['scout-03','scout-04'],settings:{...DEFAULTS},strokes:[],source:PROGRAM_EXAMPLES['Guard + light show'],enabled:false,running:false,time:0,activeIds:[]};}
-export const PROGRAM_RANGES={spacing:[8,30],height:[8,70],moveX:[-120,120],moveZ:[-120,120],rotation:[-180,180],scale:[.25,3],morph:[0,12],strength:[0,24],frequency:[.05,3],phase:[-6.28,6.28],fieldScale:[5,80],blend:[0,1],countIn:[0,8],offset:[0,2],bpm:[40,220]};
+export const PROGRAM_RANGES={spacing:[8,30],height:[8,70],moveX:[-120,120],moveZ:[-120,120],rotation:[-180,180],scale:[.25,3],morph:[0,12],strength:[0,24],frequency:[.05,3],phase:[-6.28,6.28],fieldScale:[5,80],blend:[0,1],countIn:[0,8],offset:[0,2],bpm:[40,220],sequenceHold:[2,30],sequenceTransition:[2,40]};
 const ENUMS={shape:Object.keys(PROGRAM_SHAPES),plane:['sky','ground'],origin:['operator','bike','objective','fixed'],pattern:['hold','orbit','wave','weave','pulse','search'],team:['independent','pairs','leader','mesh'],field:Object.keys(PROGRAM_FIELDS),show:['none','flyby','roll','flip','dance']};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const mod=(v,n)=>(v%n+n)%n;
 export function validateSwarmProgram(raw,{reset=false,aircraft=STARTER_AIRCRAFT,groups={}}={}){
  if(raw===undefined)return createSwarmProgram();
- const base=createSwarmProgram();
- if(!raw||raw.version!==1||!['manual','script'].includes(raw.mode)||!Array.isArray(raw.ids)||raw.ids.length<1||raw.ids.length>aircraft.length||new Set(raw.ids).size!==raw.ids.length||raw.ids.some(id=>!aircraft.includes(id)))throw Error('Choose valid aircraft from this fleet.');
+ const base=createSwarmProgram(),knownIds=new Set(aircraft);
+ if(!raw||raw.version!==1||!['manual','script'].includes(raw.mode)||!Array.isArray(raw.ids)||raw.ids.length<1||raw.ids.length>aircraft.length||new Set(raw.ids).size!==raw.ids.length||raw.ids.some(id=>!knownIds.has(id)))throw Error('Choose valid aircraft from this fleet.');
  const input=raw.settings;if(!input||typeof input!=='object')throw Error('Program settings are missing.');
  const settings={};
  for(const [key,value]of Object.entries(DEFAULTS)){
@@ -28,6 +30,7 @@ export function validateSwarmProgram(raw,{reset=false,aircraft=STARTER_AIRCRAFT,
   if(PROGRAM_RANGES[key]){const [min,max]=PROGRAM_RANGES[key];if(!Number.isFinite(v)||v<min||v>max)throw Error(key+' must be between '+min+' and '+max+'.');}
   else if(ENUMS[key]){if(!ENUMS[key].includes(v))throw Error('Invalid '+key+'.');}
   else if(key==='word'){if(typeof v!=='string'||!/^[A-Z0-9 -]{1,16}$/.test(v)||!v.trim())throw Error('Use 1–16 letters, numbers, spaces or hyphens.');}
+  else if(key==='sequenceWords')sequenceWords(v);
   else if(key.startsWith('formula'))parseFormula(v);
   else if(typeof v!==typeof value)throw Error('Invalid '+key+'.');
   settings[key]=v;
@@ -70,7 +73,7 @@ export function compileProgram(source,{aircraft=STARTER_AIRCRAFT,groups={}}={}){
    else if(command==='assign')assignment=choice(args[0],['formation','operator','bike','scout','relay','standby'],'assign');
    else if(Object.hasOwn(PROGRAM_RANGES,command)){if(args.length!==1)throw Error(command+' expects one number.');patch[command]=number(args[0],...PROGRAM_RANGES[command],command);}
    else throw Error('Unknown command '+command+'.');
-   cues.push({at,line:row+1,ids:[...group],patch,assignment});
+   cues.push({at,line:row+1,ids:[...group],idSet:new Set(group),patch,assignment});
   }catch(error){throw Error('Line '+(row+1)+': '+error.message);}
  }
  if(!cues.length)throw Error('Add at least one formation, influence or assignment command.');
@@ -79,8 +82,9 @@ export function compileProgram(source,{aircraft=STARTER_AIRCRAFT,groups={}}={}){
 const programCache=new WeakMap();
 function compiledFor(program){const cached=programCache.get(program);if(cached&&cached.source===program.source&&cached.ids===program.fleetIds&&cached.groups===program.groups)return cached.script;const script=compileProgram(program.source,{aircraft:program.fleetIds||STARTER_AIRCRAFT,groups:program.groups||{}});programCache.set(program,{source:program.source,ids:program.fleetIds,groups:program.groups,script});return script;}
 export function programOptions(program,id,time=program.time){
+ if(program.mode==='manual')return program.settings;
  const opts={...program.settings};
- if(program.mode==='script'){const script=compiledFor(program);opts.countIn=script.countIn??opts.countIn;const t=script.repeat?mod(Math.max(0,time-opts.countIn),script.repeat):Math.max(0,time-opts.countIn);for(const cue of script.cues)if(cue.at<=t&&cue.ids.includes(id))Object.assign(opts,cue.patch);}
+ if(program.mode==='script'){const script=compiledFor(program);opts.countIn=script.countIn??opts.countIn;const t=script.repeat?mod(Math.max(0,time-opts.countIn),script.repeat):Math.max(0,time-opts.countIn);for(const cue of script.cues)if(cue.at<=t&&cue.idSet.has(id))Object.assign(opts,cue.patch);}
  return opts;
 }
 export function initialProgramOrders(program){
@@ -115,15 +119,25 @@ export function influenceVector(opts,point,time,index,count){
  }else v=v.map(value=>value*a);
  const magnitude=Math.hypot(...v);return magnitude>32?v.map(value=>value*32/magnitude):v;
 }
+const indexCache=new WeakMap();
+function programIndex(ids,id){let indices=indexCache.get(ids);if(!indices){indices=new Map(ids.map((value,i)=>[value,i]));indexCache.set(ids,indices);}return indices.get(id)??0;}
 export function sampleSwarmProgram(program,id,{time=program.time,reducedMotion=false}={}){
- const opts=programOptions(program,id,time),ids=program.ids,i=Math.max(0,ids.indexOf(id)),n=ids.length;
+ const opts=programOptions(program,id,time),ids=program.ids,i=programIndex(ids,id),n=ids.length;
  const t=reducedMotion?0:Math.max(0,time-opts.countIn),phase=t+opts.phase,spacing=opts.spacing;
  const shapeSpacing=program.fleetIds&&n>6?(['ring','double-orbit'].includes(opts.shape)?spacing*Math.sqrt(n/6):['line','wedge','column','staggered'].includes(opts.shape)?spacing*Math.min(1,16/n):spacing):spacing;
- let local=basicShape(opts.shape,i,n,shapeSpacing),strokes=[];
+ const large=!!program.fleetIds&&n>100;
+ let local=large?largeFleetShape(opts.shape,i,n,spacing,opts.scale):basicShape(opts.shape,i,n,shapeSpacing),strokes=[];
  if(opts.shape==='word'||opts.shape==='drawing'){
-  strokes=opts.shape==='word'?wordStrokes(opts.word):program.strokes;
-  const progress=opts.trace&&!reducedMotion?mod(t/24+i*Math.min(.06,1/n),1):n===1?.5:i/(n-1),[x,z]=samplePath(strokes,progress);
-  const shaped=opts.plane==='sky'?[x*spacing*2,-z*spacing*2,0]:[x*spacing*2,0,z*spacing*2],start=basicShape('ring',i,n,spacing),blend=opts.morph?clamp(t/opts.morph,0,1):1;
+  const sequence=opts.shape==='word'&&opts.sequenceEnabled&&program.mode==='manual'?wordSequenceState(opts,reducedMotion?0:time):null;
+  strokes=opts.shape==='word'?wordStrokes(sequence?.current||opts.word):program.strokes;
+  // Depth rows keep large casts from piling thousands of bodies on one stroke.
+  const paths=sequence?sequence.words.map(wordStrokes):[strokes],length=Math.min(...paths.map(p=>pathMetrics(p).length));
+  const capacity=large?Math.max(8,Math.floor(length*spacing*2*opts.scale/3.6)):n,layers=Math.ceil(n/capacity),layer=Math.floor(i/capacity),slots=Math.min(capacity,n-layer*capacity),slot=i%capacity;
+  const progress=opts.trace&&!reducedMotion?mod(t/24+slot/Math.max(1,slots),1):slots===1?.5:mod((slot+.37*layer)/slots,1);
+  const shape=path=>{const [x,z]=samplePath(path,progress),depth=(layer-(layers-1)/2)*4/opts.scale;return opts.plane==='sky'?[x*spacing*2,-z*spacing*2,depth]:[x*spacing*2,depth,z*spacing*2];};
+  let shaped=shape(strokes);
+  if(sequence?.blend){const next=shape(wordStrokes(sequence.next));shaped=shaped.map((v,j)=>v+(next[j]-v)*sequence.blend);}
+  const start=large?largeFleetShape('grid',i,n,spacing,opts.scale):basicShape('ring',i,n,spacing),blend=opts.morph?clamp(t/opts.morph,0,1):1;
   local=shaped.map((value,j)=>start[j]+(value-start[j])*blend);
  }
  if(!reducedMotion){

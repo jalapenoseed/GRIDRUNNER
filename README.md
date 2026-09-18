@@ -1,3 +1,11 @@
+# GRIDRUNNER v7.38 — One fleet, many words
+
+Commander and the in-world F9 fleet test now support **1–2,000 actual aircraft**. Choose 2,000 and Build / Deploy, then use **Program → Word sequence** to fly HELLO → WORLD or up to 16 custom messages with hold, transition and loop controls. The same aircraft move between cues. Task menus group formations, words, drawing and rhythm; contextual dialogs explain and route the next action. Changing a deployed roster offers an explicit Deploy action.
+
+Aircraft beacons use a small luminous emitter, soft additive optical glare, distance falloff and a brief white strobe; eight nearby dynamic lights provide surface illumination. Distant geometry uses adaptive detail while every aircraft retains its simulation body and beacon. Large in-world fleets run the regular controller at 20 Hz with visual interpolation. The 2,000-aircraft CPU checks pass; the available browser has no WebGL, so final GPU appearance and device frame rate remain user QA. Existing expedition progression and saves remain compatible.
+
+See [v7.38 changes and QA](CHANGELOG-v7.38.md). `npm run test:commander` includes the capacity and sequence suite; `npm run test:admin-fleet` checks actual expedition controls.
+
 # GRIDRUNNER v7.37 — All the lights we carried
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**

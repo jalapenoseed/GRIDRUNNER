@@ -1,12 +1,13 @@
 import * as T from './three.js';
 import {DroneFleet} from './drone-fleet.js';
 import {makeDrone,makeBike} from './visuals.js';
-import {COMMANDER_TYPES,COMMANDER_OBSTACLES} from './fleet-commander-core.js';
+import {COMMANDER_TYPES,COMMANDER_OBSTACLES,MAX_COMMANDER_DRONES} from './fleet-commander-core.js';
+import {AircraftBeacons} from './aircraft-beacons.js';
 import {beaconColor} from './beacon-palette.js';
 
 // Reuse the reference airframes. Every mesh part is drawn once per airframe type,
 // with instance transforms, rather than cloning a whole model for each drone.
-export function instanceParts(model,scene,capacity=100){
+export function instanceParts(model,scene,capacity=MAX_COMMANDER_DRONES){
  model.updateMatrixWorld(true);const parts=[];
  model.traverse(source=>{if(!source.isMesh)return;const mesh=new T.InstancedMesh(source.geometry,source.material,capacity);mesh.count=0;mesh.instanceMatrix.setUsage(T.DynamicDrawUsage);mesh.frustumCulled=false;scene.add(mesh);parts.push({mesh,local:source.matrixWorld.clone()});});return parts;
 }
@@ -32,15 +33,13 @@ export class CommanderRenderer{
   const cover=new T.Mesh(new T.ConeGeometry(4,2.2,4),new T.MeshStandardMaterial({color:0x59634a,roughness:1}));cover.position.set(0,1.1,62);cover.rotation.y=Math.PI/4;this.scene.add(cover);
   this.objective=new T.Group();const ring=new T.Mesh(new T.TorusGeometry(11,.18,6,64),new T.MeshBasicMaterial({color:0xf5e6a7}));ring.rotation.x=Math.PI/2;this.objective.add(ring);const ring2=ring.clone();ring2.rotation.x=0;this.objective.add(ring2);this.scene.add(this.objective);
   this.selectedRing=new T.Mesh(new T.TorusGeometry(2,.08,5,24),new T.MeshBasicMaterial({color:0xffffff}));this.selectedRing.rotation.x=Math.PI/2;this.scene.add(this.selectedRing);
-  const geometry=new T.BufferGeometry();geometry.setAttribute('position',new T.BufferAttribute(new Float32Array(300),3).setUsage(T.DynamicDrawUsage));geometry.setAttribute('color',new T.BufferAttribute(new Float32Array(300),3).setUsage(T.DynamicDrawUsage));geometry.setAttribute('alive',new T.BufferAttribute(new Float32Array(100),1).setUsage(T.DynamicDrawUsage));
-  this.beaconMaterial=new T.ShaderMaterial({uniforms:{size:{value:9}},vertexShader:'attribute vec3 color; attribute float alive; varying vec3 beaconColor; varying float brightness; uniform float size; void main(){beaconColor=color; brightness=alive; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); gl_PointSize=size;}',fragmentShader:'varying vec3 beaconColor; varying float brightness; void main(){float r=length(gl_PointCoord-vec2(0.5)); if(r>0.5)discard; vec3 col=mix(beaconColor,vec3(1.0),1.0-smoothstep(0.08,0.22,r)); gl_FragColor=vec4(col*brightness,1.0-smoothstep(0.40,0.5,r));}',transparent:true,depthWrite:false,depthTest:true,toneMapped:false});
-  this.beacons=new T.Points(geometry,this.beaconMaterial);this.beacons.frustumCulled=false;this.beacons.renderOrder=2;this.scene.add(this.beacons);
+  this.lamps=new AircraftBeacons(this.scene);this.beacons=this.lamps.points;this.beaconMaterial=this.beacons.material;
   for(const [type,def]of Object.entries(COMMANDER_TYPES)){const proxy=makeDrone(0x929c8f);proxy.scale.setScalar(def.span/1.8);this.proxy[type]=instanceParts(proxy,this.scene);}
   this.loader=new DroneFleet(new T.Scene());this.loader.setQuality('MEDIUM');
  }
  async loadType(type){
   if(this.detail[type]||this.failed.has(type))return;if(this.loading?.has(type))return;this.loading??=new Set();this.loading.add(type);
-  const ok=await this.loader.load(type);if(this.disposed)return;if(ok){const model=this.loader.records[type].model.clone();model.updateMatrixWorld(true);model.traverse(o=>{if(o.isMesh&&o.material.emissiveIntensity>0)o.material.emissiveIntensity=Math.min(.35,o.material.emissiveIntensity);});this.detail[type]=instanceParts(model,this.scene);}else this.failed.add(type);
+  const ok=await this.loader.load(type);if(this.disposed)return;if(ok){const model=this.loader.records[type].model.clone();model.updateMatrixWorld(true);model.traverse(o=>{if(o.isMesh&&o.material.emissiveIntensity>0)o.material.emissiveIntensity=Math.min(.35,o.material.emissiveIntensity);});this.detail[type]=instanceParts(model,this.scene,100);}else this.failed.add(type);
   this.onStatus(this.kind+(this.failed.size?' · simplified airframes':''));
  }
  resize(){const rect=this.host.getBoundingClientRect();this.width=Math.max(1,rect.width);this.height=Math.max(1,rect.height);if(this.renderer){this.renderer.setSize(this.width,this.height,false);this.camera.aspect=this.width/this.height;this.camera.updateProjectionMatrix();}else{const dpr=Math.min(2,devicePixelRatio||1);this.canvas.width=this.width*dpr;this.canvas.height=this.height*dpr;this.ctx?.setTransform(dpr,0,0,dpr,0,0);}}
@@ -66,9 +65,10 @@ export class CommanderRenderer{
   else if(this.view==='top')this.camera.position.set(0,this.distance,1);
   else if(this.view==='front')this.camera.position.set(0,30,this.distance);
   else this.camera.position.copy(this.center).add(new T.Vector3(Math.sin(this.azimuth)*Math.cos(this.elevation)*this.distance,Math.sin(this.elevation)*this.distance,Math.cos(this.azimuth)*Math.cos(this.elevation)*this.distance));
-  this.camera.lookAt(this.view==='top'?new T.Vector3():this.view==='front'?new T.Vector3(0,30,0):this.center);this.boxes.visible=sim.fleet.options.obstacles;this.objective.position.fromArray(sim.fleet.objective);this.selectedRing.position.fromArray(selected.pos);this.selectedRing.visible=this.view==='follow';
-  for(const type of Object.keys(COMMANDER_TYPES)){const drones=sim.drones.filter(d=>d.type===type);if(drones.length)this.loadType(type);const near=[],far=[];for(const d of drones)(this.detail[type]&&this.camera.position.distanceTo(vector.fromArray(d.pos))<48?near:far).push(d);fillInstances(this.proxy[type],far);if(this.detail[type])fillInstances(this.detail[type],near);}
-  const attrs=this.beacons.geometry.attributes;sim.drones.forEach((d,i)=>{attrs.position.setXYZ(i,d.pos[0],d.pos[1]+.4,d.pos[2]);const color=new T.Color(beaconColor(d.color).hex).convertLinearToSRGB();attrs.color.setXYZ(i,color.r,color.g,color.b);attrs.alive.setX(i,['DOCK','QUEUED'].includes(d.mode)?.4:1);});for(const attr of Object.values(attrs))attr.needsUpdate=true;this.beacons.geometry.setDrawRange(0,sim.drones.length);this.beaconMaterial.uniforms.size.value=sim.fleet.options.beaconSize*this.renderer.getPixelRatio();this.renderer.render(this.scene,this.camera);
+  this.camera.lookAt(this.view==='top'?new T.Vector3():this.view==='front'?new T.Vector3(0,30,0):this.center);this.boxes.visible=sim.fleet.options.obstacles;this.objective.position.fromArray(sim.fleet.objective);this.objective.visible=!(this.view==='front'&&['word','drawing'].includes(sim.program.settings.shape));this.selectedRing.position.fromArray(selected.pos);this.selectedRing.visible=this.view==='follow';
+  const large=sim.drones.length>256;
+  for(const type of Object.keys(COMMANDER_TYPES)){const drones=sim.drones.filter(d=>d.type===type);if(drones.length)this.loadType(type);const near=[],far=[];for(const d of drones){const distance=this.camera.position.distanceTo(vector.fromArray(d.pos));if(this.detail[type]&&distance<48&&near.length<(large?12:100))near.push(d);else if(!large||distance<120&&far.length<128)far.push(d);}fillInstances(this.proxy[type],far);if(this.detail[type])fillInstances(this.detail[type],near);}
+  this.lamps.update(sim.drones,this.camera,{time:sim.elapsed,size:sim.fleet.options.beaconSize,pixelRatio:this.renderer.getPixelRatio(),reducedMotion:sim.fleet.options.reducedMotion});this.renderer.render(this.scene,this.camera);
  }
  drawMap(sim){
   const c=this.ctx;if(!c)return;const w=this.width,h=this.height,s=this.mapScale();c.clearRect(0,0,w,h);c.fillStyle='#132126';c.fillRect(0,0,w,h);c.lineWidth=1;c.strokeStyle='#243339';
@@ -77,13 +77,15 @@ export class CommanderRenderer{
   c.strokeStyle='#52635e';if(this.view!=='front')for(const box of sim.fleet.options.obstacles?COMMANDER_OBSTACLES:[]){const [x,y]=this.project([box.x,0,box.z]);c.fillStyle='#35453f';c.fillRect(x-box.w*s,y-box.d*s,box.w*2*s,box.d*2*s);c.strokeRect(x-box.w*s,y-box.d*s,box.w*2*s,box.d*2*s);}
   const text=(p,label,color='#9eafaa')=>{const [x,y]=this.project(p);c.fillStyle=color;c.font='11px monospace';c.fillText(label,x+9,y-9);};
   if(this.view!=='front'){text([0,0,62],'OPERATOR / COVER');text([12,0,78],'BIKE');const [px,py]=this.project([-24,0,70]);c.strokeStyle='#566754';c.strokeRect(px,py,48*s,45*s);}
+  if(!(this.view==='front'&&['word','drawing'].includes(sim.program.settings.shape))){
   const [ox,oy]=this.project(sim.fleet.objective);c.strokeStyle=sim.challenge?.color?beaconColor(sim.challenge.color).hex:'#e5dbaa';c.lineWidth=1.5;c.beginPath();c.arc(ox,oy,Math.max(11,11*s),0,Math.PI*2);c.stroke();c.beginPath();c.moveTo(ox-5,oy);c.lineTo(ox+5,oy);c.moveTo(ox,oy-5);c.lineTo(ox,oy+5);c.stroke();text(sim.fleet.objective,'OBJECTIVE',c.strokeStyle);
-  for(const d of sim.drones){const [x,y]=this.project(d.pos),active=['FLY','RETURN'].includes(d.mode),size=sim.fleet.options.beaconSize*.46;c.globalAlpha=active?1:.3;
+  }
+  for(const d of sim.drones){const [x,y]=this.project(d.pos),active=['FLY','RETURN'].includes(d.mode),size=Math.max(1,sim.fleet.options.beaconSize*.17);c.globalAlpha=active?1:.3;
    if(active){const angle=d.yaw;c.strokeStyle=beaconColor(d.color).hex;c.lineWidth=1;c.beginPath();c.moveTo(x,y);c.lineTo(x-Math.sin(angle)*size*2,y-Math.cos(angle)*size*2);c.stroke();}
    c.fillStyle=beaconColor(d.color).hex;c.beginPath();c.ellipse(x,y,size,Math.max(1,size*Math.abs(Math.cos(d.attitude.roll))),d.attitude.pitch,0,Math.PI*2);c.fill();c.fillStyle='#fffef3';c.beginPath();c.arc(x,y,Math.max(1,size*.26),0,Math.PI*2);c.fill();c.globalAlpha=1;
    if(d.id===this.selected){c.strokeStyle='#d9e2da';c.lineWidth=1;c.beginPath();c.arc(x,y,size+4,0,Math.PI*2);c.stroke();}
   }
   c.fillStyle='#92a4a5';c.font='11px monospace';c.fillText(this.view==='front'?'FRONT ELEVATION / 20 m GRID':'N ↑    20 m GRID',18,h-18);
  }
- dispose(){this.disposed=true;this.resizeObserver.disconnect();this.renderer?.dispose();this.canvas.remove();}
+ dispose(){this.disposed=true;this.resizeObserver.disconnect();this.lamps?.dispose();this.renderer?.dispose();this.canvas.remove();}
 }

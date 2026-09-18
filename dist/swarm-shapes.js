@@ -36,3 +36,19 @@ export function basicShape(shape,i,n,spacing){
  if(shape==='grid'){const cols=Math.ceil(Math.sqrt(n)),rows=Math.ceil(n/cols);return [(i%cols-(cols-1)/2)*spacing,0,(Math.floor(i/cols)-(rows-1)/2)*spacing];}
  return [Math.cos(a)*spacing,0,Math.sin(a)*spacing];
 }
+
+// Large shows use banks or stacked rings so every aircraft has its own slot.
+// Fit the practice field before the user's scale is applied downstream.
+export function largeFleetShape(shape,i,n,spacing,scale=1){
+ const gap=Math.max(4,Math.min(spacing,320/(Math.ceil(Math.sqrt(n))-1))),fit=1/Math.max(1,scale);
+ if(['ring','double-orbit'].includes(shape)){
+  const slots=200,row=Math.floor(i/slots),count=Math.min(slots,n-row*slots),a=(i%slots)/count*Math.PI*2,r=shape==='double-orbit'?(row%2?146:110):140;
+  return [Math.cos(a)*r*fit,(row-(Math.ceil(n/slots)-1)/2)*4/scale,Math.sin(a)*r*fit];
+ }
+ if(['line','column','staggered','wedge'].includes(shape)){
+  const width=Math.min(64,n),rows=Math.ceil(n/width),row=Math.floor(i/width),col=i%width;
+  const x=(col-(width-1)/2)*5,z=(row-(rows-1)/2)*Math.min(8,spacing);
+  const p=shape==='column'?[z,0,x]:[x,shape==='staggered'?(col%2)*3:0,z+(shape==='wedge'?Math.abs(x)*.15:0)];return p.map(v=>v*fit);
+ }
+ const p=basicShape(shape,i,n,gap);return p.map(v=>v*fit);
+}

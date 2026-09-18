@@ -1,3 +1,13 @@
+# Current implementation — v7.38
+
+Date: 2026-09-18. Fleet capacity, beacons, word sequencing and menu update.
+
+Both Commander modes accept 1–2,000 actual drones with legacy fleet migration and compact archives. `word-sequence.js` controls hold / smooth transition / loop; the same IDs, bodies and flight clocks persist between words. Dense words use spaced depth rows. `fleet-spatial.js` supplies exact nearest-24 queries within 48 m for the live test fleet. The common steering math avoids per-neighbor allocations without changing its control rules. Large world tests use 20 Hz flight updates and interpolated positions. GPU geometry is bounded by distance while all 2,000 beacons remain present. `aircraft-beacons.js` provides optical cores/glare/strobes plus eight nearby surface lights.
+
+The new task menus and native contextual dialogs are available in Commander and F9. Browser-checked the 2,000 selection, word editor and running HELLO/WORLD in the tactical fallback. Automated tests cover real flight bodies, timing/continuity/identity, save/import migration, exact spatial queries, count-change routing, recall, bounded edge deployment and scene beacon capacities. The full `npm test` regression suite passed, including story and save checks. WebGL appearance and physical-device performance remain unverified here. See CHANGELOG-v7.38.md.
+
+## Previous release record
+
 # GRIDRUNNER continuation state
 
 Date: 2026-09-17. Current slice: v7.37 All the lights we carried.

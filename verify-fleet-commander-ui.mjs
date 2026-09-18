@@ -1,10 +1,12 @@
+import * as fleetHelpModule from './dist/fleet-help.js';
+import * as wordSequenceModule from './dist/word-sequence.js';
 import * as rhythm from './dist/swarm-rhythm.js';import * as presets from './dist/commander-presets.js';
 import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {JSDOM} from 'jsdom';
 import * as core from './dist/fleet-commander-core.js';import * as palette from './dist/beacon-palette.js';import * as program from './dist/swarm-program.js';import * as storage from './dist/fleet-commander-storage.js';
 const dom=new JSDOM(fs.readFileSync('dist/commander.html','utf8'),{url:'https://gridrunner.test/commander.html'}),w=dom.window,doc=w.document;
 w.HTMLCanvasElement.prototype.getContext=()=>new Proxy({},{get:()=>()=>{}});w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};
 class CommanderRenderer{constructor(host,{onStatus}){this.kind='Test renderer';this.renderer=null;onStatus(this.kind);}setView(){}render(){}dispose(){}}
-const ctx=vm.createContext({...rhythm,...presets,...core,...palette,...program,...storage,CommanderRenderer,document:doc,window:w,localStorage:w.localStorage,sessionStorage:w.sessionStorage,matchMedia:()=>({matches:false}),console,performance,URL,Blob,setTimeout,requestAnimationFrame(){}});
+const ctx=vm.createContext({...fleetHelpModule,...wordSequenceModule,...rhythm,...presets,...core,...palette,...program,...storage,CommanderRenderer,document:doc,window:w,localStorage:w.localStorage,sessionStorage:w.sessionStorage,matchMedia:()=>({matches:false}),console,performance,URL,Blob,setTimeout,requestAnimationFrame(){}});
 vm.runInContext(fs.readFileSync('dist/fleet-commander.js','utf8').replace(/^import .*;\n/gm,''),ctx);const run=code=>vm.runInContext(code,ctx),by=id=>doc.getElementById(id),flush=()=>new Promise(resolve=>setImmediate(resolve));
 async function click(id){assert(by(id),id);by(id).click();await flush();}
 function input(id,value,event='change'){by(id).value=value;by(id).dispatchEvent(new w.Event(event,{bubbles:true}));}
@@ -16,6 +18,14 @@ await click('chooseDrawing');assert.equal(by('shape').value,'drawing');assert(!b
 input('paintGroup','scouts');doc.querySelector('[aria-label="Paint group White"]').click();await flush();assert(run('sim.drones.filter(d=>d.type==="scout").every(d=>d.color==="white")'));
 input('fleetName','My hundred');await click('saveFleet');assert.equal(storage.readFleetLibrary(w.localStorage)[0].roster.length,100);assert.equal(storage.readFleetLibrary(w.localStorage)[0].program.strokes.length,2);assert.equal(storage.readFleetLibrary(w.localStorage)[0].program.settings.bpm,96);assert(storage.readFleetLibrary(w.localStorage)[0].program.settings.beatSync);
 input('count','6');await click('build');assert.equal(run('sim.drones.length'),6);assert.equal(run('sim.drones.filter(d=>d.type==="relay").length'),2);input('savedFleets','My hundred');await click('loadFleet');assert.equal(run('sim.drones.length'),100);assert.equal(run('strokes.length'),2);assert.equal(run('sim.drones.filter(d=>d.type==="scout"&&d.color==="white").length'),67);
-input('count','101');await click('build');assert.equal(run('sim.drones.length'),100);assert.match(by('notice').textContent,/1 to 100/);
+input('count','2001');await click('build');assert.equal(run('sim.drones.length'),100);assert.match(by('notice').textContent,/1 to 2,000/);
 input('gameMode','party');input('players','Ada\nBo');await click('startGame');assert.equal(run('sim.challenge.mode'),'party');assert(by('rosterControls').disabled);assert(by('importFleet').disabled);run('for(let i=0;i<91*60;i++)sim.step(1/60);updateReadouts()');assert(!by('nextPlayer').hidden);await click('nextPlayer');assert.equal(run('sim.challenge.players[sim.challenge.turn]'),'Bo');await click('freeFlight');assert(!by('rosterControls').disabled);
-console.log('PASS: actual Commander controls, 100-aircraft launch and pause, invalid script isolation, keyboard drawing, group paint, named fleet save / load, count validation, roster locks and party handoff. Rendering separately inspected in browser.');
+// Use the same visible controls for the new fleet and word-sequence workflow.
+input('count','2000');await click('build');assert.equal(run('sim.drones.length'),2000);
+doc.querySelector('[data-task="words"]').click();assert.equal(by('view').value,'front');assert(!by('wordInputs').hidden);assert(by('formationInputs').hidden);
+await click('editSequence');assert(by('sequenceDialog').open);input('sequenceWords','HELLO\nWORLD\nGRID');input('sequenceHold','9');input('sequenceTransition','12');await click('runSequence');assert(!by('sequenceDialog').open);assert.equal(run('sim.program.settings.sequenceWords'),'HELLO\nWORLD\nGRID');assert.equal(run('sim.drones.length'),2000);assert(run('sim.program.settings.sequenceEnabled'));
+run('for(let i=0;i<265;i++)sim.step(.05);updateReadouts()');assert.equal(by('active').textContent,'2000 / 2000');await click('pause');const stopped=run('sim.program.time');run('sim.step(.05)');assert.equal(run('sim.program.time'),stopped);
+await click('editSequence');input('sequenceWords','ONE');await click('runSequence');assert(by('sequenceDialog').open);assert.match(by('sequenceError').textContent,/2–16/);assert.equal(run('sim.program.settings.sequenceWords'),'HELLO\nWORLD\nGRID');input('sequenceWords','HELLO\nWORLD');await click('closeSequence');
+await click('programHelp');assert(by('fleetHelpDialog').open);[...by('fleetHelpDialog').querySelectorAll('button')].find(b=>b.textContent==='Build up to 2,000 aircraft').click();assert(!by('tab-fleet').hidden);assert.equal(doc.activeElement.id,'count');
+input('fleetName','Two thousand');await click('saveFleet');assert.equal(storage.readFleetLibrary(w.localStorage).find(f=>f.name==='Two thousand').roster.length,2000);
+console.log('PASS: actual Commander UI; 100/2,000-aircraft launch, pause, word editor, invalid sequence isolation, focus-return shortcuts, drawing, group paint, saves, count validation and scored roster locks.');

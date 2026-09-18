@@ -1,6 +1,7 @@
 import {createSwarmProgram,validateSwarmProgram,sampleSwarmProgram,initialProgramOrders,advanceSwarmProgram} from './swarm-program.js';
 import {BEACON_PALETTE,beaconColor} from './beacon-palette.js';
 
+export const MAX_COMMANDER_DRONES=2000;
 export const COMMANDER_TYPES={scout:{name:'Scout',speed:24,span:.52},relay:{name:'Relay',speed:22,span:.68},cargo:{name:'Cargo',speed:13,span:1.9},engineer:{name:'Utility',speed:16,span:.7}};
 export const COMMANDER_TEAMS=['alpha','bravo','charlie','delta'];
 export const COMMANDER_MODES={sandbox:'Free flight',formation:'Formation drill',hunt:'Beacon hunt',party:'Party relay'};
@@ -20,16 +21,16 @@ export function commanderGroups(roster){
  for(const drone of roster){groups[types[drone.type]].push(drone.id);groups[drone.team].push(drone.id);groups[drone.color].push(drone.id);}return groups;
 }
 export function createCommanderFleet(count=100,mix='recon'){
- count=clamp(Math.round(Number(count)||6),1,100);
+ count=clamp(Math.round(Number(count)||6),1,MAX_COMMANDER_DRONES);
  const roster=Array.from({length:count},(_,i)=>({id:'drone-'+String(i+1).padStart(3,'0'),name:'DRONE '+String(i+1).padStart(3,'0'),type:mix==='mixed'?['scout','scout','relay','cargo','engineer'][i%5]:mix==='relay'?'relay':i%3===2?'relay':'scout',color:BEACON_PALETTE[i%9].id,team:COMMANDER_TEAMS[i%4]}));
  const program=createSwarmProgram();program.ids=roster.map(r=>r.id);program.settings={...program.settings,shape:'grid',height:28,origin:'fixed',moveZ:-25,offset:.04,morph:3,trace:false};program.source=COMMANDER_EXAMPLES['Hundred-drone bloom'];
  return validateCommanderFleet({kind:'gridrunner-commander-fleet',version:1,name:count+' drone field kit',roster,program,objective:[0,28,-70],options:{unlimited:true,reducedMotion:false,obstacles:true,beaconSize:9}});
 }
 export function validateCommanderFleet(raw){
  if(!raw||raw.kind!=='gridrunner-commander-fleet'||raw.version!==1||typeof raw.name!=='string'||!raw.name.trim()||raw.name.length>48)throw Error('Choose a named Commander fleet file.');
- if(!Array.isArray(raw.roster)||raw.roster.length<1||raw.roster.length>100)throw Error('Fleet size must be 1–100 drones.');
+ if(!Array.isArray(raw.roster)||raw.roster.length<1||raw.roster.length>MAX_COMMANDER_DRONES)throw Error('Fleet size must be 1–2,000 drones.');
  const ids=new Set(),roster=raw.roster.map(drone=>{
-  if(!drone||typeof drone.id!=='string'||!/^drone-\d{3}$/.test(drone.id)||ids.has(drone.id)||!Object.hasOwn(COMMANDER_TYPES,drone.type)||!COMMANDER_TEAMS.includes(drone.team)||!BEACON_PALETTE.some(c=>c.id===drone.color)||typeof drone.name!=='string'||!drone.name.trim()||drone.name.length>30)throw Error('Fleet contains an invalid or duplicate drone.');
+  if(!drone||typeof drone.id!=='string'||!/^drone-\d{3,4}$/.test(drone.id)||ids.has(drone.id)||!Object.hasOwn(COMMANDER_TYPES,drone.type)||!COMMANDER_TEAMS.includes(drone.team)||!BEACON_PALETTE.some(c=>c.id===drone.color)||typeof drone.name!=='string'||!drone.name.trim()||drone.name.length>30)throw Error('Fleet contains an invalid or duplicate drone.');
   ids.add(drone.id);return {id:drone.id,name:drone.name,type:drone.type,color:drone.color,team:drone.team};
  });
  if(!raw.program)throw Error('Fleet program is missing.');
@@ -39,7 +40,7 @@ export function validateCommanderFleet(raw){
  return {kind:raw.kind,version:1,name:raw.name.trim(),roster,program,objective:[...raw.objective],options:{unlimited:o.unlimited,reducedMotion:o.reducedMotion,obstacles:o.obstacles,beaconSize:o.beaconSize}};
 }
 export function resolveCommanderGroup(fleet,group){return group==='all'?fleet.roster.map(r=>r.id):commanderGroups(fleet.roster)[group]||fleet.roster.filter(r=>r.id===group).map(r=>r.id);}
-const pad=(i,n)=>{const width=Math.ceil(Math.sqrt(n));return [(i%width-(width-1)/2)*4,1,72+Math.floor(i/width)*4];};
+const pad=(i,n)=>{const width=Math.ceil(Math.sqrt(n));return [(i%width-(width-1)/2)*4,1,Math.min(72,206-(Math.ceil(n/width)-1)*4)+Math.floor(i/width)*4];};
 const length=v=>Math.hypot(...v);
 export class CommanderSimulation{
  constructor(config=createCommanderFleet()){this.load(config);}
@@ -51,17 +52,17 @@ export class CommanderSimulation{
  apply(config){
   const next=validateCommanderFleet(config);
   if(next.roster.length!==this.drones.length||next.roster.some((r,i)=>r.id!==this.drones[i].id)){this.load(next);return;}
-  this.fleet=next;this.program=next.program;const orders=initialProgramOrders(this.program);
-  this.drones.forEach((d,i)=>{Object.assign(d,next.roster[i]);if(this.program.ids.includes(d.id)&&!['RETURN','DOCK'].includes(d.mode)){d.order=orders[d.id];if(d.order==='standby')this.recall([d.id]);}else if(d.order==='formation')d.order='hold';});
-  this.program.enabled=this.drones.some(d=>['FLY','QUEUED'].includes(d.mode));this.program.running=this.program.enabled;this.program.activeIds=this.program.ids.filter(id=>['FLY','QUEUED'].includes(this.drones.find(d=>d.id===id)?.mode));
+  this.fleet=next;this.program=next.program;const orders=initialProgramOrders(this.program),selected=new Set(this.program.ids),byId=new Map(this.drones.map(d=>[d.id,d]));
+  this.drones.forEach((d,i)=>{Object.assign(d,next.roster[i]);if(selected.has(d.id)&&!['RETURN','DOCK'].includes(d.mode)){d.order=orders[d.id];if(d.order==='standby')this.recall([d.id]);}else if(d.order==='formation')d.order='hold';});
+  this.program.enabled=this.drones.some(d=>['FLY','QUEUED'].includes(d.mode));this.program.running=this.program.enabled;this.program.activeIds=this.program.ids.filter(id=>['FLY','QUEUED'].includes(byId.get(id)?.mode));
   this.notice='Program applied. '+this.program.ids.length+' drones addressed.';
  }
  launch(){
   const orders=initialProgramOrders(this.program);let queued=0;
-  for(const d of this.drones)if(d.mode==='DOCK'&&d.battery>=20){d.mode='QUEUED';d.delay=this.elapsed+queued*.035;d.order=orders[d.id]||'formation';queued++;}
+  for(const d of this.drones)if(d.mode==='DOCK'&&d.battery>=20){d.mode='QUEUED';d.delay=this.elapsed+queued*Math.min(.035,12/this.drones.length);d.order=orders[d.id]||'formation';queued++;}
   this.program.enabled=true;this.program.running=true;this.program.activeIds=[...this.program.ids];this.running=true;this.notice=queued?'Launching '+queued+' drones.':'Fleet is already airborne, or needs a recharge.';
  }
- recall(ids=this.drones.map(d=>d.id)){for(const d of this.drones)if(ids.includes(d.id)){if(d.mode==='QUEUED')d.mode='DOCK';else if(d.mode==='FLY')d.mode='RETURN';d.override='Returning to launch pad';}this.program.activeIds=this.program.activeIds.filter(id=>!ids.includes(id));if(!this.program.activeIds.length)this.program.running=false;this.notice='Return ordered. Launch pads remain reserved for each drone.';}
+ recall(ids=this.drones.map(d=>d.id)){const selected=new Set(ids);for(const d of this.drones)if(selected.has(d.id)){if(d.mode==='QUEUED')d.mode='DOCK';else if(d.mode==='FLY')d.mode='RETURN';d.override='Returning to launch pad';}this.program.activeIds=this.program.activeIds.filter(id=>!selected.has(id));if(!this.program.activeIds.length)this.program.running=false;this.notice='Return ordered. Launch pads remain reserved for each drone.';}
  assign(ids,order){if(!['scout','operator','bike','relay','hold'].includes(order))throw Error('Unknown group assignment.');let assigned=0;for(const d of this.drones)if(ids.includes(d.id)&&['FLY','QUEUED'].includes(d.mode)){d.order=order;d.override='';if(order==='hold')d.target=[d.pos[0],Math.max(12,d.pos[1]),d.pos[2]];this.program.activeIds=this.program.activeIds.filter(id=>id!==d.id);assigned++;}this.notice=assigned+' drones assigned to '+order+'.'+(!assigned?' Launch the group first.':'');}
  send(ids){this.assign(ids,'scout');}
  setObjective(point){if(this.challenge)throw Error('Challenge objectives are set by the course.');this.fleet.objective=[clamp(point[0],-180,180),clamp(point[1],8,75),clamp(point[2],-180,180)];}
@@ -84,11 +85,11 @@ export class CommanderSimulation{
  }
  metrics(){const active=this.drones.filter(d=>d.mode==='FLY'),error=active.reduce((n,d)=>n+length(d.pos.map((v,j)=>v-d.target[j])),0)/Math.max(1,active.length);return {active:active.length,total:this.drones.length,cohesion:active.length?Math.round(clamp(100-error*2,0,100)):0,battery:Math.round(this.drones.reduce((n,d)=>n+d.battery,0)/this.drones.length),checks:this.checks,separations:this.separations,clamps:this.targetClamps};}
  step(dt){
-  if(!this.running)return;dt=clamp(dt,0,.05);this.elapsed+=dt;this.checks=0;this.separations=0;this.targetClamps=0;
-  for(const cue of advanceSwarmProgram(this.program,dt))for(const d of this.drones)if(cue.ids.includes(d.id)&&this.program.activeIds.includes(d.id)&&d.mode==='FLY'){if(cue.assignment==='standby')this.recall([d.id]);else d.order=cue.assignment;}
+  if(!this.running)return;dt=clamp(dt,0,.05);this.elapsed+=dt;this.checks=0;this.separations=0;this.targetClamps=0;const selected=new Set(this.program.ids),active=new Set(this.program.activeIds);
+  for(const cue of advanceSwarmProgram(this.program,dt))for(const d of this.drones)if(cue.idSet.has(d.id)&&active.has(d.id)&&d.mode==='FLY'){if(cue.assignment==='standby')this.recall([d.id]);else d.order=cue.assignment;}
   const buckets=new Map(),cell=p=>p.map(v=>Math.floor(v/6));
   for(const d of this.drones){if(d.mode==='QUEUED'&&this.elapsed>=d.delay)d.mode=d.order==='standby'?'DOCK':'FLY';if(['FLY','RETURN'].includes(d.mode)){const key=cell(d.pos).join(',');if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(d);}}
-  const orderPeers={};for(const d of this.drones)if(d.mode==='FLY'){if(!orderPeers[d.order])orderPeers[d.order]=[];orderPeers[d.order].push(d);}
+  const orderPeers={};for(const d of this.drones)if(d.mode==='FLY'){if(!orderPeers[d.order])orderPeers[d.order]=[];d.orderIndex=orderPeers[d.order].length;orderPeers[d.order].push(d);}
   const accelerations=new Map();
   for(const d of this.drones){
    d.attitude={pitch:0,roll:0};if(!['FLY','RETURN'].includes(d.mode))continue;
@@ -96,15 +97,15 @@ export class CommanderSimulation{
    let target=[...d.home];d.override=d.mode==='RETURN'?d.override:'';
    if(d.mode==='RETURN'){if(Math.hypot(d.pos[0]-d.home[0],d.pos[2]-d.home[2])>3)target[1]=Math.max(12,d.pos[1]);}
    else{
-    const peers=orderPeers[d.order]||[d],index=peers.indexOf(d),n=peers.length,angle=index/n*Math.PI*2,objective=this.fleet.objective;
+    const peers=orderPeers[d.order]||[d],index=d.orderIndex,n=peers.length,angle=index/n*Math.PI*2,objective=this.fleet.objective;
     if(d.order==='operator'||d.order==='bike'){const cx=d.order==='bike'?12:0;target=[cx+Math.cos(angle+this.elapsed*.15)*14,14+Math.floor(index/12)*4,62+Math.sin(angle+this.elapsed*.15)*14];}
     else if(d.order==='scout')target=[objective[0]+Math.cos(angle)*Math.min(7,Math.sqrt(n)),objective[1]+(index%3-1)*2,objective[2]+Math.sin(angle)*Math.min(7,Math.sqrt(n))];
     else if(d.order==='relay'){const f=(index+1)/(n+1);target=[objective[0]*f,20+(index%3)*3,62+(objective[2]-62)*f];}
-    else if(d.order==='hold'||!this.program.ids.includes(d.id))target=[...d.target];
+    else if(d.order==='hold'||!selected.has(d.id))target=[...d.target];
     else{const sample=sampleSwarmProgram(this.program,d.id,{reducedMotion:this.fleet.options.reducedMotion});target=sample.target;d.attitude=sample.attitude;if(sample.error)d.override=sample.error;
      const anchor=sample.opts.origin==='objective'?objective:sample.opts.origin==='operator'?[0,0,62]:sample.opts.origin==='bike'?[12,0,62]:[0,0,0];target=target.map((v,j)=>v+anchor[j]);}
    }
-   if(d.mode==='FLY'&&d.order!=='formation'&&this.program.enabled&&this.program.activeIds.includes(d.id)){const sample=sampleSwarmProgram(this.program,d.id,{reducedMotion:this.fleet.options.reducedMotion});target=target.map((v,j)=>v+clamp(sample.field[j],-4,4));if(sample.error)d.override=sample.error;}
+   if(d.mode==='FLY'&&d.order!=='formation'&&this.program.enabled&&active.has(d.id)){const sample=sampleSwarmProgram(this.program,d.id,{reducedMotion:this.fleet.options.reducedMotion});target=target.map((v,j)=>v+clamp(sample.field[j],-4,4));if(sample.error)d.override=sample.error;}
    const bounded=[clamp(target[0],-210,210),clamp(target[1],d.mode==='RETURN'?1:6,88),clamp(target[2],-210,210)];if(target.some((v,j)=>v!==bounded[j])){this.targetClamps++;d.override='Field boundary / altitude limit';}d.target=bounded;
    const acceleration=bounded.map((v,j)=>(v-d.pos[j])*1.7-d.velocity[j]*2.6),[cx,cy,cz]=cell(d.pos);
    for(let x=cx-1;x<=cx+1;x++)for(let y=cy-1;y<=cy+1;y++)for(let z=cz-1;z<=cz+1;z++)for(const peer of buckets.get([x,y,z].join(','))||[]){
