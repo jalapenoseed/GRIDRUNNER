@@ -1,4 +1,5 @@
 import {aircraftType} from './fleet-manifest.js';
+import {boidSteering} from './boids.js';
 import {swarmVelocity} from './swarm-steering.js';
 import {sensorFor,SENSOR_SPECS,sensorReading,idleOffset} from './sensor-packages.js';
 // Drone 2.0: renderer-independent vehicle simulation. Distances are world metres.
@@ -95,7 +96,7 @@ function coveredReturnPlan(pos,home,solids,type='scout',payloadKg=0){
  }
  options.sort((a,b)=>a.length-b.length);return {home:[...home],points:options[0]?.points||[],blocked:!options.length};
 }
-export function updateDrone(d,dt,{home,followHome=home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',payloadKg=0,terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null,taskTarget=null,relayNodes=[],idleMotion=true,formationSpeed=Infinity,swarmPeers=[],swarmId=type}){
+export function updateDrone(d,dt,{home,followHome=home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',payloadKg=0,terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null,taskTarget=null,relayNodes=[],idleMotion=true,formationSpeed=Infinity,swarmPeers=[],swarmId=type,boids=null}){
  d.collisionType=type;d.collisionPayload=payloadKg;
  dt=clamp(dt,0,.05);const homeVelocity=d.lastHome?home.map((v,i)=>clamp((v-d.lastHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastHome=[...home];const followVelocity=d.lastFollowHome?followHome.map((v,i)=>clamp((v-d.lastFollowHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastFollowHome=[...followHome];const spec=dronePerformance(type,payloadKg),events=[];d.cooldown=Math.max(0,d.cooldown-dt);d.scanCooldown=Math.max(0,d.scanCooldown-dt);
  if(d.mode==='DOCK'){d.pos=[...home];d.velocity=[0,0,0];d.rates=[0,0,0];d.pitch=d.roll=d.thrust=0;d.yaw=wrapAngle(yaw);d.speed=0;d.altitude=home[1]-terrain(home[0],home[2]);d.range=0;d.signal=100;d.linkVia=null;return {battery,events};}
@@ -148,7 +149,8 @@ export function updateDrone(d,dt,{home,followHome=home,yaw=0,input=[0,0,0],attit
  if(d.mode==='SCOUT AHEAD'&&taskTarget&&taskTarget[1]-terrain(taskTarget[0],taskTarget[2])<.85){
   desired[1]=Math.max(desired[1],-Math.min(2,Math.max(.15,(d.altitude-.65)*.7)));
  }
- desired=swarmVelocity(d,desired,{id:swarmId,type,peers:swarmPeers,taskTarget,speed:Math.min(spec.speed,formationSpeed),climb:spec.climb});
+ if(boids?.boids==='on'&&['FOLLOW','ORBIT','SCOUT AHEAD'].includes(d.mode)&&!taskTarget){const probe=d.pos.map((v,j)=>v+d.velocity[j]*.75),obstacles=segmentCandidates(solids,d.pos,probe,4),steering=boidSteering(d,{id:swarmId,peers:swarmPeers,target,targetVelocity:followVelocity,obstacles,settings:boids});desired=desired.map((v,j)=>v+steering[j]*.4);const factor=Math.min(1,Math.min(spec.speed,formationSpeed)/Math.max(.001,Math.hypot(desired[0],desired[2])));desired[0]*=factor;desired[2]*=factor;desired[1]=clamp(desired[1],-spec.climb,spec.climb);}
+ desired=swarmVelocity(d,desired,{id:swarmId,type,peers:swarmPeers,taskTarget,speed:Math.min(spec.speed,formationSpeed),climb:spec.climb,social:boids===null});
  const old=[...d.pos];
  if(!auto&&flight==='acro'){
   // Simplified vectored-thrust FPV model: nose drive, body-up rotor lift,

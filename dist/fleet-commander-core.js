@@ -1,4 +1,6 @@
-import {createSwarmProgram,validateSwarmProgram,sampleSwarmProgram,initialProgramOrders,advanceSwarmProgram} from './swarm-program.js';
+import {boidSteering} from './boids.js';
+import {fleetNeighborQuery} from './fleet-spatial.js';
+import {createSwarmProgram,programOptions,validateSwarmProgram,sampleSwarmProgram,initialProgramOrders,advanceSwarmProgram} from './swarm-program.js';
 import {BEACON_PALETTE,beaconColor} from './beacon-palette.js';
 
 export const MAX_COMMANDER_DRONES=2000;
@@ -7,6 +9,7 @@ export const COMMANDER_TEAMS=['alpha','bravo','charlie','delta'];
 export const COMMANDER_MODES={sandbox:'Free flight',formation:'Formation drill',hunt:'Beacon hunt',party:'Party relay'};
 export const COMMANDER_OBSTACLES=[{x:-76,z:-32,w:12,d:16,h:17},{x:78,z:-58,w:10,d:14,h:30},{x:62,z:66,w:13,d:10,h:13}];
 export const COMMANDER_EXAMPLES={
+ 'Boids flock':'select all\nboids on\nformation scatter\npattern weave\nboidCohesion 0.65\nwait 15\nboidSeparation 2\nwait 15\nreset boids\nrepeat 45',
  'Beat dance':'select all\nformation grid\nheight 28\nshow dance\nbeat on\nbpm 120\noffset 0\nrepeat 32',
  'Hundred-drone bloom':'select all\nformation ring\nspacing 14\nheight 32\npattern orbit\ninfluence riemann 14 0.5\nwait 12\ninfluence wave 8 0.7\nshow dance\nwait 12\nshow flyby\nrepeat 40',
  'Color wave':'select all\nformation grid\nheight 28\ninfluence wave 8 0.6\nshow dance\nselect cyan\nheight 40\nselect pink\nheight 22\nrepeat 32',
@@ -90,6 +93,9 @@ export class CommanderSimulation{
   const buckets=new Map(),cell=p=>p.map(v=>Math.floor(v/6));
   for(const d of this.drones){if(d.mode==='QUEUED'&&this.elapsed>=d.delay)d.mode=d.order==='standby'?'DOCK':'FLY';if(['FLY','RETURN'].includes(d.mode)){const key=cell(d.pos).join(',');if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push(d);}}
   const orderPeers={};for(const d of this.drones)if(d.mode==='FLY'){if(!orderPeers[d.order])orderPeers[d.order]=[];d.orderIndex=orderPeers[d.order].length;orderPeers[d.order].push(d);}
+  const boidOptions=new Map(this.drones.filter(d=>this.program.enabled&&d.mode==='FLY'&&active.has(d.id)).map(d=>[d.id,programOptions(this.program,d.id)]));
+  const boidPeers=this.drones.filter(d=>d.mode==='FLY').map(d=>({id:d.id,pos:[...d.pos],velocity:[...d.velocity],mode:d.mode}));
+  const boidNearby=[...boidOptions.values()].some(s=>s.boids==='on')?fleetNeighborQuery(boidPeers):null;
   const accelerations=new Map();
   for(const d of this.drones){
    d.attitude={pitch:0,roll:0};if(!['FLY','RETURN'].includes(d.mode))continue;
@@ -106,8 +112,10 @@ export class CommanderSimulation{
      const anchor=sample.opts.origin==='objective'?objective:sample.opts.origin==='operator'?[0,0,62]:sample.opts.origin==='bike'?[12,0,62]:[0,0,0];target=target.map((v,j)=>v+anchor[j]);}
    }
    if(d.mode==='FLY'&&d.order!=='formation'&&this.program.enabled&&active.has(d.id)){const sample=sampleSwarmProgram(this.program,d.id,{reducedMotion:this.fleet.options.reducedMotion});target=target.map((v,j)=>v+clamp(sample.field[j],-4,4));if(sample.error)d.override=sample.error;}
+   const previousTarget=d.target;
    const bounded=[clamp(target[0],-210,210),clamp(target[1],d.mode==='RETURN'?1:6,88),clamp(target[2],-210,210)];if(target.some((v,j)=>v!==bounded[j])){this.targetClamps++;d.override='Field boundary / altitude limit';}d.target=bounded;
    const acceleration=bounded.map((v,j)=>(v-d.pos[j])*1.7-d.velocity[j]*2.6),[cx,cy,cz]=cell(d.pos);
+   const opts=boidOptions.get(d.id);if(d.mode==='FLY'&&d.order!=='hold'&&opts?.boids==='on'){const steering=boidSteering(d,{peers:boidNearby(d.pos,d.id),target:bounded,targetVelocity:bounded.map((v,j)=>clamp((v-previousTarget[j])/Math.max(.001,dt),-24,24)),obstacles:this.fleet.options.obstacles?COMMANDER_OBSTACLES:[],settings:opts});for(let j=0;j<3;j++)acceleration[j]+=steering[j];}
    for(let x=cx-1;x<=cx+1;x++)for(let y=cy-1;y<=cy+1;y++)for(let z=cz-1;z<=cz+1;z++)for(const peer of buckets.get([x,y,z].join(','))||[]){
     if(peer===d)continue;this.checks++;const delta=d.pos.map((v,j)=>v-peer.pos[j]),dist=length(delta),safe=1.7+(COMMANDER_TYPES[d.type].span+COMMANDER_TYPES[peer.type].span)*.5;
     if(dist<safe){this.separations++;if(dist<.001){delta[0]=d.id<peer.id?1:-1;delta[1]=0;delta[2]=0;}for(let j=0;j<3;j++)acceleration[j]+=delta[j]/Math.max(.001,dist)*(safe-dist)*12;d.override='Spacing correction';}

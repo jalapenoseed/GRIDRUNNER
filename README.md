@@ -1,3 +1,13 @@
+# GRIDRUNNER v7.40 — Boids steering
+
+**[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)** · **[Fleet Commander](https://gridrunner.goodyartist.chatgpt.site/commander.html)**
+
+Open **Program → Boids, effects & variance**, turn **Boids on**, then Apply. Or load **Boids / balanced flock**, **loose swarm**, or **close formation**. In-game: **F9 → Boids, independent effects & variance**. Campaign programming has the same controls once unlocked.
+
+Six independent weights control separation, heading alignment, cohesion, obstacle avoidance, target attraction and velocity matching. Neighbor radius, personal space and force limits are adjustable. None / off and Reset Boids / off clear this layer without changing formations or fields; Clear all effects clears it too. Fleet saves and scripts retain the settings. Old saves start with Boids off. Physical collision and emergency return remain authoritative.
+
+See [Boids changes and checks](CHANGELOG-v7.40.md). `npm run test:boids` checks steering behavior and Commander controls. The 2,000-drone CPU stress test is not a device FPS or GPU guarantee.
+
 # GRIDRUNNER v7.39 — Fieldwork & flight
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)** · **[Fleet Commander](https://gridrunner.goodyartist.chatgpt.site/commander.html)**

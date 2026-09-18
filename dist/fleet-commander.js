@@ -1,6 +1,6 @@
 import {FleetScore,fleetScoreMarkup,mountFleetScore} from './fleet-score.js';
 import {MOTION_PATTERNS,SHOW_STYLES,clearProgramEffects} from './fleet-effects.js';
-import {EXTRA_EFFECT_KEYS,extraEffectsMarkup,effectSummary} from './fleet-effects-ui.js';
+import {EXTRA_EFFECT_KEYS,extraEffectsMarkup,effectSummary,resetBoidsControls} from './fleet-effects-ui.js';
 import {wordSequenceState} from './word-sequence.js';
 import {fleetHelp,openFleetDialog,closeFleetDialog} from './fleet-help.js';
 import {COMMANDER_PRESETS,commanderPreset} from './commander-presets.js';
@@ -18,6 +18,8 @@ function say(message,error=false){$('notice').textContent=message;$('notice').cl
 function guard(action){return async(...args)=>{try{await action(...args);}catch(error){say(error.message||'That change could not be applied.',true);routeError(error.message);}};}
 function options(element,entries,value){element.replaceChildren(...entries.map(([id,label])=>{const option=document.createElement('option');option.value=id;option.textContent=label;return option;}));if(value!==undefined&&entries.some(([id])=>id===value))element.value=value;}
 $('extraEffects').innerHTML=extraEffectsMarkup(sim.program.settings);
+$('extraEffects').addEventListener('click',e=>{if(e.target.closest('[data-boids-reset]')){resetBoidsControls($('extraEffects'));dirty=true;updateEffectsReadout();say('Boids reset to off. Apply program to update the fleet.');}});
+$('extraEffects').addEventListener('input',()=>{dirty=true;updateEffectsReadout();});
 $('rhythmInputs').insertAdjacentHTML('beforeend',fleetScoreMarkup(sim.program.settings.song));mountFleetScore($('rhythmInputs'),soundtrack,song=>{sim.program.settings.song=song;draft.program.settings.song=song;dirty=true;});
 options($('pattern'),Object.entries(MOTION_PATTERNS));options($('show'),Object.entries(SHOW_STYLES));
 options($('commanderPreset'),Object.entries(COMMANDER_PRESETS).map(([id,p])=>[id,p.name]));options($('shape'),Object.entries(PROGRAM_SHAPES));options($('fieldSelect'),Object.entries(PROGRAM_FIELDS));options($('example'),Object.keys(COMMANDER_EXAMPLES).map(name=>[name,name]));options($('gameMode'),Object.entries(COMMANDER_MODES));options($('droneType'),Object.entries(COMMANDER_TYPES).map(([id,t])=>[id,t.name]));options($('droneTeam'),COMMANDER_TEAMS.map(id=>[id,id.toUpperCase()]));options($('droneColor'),BEACON_PALETTE.map(c=>[c.id,c.name]));

@@ -13,7 +13,7 @@ export function launchCorridorClear(peers,home,type){
  const radius=length(droneHull(type));
  return peers.every(p=>{const closest=[home[0],clamp(p.pos[1],home[1],home[1]+4),home[2]];return length(p.pos.map((v,i)=>v-closest[i]))>radius+p.radius+1.2;});
 }
-export function swarmVelocity(d,desired,{id,type=id,peers=[],taskTarget=null,speed=30,climb=10}={}){
+export function swarmVelocity(d,desired,{id,type=id,peers=[],taskTarget=null,speed=30,climb=10,social=true}={}){
  // Precision approaches, returns and pilot inputs retain full authority.
  if(!formation(d.mode)||taskTarget||!peers.length)return desired;
  const radius=length(droneHull(type)),avoid=[0,0,0],align=[0,0,0],center=[0,0,0];let count=0,danger=0;
@@ -35,6 +35,6 @@ export function swarmVelocity(d,desired,{id,type=id,peers=[],taskTarget=null,spe
  }
  const out=desired.map((v,i)=>v*(1-danger*.65)+avoid[i]);
  // Small social terms smooth a moving formation without collapsing its slots.
- if(count&&length(desired)>2)for(let i=0;i<3;i++)out[i]+=clamp((align[i]/count-d.velocity[i])*.08,-.6,.6)+clamp((center[i]/count-d.pos[i])*.015,-.35,.35);
+ if(social&&count&&length(desired)>2)for(let i=0;i<3;i++)out[i]+=clamp((align[i]/count-d.velocity[i])*.08,-.6,.6)+clamp((center[i]/count-d.pos[i])*.015,-.35,.35);
  const horizontal=Math.hypot(out[0],out[2]),scale=Math.min(1,speed/Math.max(.001,horizontal));out[0]*=scale;out[2]*=scale;out[1]=clamp(out[1],-climb,climb);return out;
 }

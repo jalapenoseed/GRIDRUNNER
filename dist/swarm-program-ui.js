@@ -1,3 +1,4 @@
+import {boidsMarkup,resetBoidsControls} from './boids-ui.js';
 import {STARTER_AIRCRAFT,aircraftCode} from './fleet-manifest.js';
 import {createSwarmProgram,validateSwarmProgram,compileProgram,sampleSwarmProgram,PROGRAM_SHAPES,PROGRAM_FIELDS,PROGRAM_RANGES,PROGRAM_EXAMPLES,FIELD_FORMULAS} from './swarm-program.js';
 const esc=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -20,7 +21,7 @@ export function renderSwarmProgram(program=createSwarmProgram(),started=false){
  <details class="programStorage"><summary>Save / import / export presets</summary><label>Preset name<input data-program-name value="My swarm" maxlength="40"></label><div class="programTransport"><button data-program-action="save">SAVE PRESET</button><button data-program-action="export">EXPORT JSON</button></div><label>Saved on this device<select data-program-saved><option value="">Choose a preset</option></select></label><button data-program-action="load">LOAD PRESET</button><label>Import preset<input data-program-import type="file" accept=".json,application/json"></label></details>
  </section><section class="programControls"><div class="programTabs" role="group" aria-label="Program input mode"><button data-program-mode="manual" aria-pressed="${program.mode==='manual'}">HAND INPUTS</button><button data-program-mode="script" aria-pressed="${program.mode==='script'}">SCRIPT</button></div>
  <div data-program-manual ${program.mode==='script'?'hidden':''}><h3>Formation & origin</h3><div class="programInputs">${select('shape','Shape',PROGRAM_SHAPES)}${select('plane','Word / drawing plane',{sky:'Upright in the sky',ground:'Horizontal / top view'})}${select('origin','Origin',{bike:'Bike',operator:'Operator',objective:'Scout objective',fixed:'Fixed point'})}${number('spacing','Spacing (m)')}${number('height','Height above origin (m)')}<label>Word<input data-program-word value="${esc(p.word)}" maxlength="16" spellcheck="false"></label><label class="programCheck"><input data-program-trace type="checkbox" ${p.trace?'checked':''}>Trace word / drawing</label>${number('moveX','Move east / west (m)')}${number('moveZ','Move south / north (m)')}${number('rotation','Rotate (°)')}${number('scale','Shape scale',.1)}${number('morph','Morph from ring (s)',.5)}${select('pattern','Motion pattern',{hold:'Hold',orbit:'Orbit',wave:'Wave',pulse:'Pulse',search:'Search'})}${select('team','Teammate coupling',{independent:'Independent slots',pairs:'Pair coupling',leader:'Follow leader',mesh:'Nearest teammate'})}</div><p class="hint">Six points cannot hold every letter of a long word. Tracing moves them along the strokes. Negative north/south values move north.</p>
- <h3>Mathematical influence</h3><div class="programInputs">${select('field','Influence field',PROGRAM_FIELDS)}${number('strength','Strength (m)')}${number('frequency','Frequency (rad/s)',.05)}${number('phase','Phase (rad)',.1)}${number('fieldScale','Coordinate scale (m)')}${number('blend','Blend',.05)}</div><p data-program-formula class="programFormula">${esc(FIELD_FORMULAS[p.field])}</p><div data-program-custom ${p.field==='custom'?'':'hidden'}>${['X','Y','Z'].map(axis=>`<label>Δ${axis.toLowerCase()} formula<input data-program-formula-input="formula${axis}" value="${esc(p['formula'+axis])}" maxlength="240" spellcheck="false"></label>`).join('')}<p class="hint">Use + − * / ^, sin, cos, abs, sqrt, min, max, atan2. Custom formulas output metres; Blend scales them.</p></div>
+ ${boidsMarkup(p,'program')}<h3>Mathematical influence</h3><div class="programInputs">${select('field','Influence field',PROGRAM_FIELDS)}${number('strength','Strength (m)')}${number('frequency','Frequency (rad/s)',.05)}${number('phase','Phase (rad)',.1)}${number('fieldScale','Coordinate scale (m)')}${number('blend','Blend',.05)}</div><p data-program-formula class="programFormula">${esc(FIELD_FORMULAS[p.field])}</p><div data-program-custom ${p.field==='custom'?'':'hidden'}>${['X','Y','Z'].map(axis=>`<label>Δ${axis.toLowerCase()} formula<input data-program-formula-input="formula${axis}" value="${esc(p['formula'+axis])}" maxlength="240" spellcheck="false"></label>`).join('')}<p class="hint">Use + − * / ^, sin, cos, abs, sqrt, min, max, atan2. Custom formulas output metres; Blend scales them.</p></div>
  <details><summary>Showoff pass & timing</summary><div class="programInputs">${select('show','Choreography',{none:'None',flyby:'Buzzing flyby + roll',roll:'Barrel roll',flip:'Synchronized flip',dance:'Flip & dance'})}${number('countIn','Count-in (s)',.5)}${number('offset','Aircraft phase offset (s)',.1)}</div><p class="hint">Shows repeat every 12 seconds (flyby path: 16 seconds). Rolls and flips animate the airframe while the flight controller holds its path. Reduced motion disables choreography.</p></details></div>
  <div data-program-script ${program.mode==='script'?'':'hidden'}><label>Runnable example<select data-program-example>${Object.keys(PROGRAM_EXAMPLES).map(name=>`<option>${name}</option>`).join('')}</select></label><button data-program-action="example">LOAD EXAMPLE / ALL SIX</button><label>Program<textarea data-program-source rows="17" spellcheck="false" maxlength="6000">${esc(program.source)}</textarea></label><p class="hint">Commands run together until “wait”. “select” addresses aircraft inside the affected group. Lines starting with # are comments.</p><details><summary>Language & commands</summary><pre>select all | scouts | relays | scout-03,scout-04
 assign formation | operator | bike | scout | relay | standby
@@ -37,6 +38,17 @@ trace on
 pattern hold | orbit | wave | pulse | search
 team independent | pairs | leader | mesh
 influence vortex 8 0.6
+boids on | none
+boidSeparation 1.4
+boidAlignment 0.6
+boidCohesion 0.35
+boidAvoidance 1.5
+boidAttraction 0.3
+boidMatching 0.5
+boidRadius 32
+boidDistance 6
+boidForce 8
+reset boids
 formula x = 6 * sin(t + i)
 show none | flyby | roll | flip | dance
 wait 12
@@ -75,6 +87,7 @@ export function mountSwarmProgram(root,{program,started,reducedMotion=false,onDr
  listen(root,'click',event=>{
   const button=event.target.closest('button');if(!button)return;
   if(button.dataset.programMode){setMode(button.dataset.programMode);return;}
+  if(button.hasAttribute('data-boids-reset')){resetBoidsControls(root);return;}
   const action=button.dataset.programAction;if(!action)return;
   if(action==='resume'){onResume();return;}
   if(action==='return'){message.textContent=onReturn();return;}

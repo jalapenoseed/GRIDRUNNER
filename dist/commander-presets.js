@@ -1,6 +1,9 @@
 import {validateCommanderFleet} from './fleet-commander-core.js';
 import {createSwarmProgram} from './swarm-program.js';
 export const COMMANDER_PRESETS={
+ flock:{name:'Boids / balanced flock',settings:{boids:'on',shape:'scatter',pattern:'weave',boidCohesion:.65}},
+ looseflock:{name:'Boids / loose swarm',settings:{boids:'on',shape:'scatter',pattern:'search',boidCohesion:.15,boidSeparation:2,boidDistance:10}},
+ tightflock:{name:'Boids / close formation',settings:{boids:'on',shape:'wedge',boidCohesion:.8,boidAlignment:1,boidMatching:1,boidDistance:4}},
  none:{name:'None / clear every effect',settings:{}},
  corkscrew:{name:'Corkscrew reveal',settings:{shape:'line',show:'corkscrew',height:32,phaseVariance:1.2}},
  ribbon:{name:'Ribbon sweep',settings:{shape:'grid',show:'ribbon',height:36,offset:.025}},

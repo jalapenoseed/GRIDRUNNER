@@ -46,7 +46,7 @@ export class InWorldCommander{
    target[0]=clamp(target[0],-590,590);target[2]=clamp(target[2],floorZ+5,220);target[1]=clamp(Math.max(target[1],terrain(target[0],target[2])+8),8,185);d.target=target;
    const localPeers=nearby(d.system.pos,'admin-'+d.id);
    d.previousPos=[...d.system.pos];
-   const result=updateDrone(d.system,dt,{home:d.home,followHome:operator,formationOffset:target.map((v,j)=>v-operator[j]),yaw,terrain,solids,floorZ,battery:this.config.options.unlimited?100:d.battery,type:d.type,swarmPeers:localPeers,swarmId:'admin-'+d.id,relayNodes,storm,jammed,wind,elapsed:this.elapsed,idleMotion:false,formationSpeed:sample?.opts.show==='flyby'?16:Infinity});
+   const result=updateDrone(d.system,dt,{home:d.home,followHome:operator,formationOffset:target.map((v,j)=>v-operator[j]),yaw,terrain,solids,floorZ,battery:this.config.options.unlimited?100:d.battery,type:d.type,swarmPeers:localPeers,swarmId:'admin-'+d.id,boids:this.program.enabled&&active.has(d.id)&&d.order!=='hold'?sample?.opts:null,relayNodes,storm,jammed,wind,elapsed:this.elapsed,idleMotion:false,formationSpeed:sample?.opts.show==='flyby'?16:Infinity});
    d.battery=this.config.options.unlimited?100:result.battery;if(['RETURN HOME','LANDED','DOCK'].includes(d.system.mode)){d.attitude={pitch:0,roll:0};active.delete(d.id);}
   }
   this.program.activeIds=[...active];

@@ -1,3 +1,4 @@
+import {BOID_DEFAULTS,BOID_RANGES} from './boids.js';
 import {DEFAULT_FLEET_SONG,parseFleetSong} from './fleet-score.js';
 import {STARTER_AIRCRAFT} from './fleet-manifest.js';
 import {parseFormula,evaluateFormula} from './swarm-expressions.js';
@@ -15,10 +16,10 @@ export const PROGRAM_EXAMPLES={
  'Write GRID':'select all\nformation word\nword GRID\nheight 26\nscale 2\ntrace on\nwait 24\nword RUN\nrepeat 48',
  'Formula dance':'select all\nformation line\nheight 22\ninfluence custom 8 0.7\nformula x = 6 * sin(t * 0.7 + i)\nformula y = 4 * cos(t + i * 0.8)\nformula z = 8 * sin(t * 0.5 + i)\nshow dance\nrepeat 24'
 };
-const DEFAULTS={...EFFECT_DEFAULTS,song:DEFAULT_FLEET_SONG,shape:'ring',word:'GRID',sequenceEnabled:false,sequenceWords:'HELLO\nWORLD',sequenceHold:8,sequenceTransition:10,sequenceLoop:true,plane:'sky',spacing:14,height:20,moveX:0,moveZ:-25,rotation:0,scale:1,morph:4,trace:true,origin:'bike',pattern:'none',team:'independent',field:'none',strength:8,frequency:.6,phase:0,fieldScale:20,blend:1,show:'none',countIn:2,offset:.35,beatSync:false,bpm:120,formulaX:'6 * sin(t + i)',formulaY:'4 * cos(t + i)',formulaZ:'6 * cos(t + i)'};
+const DEFAULTS={...BOID_DEFAULTS,...EFFECT_DEFAULTS,song:DEFAULT_FLEET_SONG,shape:'ring',word:'GRID',sequenceEnabled:false,sequenceWords:'HELLO\nWORLD',sequenceHold:8,sequenceTransition:10,sequenceLoop:true,plane:'sky',spacing:14,height:20,moveX:0,moveZ:-25,rotation:0,scale:1,morph:4,trace:true,origin:'bike',pattern:'none',team:'independent',field:'none',strength:8,frequency:.6,phase:0,fieldScale:20,blend:1,show:'none',countIn:2,offset:.35,beatSync:false,bpm:120,formulaX:'6 * sin(t + i)',formulaY:'4 * cos(t + i)',formulaZ:'6 * cos(t + i)'};
 export function createSwarmProgram(){return {version:1,mode:'manual',ids:['scout-03','scout-04'],settings:{...DEFAULTS},strokes:[],source:PROGRAM_EXAMPLES['Guard + light show'],enabled:false,running:false,time:0,activeIds:[]};}
-export const PROGRAM_RANGES={...EFFECT_RANGES,spacing:[8,30],height:[8,70],moveX:[-120,120],moveZ:[-120,120],rotation:[-180,180],scale:[.25,3],morph:[0,12],strength:[0,24],frequency:[.05,3],phase:[-6.28,6.28],fieldScale:[5,80],blend:[0,1],countIn:[0,8],offset:[0,2],bpm:[40,220],sequenceHold:[2,30],sequenceTransition:[2,40]};
-const ENUMS={shape:Object.keys(PROGRAM_SHAPES),plane:['sky','ground'],origin:['operator','bike','objective','fixed'],pattern:Object.keys(MOTION_PATTERNS),team:['independent','pairs','leader','mesh'],field:Object.keys(PROGRAM_FIELDS),show:Object.keys(SHOW_STYLES)};
+export const PROGRAM_RANGES={...BOID_RANGES,...EFFECT_RANGES,spacing:[8,30],height:[8,70],moveX:[-120,120],moveZ:[-120,120],rotation:[-180,180],scale:[.25,3],morph:[0,12],strength:[0,24],frequency:[.05,3],phase:[-6.28,6.28],fieldScale:[5,80],blend:[0,1],countIn:[0,8],offset:[0,2],bpm:[40,220],sequenceHold:[2,30],sequenceTransition:[2,40]};
+const ENUMS={boids:['none','on'],shape:Object.keys(PROGRAM_SHAPES),plane:['sky','ground'],origin:['operator','bike','objective','fixed'],pattern:Object.keys(MOTION_PATTERNS),team:['independent','pairs','leader','mesh'],field:Object.keys(PROGRAM_FIELDS),show:Object.keys(SHOW_STYLES)};
 for(let slot=2;slot<=4;slot++)ENUMS['field'+slot]=Object.keys(PROGRAM_FIELDS);
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const mod=(v,n)=>(v%n+n)%n;
@@ -60,14 +61,14 @@ export function compileProgram(source,{aircraft=STARTER_AIRCRAFT,groups={}}={}){
   const [command,...args]=text.split(/\s+/);let patch={},assignment=null;
   try{
    if(repeat)throw Error('repeat must be the last command.');
-   const arity={select:1,wait:1,repeat:1,formation:1,word:null,plane:1,origin:1,pattern:1,team:1,show:1,trace:1,beat:1,move:2,objective:2,influence:null,layer:null,reset:1,formula:null,assign:1};
+   const arity={select:1,wait:1,repeat:1,formation:1,word:null,plane:1,origin:1,pattern:1,team:1,show:1,trace:1,beat:1,move:2,objective:2,influence:null,layer:null,reset:1,boids:1,formula:null,assign:1};
    if(Object.hasOwn(arity,command)&&arity[command]!==null&&args.length!==arity[command])throw Error(command+' expects '+arity[command]+' value(s).');
    if(command==='select'){const value=args[0];group=value==='all'?[...aircraft]:Object.hasOwn(groups,value)?[...groups[value]]:value==='scouts'?aircraft.filter(v=>v.startsWith('scout')):value==='relays'?aircraft.filter(v=>v.startsWith('relay')):value.split(',');if((!group.length&&!Object.hasOwn(groups,value))||group.some(id=>!aircraft.includes(id))||new Set(group).size!==group.length)throw Error('Unknown aircraft group.');continue;}
    if(command==='wait'){at+=number(args[0],.1,120,'wait');if(at>600)throw Error('Timeline is limited to 600 seconds.');continue;}
    if(command==='repeat'){repeat=number(args[0],Math.max(1,at+.1),600,'repeat period');continue;}
    if(command==='countIn'){if(at!==0||args.length!==1)throw Error('countIn takes one number before the first wait.');countIn=number(args[0],0,8,'countIn');continue;}
    if(command==='formation')patch.shape=choice(args[0],ENUMS.shape,'formation');
-   else if(['origin','pattern','team','show','plane'].includes(command))patch[command]=choice(args[0],ENUMS[command],command);
+   else if(['origin','pattern','team','show','plane','boids'].includes(command))patch[command]=choice(args[0],ENUMS[command],command);
    else if(command==='word'){const word=args.join(' ').toUpperCase();if(!/^[A-Z0-9 -]{1,16}$/.test(word)||!word.trim())throw Error('word accepts 1–16 letters, numbers or hyphens.');patch.word=word;}
    else if(command==='beat')patch.beatSync=choice(args[0],['on','off'],'beat')==='on';
    else if(command==='trace')patch.trace=choice(args[0],['on','off'],'trace')==='on';
@@ -78,7 +79,7 @@ export function compileProgram(source,{aircraft=STARTER_AIRCRAFT,groups={}}={}){
     const suffix=slot===1?'':slot;patch['field'+suffix]=choice(args[0],ENUMS.field,'influence');
     if(args[0]!=='none'){patch['strength'+suffix]=number(args[1],0,24,'strength');patch['frequency'+suffix]=number(args[2],.05,3,'frequency');}
    }
-   else if(command==='reset'){choice(args[0],['effects','all'],'reset');patch=args[0]==='all'?{...DEFAULTS}:clearProgramEffects({});}
+   else if(command==='reset'){choice(args[0],['effects','boids','all'],'reset');patch=args[0]==='all'?{...DEFAULTS}:args[0]==='boids'?{...BOID_DEFAULTS}:clearProgramEffects({});}
    else if(command==='formula'){const match=text.match(/^formula ([xyz])\s*=\s*(.+)$/);if(!match)throw Error('Use formula x = expression (or y / z).');parseFormula(match[2]);patch['formula'+match[1].toUpperCase()]=match[2];}
    else if(command==='assign')assignment=choice(args[0],['formation','operator','bike','scout','relay','standby'],'assign');
    else if(Object.hasOwn(PROGRAM_RANGES,command)){if(args.length!==1)throw Error(command+' expects one number.');patch[command]=number(args[0],...PROGRAM_RANGES[command],command);}

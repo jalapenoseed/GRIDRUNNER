@@ -1,3 +1,13 @@
+# Current implementation — v7.40
+
+Date: 2026-09-18. Explicit composable Boids layer. `dist/boids.js` is the shared stateless acceleration kernel; `boids-ui.js` supplies standalone, admin and campaign controls. Program validation migrates missing settings to None. `reset boids`, `boids on|none`, and all numeric `boid*` properties work in grouped/timed scripts. Clear effects and the None preset reset Boids too.
+
+Commander adds the bounded correction before its existing separation/collision safeguards. The regular drone controller adds it to desired velocity in autonomous formation modes only; manual flight, precision tasks, docking and emergency returns bypass it. When explicit program settings are present, the legacy hidden alignment/cohesion is disabled to prevent double stacking. Neighbor queries retain nearest-24 limits in the large fleet paths. Snapshots are taken before integration, and no Boids force persists between frames.
+
+Tests: `verify-boids.mjs`, extended Commander UI, admin UI and campaign program integration gates; existing Commander, drone and swarm-program regressions. 100 active bodies and complete recall verified with Boids on. 2,000-body CPU stress remains bounded and finite but is expensive; no GPU/FPS claim. See CHANGELOG-v7.40.md.
+
+## Previous release record
+
 # Current implementation — v7.39
 
 Date: 2026-09-18. September 17 expedition QA, Fleet Commander independence and presentation update. Canonical checkout: `/workspace/sites/gridrunner-swarm-live`; Site: `gridrunner.goodyartist.chatgpt.site`. No changes to the old checkout or separate GitHub histories.

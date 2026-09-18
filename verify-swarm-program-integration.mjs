@@ -4,6 +4,7 @@ export function verifySwarmProgramIntegration({run,tick,w}){
  const input=(selector,value,event='input')=>{const el=w.document.querySelector(selector);assert(el,selector);el.value=value;el.dispatchEvent(new w.Event(event,{bubbles:true}));};
  run('started=false;settings.weather="heat";settings.randomEnvironment=false;settings.reduceMotion=false;open("swarm")');click('[data-swarm-start]');tick(25);
  run('open("swarmProgram")');assert.equal(w.document.querySelectorAll('[data-program-id]:checked').length,2);
+ input('[data-program-setting="boids"]','on','change');input('[data-program-number="boidCohesion"]','1.1');click('[data-program-action="apply"]');assert.equal(run('liveBoids("scout-03").boids'),'on');assert.equal(run('liveBoids("scout")'),null);click('[data-boids-reset]');click('[data-program-action="apply"]');assert.equal(run('liveBoids("scout-03").boids'),'none');
  input('[data-program-setting="field"]','riemann','change');input('[data-program-number="strength"]','12');click('[data-program-action="apply"]');
  assert.equal(run('s.swarmOps.program.activeIds.length'),2);assert.equal(run('s.squad.scout.swarmOrder'),'operator');assert.equal(run('s.squad.relay.swarmOrder'),'relay');
  assert.equal(run('s.swarmOps.program.settings.field'),'riemann');click('[data-program-action="resume"]');tick(12);
