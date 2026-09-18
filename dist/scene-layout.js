@@ -1,3 +1,4 @@
+import {SERVICE_DISTRICTS} from './service-district.js';
 // Shared authoring bounds. Decorative scatter must respect the full object radius,
 // so a clear centre cannot put a tree crown through a wall or an NPC's head.
 // These are scenery exclusions, not collision volumes: gameplay paths stay open.
@@ -14,6 +15,7 @@ export const SETTLEMENT_LAYOUT=[
 ];
 const rect=(id,x,z,w,d)=>({id,x,z,w,d}); // w/d are HALF extents, in world metres.
 export const AUTHORED_FOOTPRINTS=[
+ ...SERVICE_DISTRICTS.map(p=>rect(p.id,p.x,p.z-3,18,15)),
  rect('opening-bike',0,24,23,28),
  rect('maintenance-cut',-60,-265,12,78),rect('maintenance-entry',-38,-192,15,10),rect('watch-charger',-24,-352,7,8),
  rect('mara-shelter',54,-100,11,15),rect('mara-workshop',65,-125,17,13),rect('mara-store',107,-148,12,14),
@@ -34,6 +36,7 @@ export const AUTHORED_FOOTPRINTS=[
  ...Array.from({length:144},(_,n)=>{const leg=Math.floor(n/48),i=n%48;return rect('field-'+(leg+1)+'-'+i,(i%2?1:-1)*(18+(i%4)*11),10-leg*1600-i*30,2.6,2.6);})
 ];
 export const AUTHORED_PATHS=[
+ ...SERVICE_DISTRICTS.flatMap(p=>[rect(p.id+'-lane',(p.x+p.roadX)/2,p.roadZ,Math.abs(p.x-p.roadX)/2+4,5),rect(p.id+'-forecourt',p.x,(p.roadZ+p.z+8)/2,5,Math.abs(p.roadZ-p.z-8)/2+4)]),
  rect('main-carriageway',0,-2200,14,2500),
  rect('mara-approach',28,-91,28,5),rect('camp-service-road',67,-110,69,6),
  rect('relay-approach',-47,-58,39,5),

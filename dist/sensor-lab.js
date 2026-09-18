@@ -31,7 +31,7 @@ export class SensorLabWorld{
  constructor(scene,solids){
   this.root=new T.Group();scene.add(this.root);this.marks=[];this.targets=[];this.hotRoots=[];
   for(const c of [...LAB_CONTACTS.filter(c=>c.sensors.includes('uv')),...FIELD_UV]){
-   const mesh=new T.Mesh(new T.PlaneGeometry(1.8,.45),new T.MeshBasicMaterial({color:0xb7ff75,side:T.DoubleSide,toneMapped:false}));mesh.rotation.x=-Math.PI/2;mesh.position.set(c.x,heightAt(c.x,c.z)+.12,c.z);mesh.visible=false;this.root.add(mesh);this.marks.push(mesh);
+   const mesh=new T.Mesh(new T.PlaneGeometry(1.8,.45),new T.MeshBasicMaterial({color:0xb7ff75,side:T.DoubleSide,toneMapped:false}));mesh.rotation.x=-Math.PI/2;mesh.position.set(c.x,heightAt(c.x,c.z)+.12,c.z);mesh.visible=false;mesh.userData.fluorescent=true;mesh.name=c.name;this.root.add(mesh);this.marks.push(mesh);
   }
   const person=makePerson(158,97,0xc4a779);this.root.add(person);this.targets.push({object:person,label:'person'});this.hotRoots.push(person);
   const bike=makeBike();bike.position.set(164,heightAt(164,97),97);bike.rotation.y=Math.PI/2;this.root.add(bike);this.targets.push({object:bike,label:'bicycle'});

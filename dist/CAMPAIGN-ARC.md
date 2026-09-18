@@ -1,6 +1,6 @@
 # GRIDRUNNER — All the lights we carried
 
-Campaign direction and implementation record · 17 September 2026
+Campaign direction and implementation record · updated 18 September 2026
 
 The journey begins with one repaired Scout and an electric bike. It ends with a sky full of aircraft whose histories the player remembers. Between those moments, the player builds a network of people, machines and places that remain useful after the first visit.
 
@@ -18,9 +18,11 @@ The earlier discussion established the small starting fleet, progressive repair 
 | Discovery trails | UV maintenance cache, warm backup controller and RF beacon with three spatially separated readings; finite recoverable parts. | Actual noisy bearing intersection, richer thermal diagnosis and trails across later regions. |
 | Flight recorder | Up to 120 samples of deployed aircraft, recorded every two active seconds; saved route, altitude, battery, hull and flight mode. A map slider reviews history without altering the world. | Recorded camera playback, mission annotations, longer exportable logs and comparisons between attempts. |
 | Finale | Black Start unlocks a show using owned, available aircraft with sufficient charge and hull. Stationed aircraft must be recovered. Drawing, words, formulas and scripts control the same fleet. | Worldwide convergence, image-to-formation import and uploaded-music analysis. |
-| Experimentation | Existing standalone Commander and hidden F9 fleet testing remain accessible. Commander retains 29 presets, drawing, words, BPM, tap tempo and optional metronome. | Expanded post-campaign Fleet Lab, authored challenge sets and exportable shows. |
+| Experimentation | Existing standalone Commander and hidden F9 fleet testing remain accessible. Both modes support 2,000 aircraft, independent effects, explicit None/reset, scripted variance, word sequences, grounded staging, written compositions and session audio uploads. | Expanded post-campaign Fleet Lab, authored challenge sets and exportable shows. |
 
 The playable geography remains **Ghost Signal → The Spillway → Black Start**. The new story systems connect these existing sectors; they do not add the four proposed regions below. Station charging advances only in the active sector while the game runs. Closing, pausing or travelling elsewhere earns no charge.
+
+The September 17 QA pass adds three connected service areas and six enterable buildings within Ghost Signal, 24 additional crew NPCs across the existing settlements and service areas, stronger prop collision, revised bike consumption, a browsable 20-lesson tutorial library, thermal palettes, UV fluorescence, live cinematic cameras, layered environmental audio and a branching lightning/thunder presentation controller. The existing three-sector story, finite energy and unlocks remain the playable campaign. Complete authored human assets, voice performance, terrain production and a spatial electrical damage/puzzle solver still need further work.
 
 ## The dramatic arc
 
@@ -99,7 +101,7 @@ The important number is the fleet the player can actually gather. A scattered, d
 
 For the current Black Start show, available owned aircraft need at least 20% battery and 30% hull, cannot be stationed or occupied by another live task, and must be in a launchable flight state. The normal flight controller and reserve-return behavior remain authoritative. The show ends with a recall control.
 
-Later image import should turn a chosen image into a previewed point formation, with explicit aircraft count and spacing. Later music import should produce an editable tempo/cue proposal before it drives choreography. Neither is implemented by this update. Existing drawing, text, formulas, scripts and manual beat controls provide the present creative tools.
+Later image import should turn a chosen image into a previewed point formation, with explicit aircraft count and spacing. Music upload and written note/chord composition are available in the Fleet soundtrack studio. Uploads play locally in the current session; their BPM must be entered manually. Automatic music analysis and image-to-formation import remain future work. Existing drawing, text, formulas, scripts and manual beat controls provide the present creative tools.
 
 The eventual convergence should reflect real travel and collected aircraft. Post-story Freeflight / Fleet Lab can offer unrestricted experimentation while preserving the expedition as a separate record.
 

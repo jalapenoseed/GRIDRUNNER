@@ -1,4 +1,18 @@
-# Current implementation — v7.38
+# Current implementation — v7.39
+
+Date: 2026-09-18. September 17 expedition QA, Fleet Commander independence and presentation update. Canonical checkout: `/workspace/sites/gridrunner-swarm-live`; Site: `gridrunner.goodyartist.chatgpt.site`. No changes to the old checkout or separate GitHub histories.
+
+See CHANGELOG-v7.39.md for exact controls, feature scope and verification. New modules cover independent fleet layers/UI, soundtrack composition/upload, energy accounting, player-requested tutorials, cinematic/prologue cameras, branching storm events, layered audio, shared PBR detail and three connected service areas. Defaults migrate through the existing program validator. Fleet copies remain outside campaign snapshots. Existing story gates, finite power ledgers and normal physical flight/recall remain in place.
+
+Twenty-four added crew NPCs use the existing resident navigation and animation. Substantial settlement props now collide; Vee/Sol's old meal waypoint was moved clear of a bench so Recast can bake every route. Static geometry batches retain UVs; repeated PBR material variants share textures. The six new service interiors and approach lanes have clearance checks. Grounded test aircraft remain visible and can relaunch as the same identities.
+
+The complete `npm test` regression passed, followed by the focused QA and audio gates for the final weather-audio correction. The full regression workflow includes `verify-runtime.mjs --qa-update`, the real-scene/DOM test for effects, malformed-edit recovery, 2,000-body camera framing in both aspect ratios, audio timing and cancellation, spectra restoration, paused storms, guide queue isolation, six-body physical landing/relaunch and the new service interiors. Large-fleet simulation and story/endings remain in the existing gates. Browser evidence covers actual menus and controls in tactical/CPU fallback only. The cloud browser has no WebGL; never promote these checks into GPU appearance or FPS claims.
+
+Next production priorities: inspect real GPU output and auditory mix with the user's new QA; authored detailed human/environment meshes and stronger animations; voice performance; terrain and outward map expansion; lightning event subscribers for conductivity, circuits, reactions and puzzles; audio cue analysis and image formations. Current lightning has geometry/light/target/event/thunder only. Current music supports local playback and written notes, not automatic beat analysis. The seven-region campaign remains a direction, not a finished open world.
+
+## Previous release record
+
+# v7.38 implementation record
 
 Date: 2026-09-18. Fleet capacity, beacons, word sequencing and menu update.
 

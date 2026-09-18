@@ -1,3 +1,6 @@
+import * as fleetScoreModule from './dist/fleet-score.js';
+import * as fleetEffectsModule from './dist/fleet-effects.js';
+import * as fleetEffectsUIModule from './dist/fleet-effects-ui.js';
 import * as fleetHelpModule from './dist/fleet-help.js';
 import * as wordSequenceModule from './dist/word-sequence.js';
 import * as rhythm from './dist/swarm-rhythm.js';import * as presets from './dist/commander-presets.js';
@@ -6,7 +9,7 @@ import * as core from './dist/fleet-commander-core.js';import * as palette from 
 const dom=new JSDOM(fs.readFileSync('dist/commander.html','utf8'),{url:'https://gridrunner.test/commander.html'}),w=dom.window,doc=w.document;
 w.HTMLCanvasElement.prototype.getContext=()=>new Proxy({},{get:()=>()=>{}});w.HTMLCanvasElement.prototype.setPointerCapture=()=>{};
 class CommanderRenderer{constructor(host,{onStatus}){this.kind='Test renderer';this.renderer=null;onStatus(this.kind);}setView(){}render(){}dispose(){}}
-const ctx=vm.createContext({...fleetHelpModule,...wordSequenceModule,...rhythm,...presets,...core,...palette,...program,...storage,CommanderRenderer,document:doc,window:w,localStorage:w.localStorage,sessionStorage:w.sessionStorage,matchMedia:()=>({matches:false}),console,performance,URL,Blob,setTimeout,requestAnimationFrame(){}});
+const ctx=vm.createContext({...fleetScoreModule,...fleetEffectsModule,...fleetEffectsUIModule,...fleetHelpModule,...wordSequenceModule,...rhythm,...presets,...core,...palette,...program,...storage,CommanderRenderer,document:doc,window:w,localStorage:w.localStorage,sessionStorage:w.sessionStorage,matchMedia:()=>({matches:false}),console,performance,URL,Blob,setTimeout,requestAnimationFrame(){}});
 vm.runInContext(fs.readFileSync('dist/fleet-commander.js','utf8').replace(/^import .*;\n/gm,''),ctx);const run=code=>vm.runInContext(code,ctx),by=id=>doc.getElementById(id),flush=()=>new Promise(resolve=>setImmediate(resolve));
 async function click(id){assert(by(id),id);by(id).click();await flush();}
 function input(id,value,event='change'){by(id).value=value;by(id).dispatchEvent(new w.Event(event,{bubbles:true}));}
@@ -28,4 +31,6 @@ run('for(let i=0;i<265;i++)sim.step(.05);updateReadouts()');assert.equal(by('act
 await click('editSequence');input('sequenceWords','ONE');await click('runSequence');assert(by('sequenceDialog').open);assert.match(by('sequenceError').textContent,/2–16/);assert.equal(run('sim.program.settings.sequenceWords'),'HELLO\nWORLD\nGRID');input('sequenceWords','HELLO\nWORLD');await click('closeSequence');
 await click('programHelp');assert(by('fleetHelpDialog').open);[...by('fleetHelpDialog').querySelectorAll('button')].find(b=>b.textContent==='Build up to 2,000 aircraft').click();assert(!by('tab-fleet').hidden);assert.equal(doc.activeElement.id,'count');
 input('fleetName','Two thousand');await click('saveFleet');assert.equal(storage.readFleetLibrary(w.localStorage).find(f=>f.name==='Two thousand').roster.length,2000);
-console.log('PASS: actual Commander UI; 100/2,000-aircraft launch, pause, word editor, invalid sequence isolation, focus-return shortcuts, drawing, group paint, saves, count validation and scored roster locks.');
+await click('editEffects');assert(by('effectsDialog').open);input('field2','vortex');input('field3','wave');input('strength2','5');input('phaseVariance','1.5');await click('closeEffects');assert(!by('effectsDialog').open);assert(by('effectsStatus').textContent.includes('vortex'));await click('applyProgram');assert.equal(run('sim.program.settings.field2'),'vortex');assert.equal(run('sim.program.settings.field3'),'wave');assert.equal(run('sim.program.settings.phaseVariance'),1.5);
+input('programMode','script');input('script','bad command');input('formulaX','bad formula');await click('clearEffects');assert.equal(by('programMode').value,'manual');assert.equal(by('pattern').value,'none');assert.equal(by('field2').value,'none');assert.equal(by('field3').value,'none');await click('applyProgram');assert(!by('notice').classList.contains('error'));assert.equal(run('sim.program.settings.variance'),0);assert.equal(run('sim.program.settings.shape'),'word','clear preserves the selected formation');
+console.log('PASS: actual Commander UI; 100/2,000-aircraft launch, pause, word editor, invalid sequence isolation, effects dialog, independent fields, invalid-script None recovery, focus-return shortcuts, drawing, group paint, saves, count validation and scored roster locks.');

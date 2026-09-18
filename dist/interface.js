@@ -25,11 +25,11 @@ export function icon(name, extra='') {
 }
 
 export const MENU_GROUPS = Object.freeze([
-  {id:'expedition',label:'Expedition',icon:'compass',target:'quick',pages:[['quick','Field overview','objective'],['fieldLink','Field link','electronics'],['fieldDiscoveries','Sensor discoveries','scan'],['journal','Journal','journal'],['story','Story archive','guide'],['guide','Field manual','guide'],['saves','Save / load','saves'],['chapters','Chapters','guide']]},
+  {id:'expedition',label:'Expedition',icon:'compass',target:'quick',pages:[['quick','Field overview','objective'],['fieldLink','Field link','electronics'],['fieldDiscoveries','Sensor discoveries','scan'],['journal','Journal','journal'],['story','Story archive','guide'],['guide','Field manual','guide'],['tutorials','Tutorial library','guide'],['saves','Save / load','saves'],['chapters','Chapters','guide']]},
   {id:'equipment',label:'Equipment',icon:'inventory',target:'inventory',pages:[['inventory','Backpack','inventory'],['workshop','Workshop','craft'],['fieldBench','Field bench','repair'],['supplies','Cargo & recovery','supplies'],['rig','Bike & trailer','bike']]},
   {id:'fleet',label:'Fleet',icon:'drones',target:'drones',pages:[['drones','Fleet operations','drones'],['fleetNetwork','Fleet network','map'],['fleetFinale','Fleet finale','day'],['flightyard','Flight Yard','tower'],['swarm','Swarm Command','drones'],['swarmProgram','Program swarm','drones'],['fleetCommander','Fleet Commander / 2,000','drones'],['swarmLab','Formation lab','drones']]},
   {id:'world',label:'World',icon:'map',target:'map',pages:[['map','Sector map','map'],['locations','Settlements','camp']]},
-  {id:'system',label:'System',icon:'settings',target:'settings',pages:[['settings','Settings','settings'],['environment','Light & weather','day'],['controls','Controls','controls'],['reference','Reference archive','journal']]}
+  {id:'system',label:'System',icon:'settings',target:'settings',pages:[['settings','Settings','settings'],['environment','Light & weather','day'],['cinematic','Cinematic camera','display'],['controls','Controls','controls'],['reference','Reference archive','journal']]}
 ]);
 
 const escape=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

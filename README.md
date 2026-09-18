@@ -1,3 +1,17 @@
+# GRIDRUNNER v7.39 — Fieldwork & flight
+
+**[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)** · **[Fleet Commander](https://gridrunner.goodyartist.chatgpt.site/commander.html)**
+
+The September 17 QA update lowers base bike consumption by about 72%, adds independent None/reset and four fleet influence layers, scripted variation, new show styles, grounded staging/relaunch and a write/upload soundtrack studio. **F9** opens the expedition test fleet; **F8** opens the cinematic camera with whole-fleet framing.
+
+The map gains three connected service areas, six enterable buildings and 24 additional crew NPCs across service areas and existing settlements. Bike, trailer, clothing and signage details use shared PBR materials. Thermal has four selectable palettes; UV reveals fluorescent marks. Opening shots use the live world, and audio now has layered environmental effects and distance-delayed storm thunder.
+
+Open **Expedition → Tutorial library** for 20 searchable, queued lessons. **Bike & trailer → Workshop camo shelter** makes the packed starting canopy easy to find. The player guide covers the new controls. Existing three-sector story progression and finite energy/save rules remain intact.
+
+See [the QA routes, changes and limitations](CHANGELOG-v7.39.md). `npm run test:qa-update` runs the new focused integration gate; `npm test` includes it with the full regression suite. GPU appearance, device performance and audio listening remain user QA; complete new character art and voice performance remain further production work.
+
+## Earlier releases
+
 # GRIDRUNNER v7.38 — One fleet, many words
 
 Commander and the in-world F9 fleet test now support **1–2,000 actual aircraft**. Choose 2,000 and Build / Deploy, then use **Program → Word sequence** to fly HELLO → WORLD or up to 16 custom messages with hold, transition and loop controls. The same aircraft move between cues. Task menus group formations, words, drawing and rhythm; contextual dialogs explain and route the next action. Changing a deployed roster offers an explicit Deploy action.
