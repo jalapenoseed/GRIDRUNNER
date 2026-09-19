@@ -1,3 +1,13 @@
+import {lessonState} from './field-flow.js';
+import {validateSurveillance} from './surveillance.js';
+import {validateOpeningRoute} from './opening-route.js';
+import {validateBatteryPacks} from './battery-packs.js';
+import {migrateCampaignProgress} from './campaign-progress.js';
+import {validateFleetPolicy} from './fleet-policy.js';
+import {validateLineGrid} from './power-lines.js';
+import {validateSquad,validFormation} from './squadron.js';
+import {validateCrateContents} from './field-upgrade.js';
+import {migrateIntro,completedIntro} from './intro.js';
 import {validateRelayHouse} from './relay-house.js';
 import {migrateExperience} from './experience.js';
 import {residentState} from './settlements.js';
@@ -21,6 +31,7 @@ export function validateSave(r){
  const bad=()=>{throw Error('This save is incomplete or belongs to another game version.');};
  if(!r||r.version!==SAVE_VERSION||!r.state||!Number.isFinite(r.savedAt))bad();
  const s=r.state,number=(v,a,b)=>typeof v==='number'&&Number.isFinite(v)&&v>=a&&v<=b;
+ s.surveillance=validateSurveillance(s.surveillance);s.openingRoute=validateOpeningRoute(s.openingRoute);
  const vec=v=>Array.isArray(v)&&v.length===3&&v.every(n=>number(n,-10000,10000));
  if(!vec(s.pos)||!vec(r.bike)||!vec(r.trailer)||!['bike','foot','drone'].includes(s.mode))bad();
  for(const [k,a,b]of [['battery',0,100],['trailer',0,40],['drone',0,100],['hp',0,100],['stamina',0,100],['fuel',0,20],['elapsed',0,1e10],['yaw',-1e10,1e10],['pitch',-2,2],['ammo',0,100000],['ev',0,36],['solarEnergy',0,48],['gridEnergy',0,70],['lineEnergy',0,48]])if(!number(s[k],a,b))bad();
@@ -31,19 +42,21 @@ export function validateSave(r){
  if(s.puzzleLock!==undefined&&!number(s.puzzleLock,0,60))bad();
  if(s.ending!==undefined&&!['','restore','transmit'].includes(s.ending))bad();
  if(s.phaseStep!==undefined&&(!Number.isInteger(s.phaseStep)||s.phaseStep<0||s.phaseStep>3))bad();
- validateInventory(s.inv);for(const k of ['wire','cells','electronics','steel'])if(s.inv[k]===undefined)s.inv[k]=0;s.field=validateField(s.field);s.residents=residentState(s.residents);s.relayHouse=validateRelayHouse(s.relayHouse);s.experience=migrateExperience(s.experience);
+ validateInventory(s.inv);for(const k of ['wire','cells','electronics','steel'])if(s.inv[k]===undefined)s.inv[k]=0;s.field=validateField(s.field);s.residents=residentState(s.residents);s.relayHouse=validateRelayHouse(s.relayHouse);s.lessons=lessonState(s.lessons);s.experience=migrateExperience(s.experience);
  if(s.airJobs===undefined||typeof s.airJobs!=='object')s.airJobs={inspect:false,cargo:false,repair:false,relay:false};
  else {const d={inspect:false,cargo:false,repair:false,relay:false};for(const k of Object.keys(d))d[k]=s.airJobs[k]===true;s.airJobs=d;}
  if(s.airSession!==undefined&&s.airSession!==null&&(typeof s.airSession!=='object'||typeof s.airSession.id!=='string'))s.airSession=null;
+ s.intro=s.leg>1?completedIntro():migrateIntro(s.intro);
  if(s.powerTarget!==null&&!['ev','solar','grid','line','l2hydro','l3supply'].includes(s.powerTarget))bad();
  if(!number(s.temp,0,1000)||!number(s.chargeHeat,0,200))bad();
  if(!['scout','engineer','cargo','relay'].includes(s.droneType)||!['off','fuel','solar','water'].includes(s.generator))bad();
+ s.fleetFormation=validFormation(s.fleetFormation);s.lineGrid=validateLineGrid(s.lineGrid);
  for(const k of ['trailerAttached','engineerBuilt','controller','interface','upgrade','solar','relay','met','scanned','won','dead','regenBuilt'])if(typeof s[k]!=='boolean')bad();
  if(!Array.isArray(r.crates)||r.crates.length!==4||r.crates.some(x=>typeof x!=='boolean'))bad();
  if(!Array.isArray(r.enemies)||r.enemies.length!==2||r.enemies.some(e=>!number(e.x,-2000,2000)||!number(e.z,-3000,3000)||!number(e.hp,-100,75)))bad();
  if(s.mode==='drone'&&(!r.origin||!vec(r.origin.pos)||!['bike','foot'].includes(r.origin.mode)||!number(r.origin.yaw,-1e10,1e10)))bad();
  s.droneSystem=migrateDrone(s.droneSystem,s.mode==='drone'?s.pos:[r.bike[0],r.bike[1]+2,r.bike[2]],s.mode==='drone');
- if(s.mode==='drone'&&s.droneSystem.mode!=='MANUAL')bad();
+ if(s.mode==='drone'&&s.droneSystem.mode!=='MANUAL')bad();validateSquad(s);validateBatteryPacks(s);s.progression=migrateCampaignProgress(s.progression);s.fleetPolicy=validateFleetPolicy(s.fleetPolicy);validateCrateContents(r);
  if(s.discoveries===undefined)s.discoveries=[];
  if(!Array.isArray(s.discoveries)||s.discoveries.length>100)bad();
  for(const p of s.discoveries)if(!p||!['id','name','kind'].every(k=>typeof p[k]==='string'&&p[k].length<=100)||!['HOSTILE','ENERGY','SIGNAL','OBJECTIVE','SALVAGE'].includes(p.kind)||![1,2,3].includes(p.leg)||!number(p.x,-10000,10000)||!number(p.y,-10000,10000)||!number(p.z,-10000,10000)||!number(p.at,0,1e10))bad();

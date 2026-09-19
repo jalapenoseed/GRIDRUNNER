@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {GamepadInput,deadzone} from './dist/gamepad.js';
+import {droneSticks} from './dist/drone-controls.js';
 const pad={index:0,id:'Xbox test controller',connected:true,mapping:'standard',axes:[0,0,0,0],buttons:Array.from({length:17},()=>({pressed:false,value:0}))};
 const input=new GamepadInput();assert.deepEqual(deadzone(.1,-.08),[0,0]);assert(Math.hypot(...deadzone(1,1))<=1.00001);
 let f=input.poll([null,pad],{},0);assert(f.joined&&!f.lost);assert(!f.active);pad.buttons[0]={pressed:true,value:1};f=input.poll([pad],{},.1);assert.deepEqual(f.actions,['interact']);assert(f.changed&&f.active);assert.deepEqual(input.poll([pad],{},.2).actions,[],'Held A does not repeat');
@@ -8,3 +9,9 @@ pad.buttons[6]={value:.7};pad.buttons[7]={value:.9};pad.buttons[12]={value:1};f=
 f=input.poll([],{},1);assert(f.lost);assert.equal(f.move[0],0);assert.equal(f.actions.length,0);assert(!input.poll([],{},1.1).lost,'Disconnect fires once');
 assert(!input.poll([{...pad,mapping:''}],{},1.2).connected,'Unknown mappings do not masquerade as Xbox');assert(!input.poll([pad],{gamepad:false},1.3).connected);
 console.log('PASS: Xbox standard mapping, radial deadzone, analog triggers, edge actions, menu repeat, null slots, disconnect and disabled/unknown devices.');
+const flightPad=new GamepadInput();pad.axes=[.5,-1,.75,-.5];pad.buttons=Array.from({length:17},()=>({value:0}));
+const controls=flightPad.poll([pad],{},2),mode2=droneSticks(controls),acro=droneSticks(controls,{flight:'acro'}),classic=droneSticks(controls,{layout:'classic'});
+assert.equal(mode2.input[2],-controls.move[1]);assert.equal(mode2.look[0],-controls.move[0]);assert.equal(mode2.input[0],-controls.look[1]);assert.equal(mode2.input[1],controls.look[0]);
+assert.equal(acro.input[0],0);assert.equal(acro.attitude[0],controls.look[1]);assert.equal(acro.attitude[2],-controls.look[0]);
+assert.equal(classic.input[0],-controls.move[1]);assert.equal(classic.look[0],-controls.look[0]);
+console.log('PASS: polled standard-controller axes feed Mode 2, Acro and legacy Classic flight consistently.');

@@ -21,3 +21,24 @@ commandDrone(d,'HOLD',home,battery);tick(12,{flight:'acro'});assert(d.speed<.3);
 reset();commandDrone(d,'MANUAL',home,battery);d.pos=[home[0],20,home[2]];d.roll=.65;tick(1,{flight:'acro'});assert(d.pos[1]<20,'Banking reduces vertical rotor lift; gravity is not cosmetic');
 reset();commandDrone(d,'MANUAL',home,battery);d.pos=[0,10,0];d.velocity=[0,0,-100];updateDrone(d,.05,{home:[0,2,0],battery:100,flight:'acro',solids:[{x:0,z:-1,w:3,d:.02,minY:0,maxY:20}]});assert(d.pos[2]>-1,'Swept collision stops thin-wall tunneling');
 console.log('PASS: pitch/yaw/roll dynamics, oriented thrust, gravity, saved attitude/rates, legacy migration, thin-wall collision and acro-to-autopilot recovery.');
+// A docking point under a real shelter needs a low launch and side entry.
+const shelteredHome=[54,2,-94],canopy=[];
+for(let i=0;i<7;i++){const z=-109+i*3,y=3.8+(z+100)*Math.tan(.04);canopy.push({x:54,z,w:7.5,d:1.5,minY:y-.13,maxY:y+.13});}
+for(const x of [47,61])for(const z of [-90,-110])canopy.push({x,z,w:.32,d:.32,minY:0,maxY:z===-90?4.18:3.38});
+let covered=createDrone(shelteredHome);commandDrone(covered,'MANUAL',shelteredHome,100,canopy);
+assert(covered.pos[1]<3.5,'Covered takeoff stays below the canopy');assert.equal(obstruction(shelteredHome,covered.pos,canopy),0,'Takeoff never jumps through the roof');
+for(let i=0;i<60;i++)updateDrone(covered,.02,{home:shelteredHome,battery:100,solids:canopy,input:[0,0,1]});
+covered=migrateDrone(JSON.parse(JSON.stringify(covered)),shelteredHome);commandDrone(covered,'DOCK',shelteredHome,100,canopy);
+for(let i=0;i<1500&&covered.mode!=='DOCK';i++)updateDrone(covered,.02,{home:shelteredHome,battery:100,solids:canopy});
+assert.equal(covered.mode,'DOCK','Manual ceiling contact can retreat inside the planner comfort margin');
+for(const start of [[54,12,-94],[54,12,-75],[30,12,-100],[75,9,-100],[54,2.5,-87]]){
+ covered=createDrone(shelteredHome);covered.mode='MANUAL';covered.pos=[...start];commandDrone(covered,'DOCK',shelteredHome,100,canopy);
+ for(let i=0;i<1500&&covered.mode!=='DOCK';i++)updateDrone(covered,.02,{home:shelteredHome,battery:100,solids:canopy});
+ assert.equal(covered.mode,'DOCK','Covered return from '+start.join(','));assert.equal(covered.hp,100,'Side entry avoids canopy/post impacts');
+}
+covered=createDrone(shelteredHome);covered.mode='MANUAL';covered.pos=[54,12,-94];commandDrone(covered,'DOCK',shelteredHome,100,canopy);
+for(let i=0;i<130;i++)updateDrone(covered,.02,{home:shelteredHome,battery:100,solids:canopy});
+covered=migrateDrone(JSON.parse(JSON.stringify(covered)),shelteredHome);
+for(let i=0;i<1500&&covered.mode!=='DOCK';i++)updateDrone(covered,.02,{home:shelteredHome,battery:100,solids:canopy});
+assert.equal(covered.mode,'DOCK','Saved return recomputes safe side entry');
+console.log('PASS: covered deployment, roof-aware physical docking from five approach directions, zero collision damage and saved return recovery.');

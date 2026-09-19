@@ -1,3 +1,15 @@
+// Shared by keyboard and controller: hidden pages and closed accordions cannot take focus.
+export function menuControls(panel,includeFile=true){
+ return [...panel.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled),summary')].filter(e=>{
+  if(!includeFile&&e.type==='file')return false;
+  for(let n=e;n&&n!==panel;n=n.parentElement){
+   if(n.hidden||n.getAttribute('aria-hidden')==='true')return false;
+   if(n.tagName==='DETAILS'&&!n.open&&e!==n.querySelector(':scope > summary'))return false;
+   const style=window.getComputedStyle?.(n);if(style?.display==='none'||style?.visibility==='hidden')return false;
+  }
+  return true;
+ });
+}
 import {GamepadInput} from './gamepad.js';
 export class ControllerBridge{
  constructor(api){this.api=api;this.pad=new GamepadInput();this.device='keyboard';this.frame={move:[0,0],look:[0,0],vertical:0,brake:0,assist:0};this.command=0;}
@@ -20,11 +32,11 @@ export class ControllerBridge{
   }
  }
  movement(){return this.device==='gamepad'&&this.frame.connected?this.frame:null;}
- menu(f){const a=this.api,panel=document.querySelector('#panel'),controls=[...panel.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled)')].filter(e=>!e.hidden&&e.type!=='file');
+ menu(f){const a=this.api,panel=document.querySelector('#panel'),controls=menuControls(panel,false);
   for(const direction of f.menu){let i=controls.indexOf(document.activeElement);const active=controls[i];
    if(['left','right'].includes(direction)&&active?.matches('input[type=range],select')){const sign=direction==='right'?1:-1;if(active.tagName==='SELECT')active.selectedIndex=Math.max(0,Math.min(active.options.length-1,active.selectedIndex+sign));else active.value=String(Math.max(+active.min,Math.min(+active.max,+active.value+sign*+(active.step||1))));active.dispatchEvent(new Event('change',{bubbles:true}));}
    else{const sign=direction==='down'||direction==='right'?1:-1;i=(i+sign+controls.length)%controls.length;controls[i]?.focus();controls[i]?.scrollIntoView?.({block:'nearest'});}
   }
-  for(const action of f.actions){if(action==='interact'){const active=controls.includes(document.activeElement)?document.activeElement:controls[0];active?.click();}else if(action==='cancel'||action==='pause'){if(a.started())a.play();}else if(action==='map'&&a.started())a.open('map');}
+  for(const action of f.actions){if(action==='interact'){const active=controls.includes(document.activeElement)?document.activeElement:controls[0];active?.click();}else if(action==='cancel'||action==='pause'){if(a.back)a.back();else if(a.started())a.play();else a.open('start');}else if(action==='map'&&a.started())a.open('map');}
  }
 }

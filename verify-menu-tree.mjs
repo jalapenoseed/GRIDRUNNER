@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict';
+import {JSDOM} from 'jsdom';
+import {finishInterface,backWithinMenu} from './dist/interface.js';
+import {menuControls} from './dist/controller-bridge.js';
+const dom=new JSDOM('<body><div id="overlay"><section id="panel"></section></div></body>',{url:'http://gridrunner.test'});
+globalThis.document=dom.window.document;globalThis.window=dom.window;
+const panel=document.querySelector('#panel');
+function settings(){panel.innerHTML='<div class="panelTop"><h2>Settings</h2><button data-back>Back</button></div><details class="settingDetails" open><summary>Display</summary><input data-setting="fov" type="range" value="70"></details><details class="settingDetails"><summary>Sound</summary><input data-setting="master" type="range" value=".6"></details>';finishInterface({screen:'settings',started:true,tutorialEnabled:false});}
+settings();
+assert.equal(panel.querySelectorAll('[data-menu-group]').length,5);
+assert.equal(panel.querySelectorAll('.menu-group-pages:not([hidden])').length,1);
+assert.equal(panel.querySelectorAll('.menu-pane:not([hidden])').length,1);
+const sound=panel.querySelector('[data-menu-section="sound"]');sound.click();
+assert.equal(panel.querySelector('.menu-pane:not([hidden])').dataset.menuPane,'sound');
+assert(menuControls(panel).includes(panel.querySelector('[data-setting="master"]')));
+assert(!menuControls(panel).includes(panel.querySelector('[data-setting="fov"]')));
+panel.querySelector('[data-setting="master"]').value='.25';
+assert.equal(panel.querySelector('[data-setting="master"]').value,'.25','original live controls retained');
+settings();assert.equal(panel.querySelector('.menu-pane:not([hidden])').dataset.menuPane,'sound','last branch survives page render');
+assert(backWithinMenu(panel));assert.equal(panel.querySelector('.menu-pane:not([hidden])').dataset.menuPane,'display');
+assert(!backWithinMenu(panel),'default branch returns control to game parent navigation');
+const fleet=panel.querySelector('[data-menu-group="fleet"]');fleet.click();
+assert.equal(fleet.getAttribute('aria-expanded'),'true');
+assert.equal(panel.querySelectorAll('.menu-group-pages:not([hidden])').length,1);
+fleet.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true,cancelable:true}));
+assert.equal(fleet.getAttribute('aria-expanded'),'false');
+console.log('PASS: single expanded tree, one visible pane, hidden controls excluded, settings preserved, branch memory and hierarchical Back.');

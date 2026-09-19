@@ -1,0 +1,20 @@
+body.intro-quiet #navigation,
+body.intro-quiet #charging,
+body.intro-quiet #dronePanel,
+body.intro-quiet #droneCommands,
+body.intro-quiet #opticsBar,
+body.intro-quiet #telemetry,
+body.intro-quiet #yardProgress{display:none !important;}
+body.intro-quiet footer button[data-act="map"],
+body.intro-quiet footer button[data-act="scan"]{display:none!important;}
+body.intro-quiet #quest{max-width:min(92vw,22rem);}
+
+/* Keep the current verb visible even when the campaign objective panel is off. */
+body.intro-quiet #quest{display:block !important;}
+body.intro-quiet #quest #objective{display:block;font-size:13px;line-height:1.4;}
+
+/* The field unit stays available during the tutorial for controls and settings. */
+body.interface-ready.intro-quiet #quickBtn{opacity:1;pointer-events:auto;}
+body.interface-ready.intro-quiet #quest{max-width:calc(100vw - 180px);}
+body.interface-ready.intro-quiet #quest #objective{font-size:12px;line-height:1.55;}
+@media(pointer:coarse){body.interface-ready.intro-quiet #quest{max-width:calc(100vw - 162px);}}
