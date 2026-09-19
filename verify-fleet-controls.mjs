@@ -9,7 +9,7 @@ assert.equal(validFormation('unknown'),'WEDGE');
 const home=[0,2,0],yaw=.63;
 for(const formation of FORMATIONS){
  const slots=AIRCRAFT.map(id=>formationSlot(formation,id,yaw,12));
- assert.equal(new Set(slots.map(p=>p.map(n=>n.toFixed(3)).join(','))).size,4,formation+' gives every aircraft a unique slot');
+ assert.equal(new Set(slots.map(p=>p.map(n=>n.toFixed(3)).join(','))).size,AIRCRAFT.length,formation+' gives every aircraft a unique slot');
  for(let i=0;i<slots.length;i++)for(let j=i+1;j<slots.length;j++)assert(Math.hypot(...slots[i].map((n,k)=>n-slots[j][k]))>3.5,formation+' maintains safe spacing');
 }
 

@@ -10,7 +10,7 @@ import {renderFleetPolicy} from './dist/fleet-policy-ui.js';
 const home=[0,2.4,15],trailerHome=[3,2.4,15],record=createAircraftRecord('engineer',createDrone(home),75);
 const state={leg:1,met:false,won:false,leg2Won:false,engineerBuilt:false,relayHouse:{schematicRead:false,discovered:false},intro:{salvaged:false},progression:createCampaignProgress(),fleetPolicy:createFleetPolicy(),batteryPacks:createBatteryPacks(),lineGrid:createLineGrid(),squad:{engineer:record},inv:{cells:4,wire:8,electronics:4,rubber:4},field:{storage:{trailer:{}}},trailer:8};
 
-let unlocks=campaignUnlocks(state);assert(unlocks.airframes.scout);assert(!unlocks.airframes.cargo);assert(!unlocks.airframes.engineer);assert(!unlocks.airframes.relay);assert(!unlocks.packFabrication);assert(!unlocks.lineHarvest);assert(!unlocks.reservePolicy);
+let unlocks=campaignUnlocks(state);assert(unlocks.airframes.scout);assert(!unlocks.airframes.cargo);assert(!unlocks.airframes.engineer);assert(unlocks.airframes.relay,'Relays are starter aircraft');assert(!unlocks.packFabrication);assert(!unlocks.lineHarvest);assert(!unlocks.reservePolicy);
 state.met=true;state.engineerBuilt=true;state.relayHouse.schematicRead=true;state.relayHouse.discovered=true;unlocks=campaignUnlocks(state);assert(unlocks.airframes.cargo&&unlocks.airframes.engineer&&unlocks.airframes.relay);assert(unlocks.packFabrication&&unlocks.lineHarvest);assert(!unlocks.reservePolicy);
 assert.equal(progressionRows(state).filter(r=>r.done).length>=5,true);
 

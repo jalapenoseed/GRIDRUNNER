@@ -50,7 +50,7 @@ export function installMenuTree({shell,body,content,screen,group,groups,home,sta
  }).join('')}`;
  body.prepend(rail);
  const bar=doc.createElement('div');bar.className='menu-path';
- const page=group.pages.find(p=>p[0]===screen)?.[1]||(home?'Home':screen);
+ const page=group.pages.find(p=>p[0]===screen)?.[1]||(home?'Home':screen==='adminFleet'?'In-game fleet test':screen);
  bar.innerHTML=`<button class="tree-toggle" aria-expanded="false" aria-controls="menu-tree">DIRECTORY</button><button data-back aria-label="Back to parent menu">← Back</button><span class="menu-breadcrumb">${home?'Field unit':esc(group.label)+' / '+esc(page)}<b></b></span>`;
  shell.insertBefore(bar,body);
  content.querySelectorAll('.panelTop > button').forEach(b=>b.remove());

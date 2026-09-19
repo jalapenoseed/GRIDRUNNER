@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict';
+import {BOID_DEFAULTS,BOID_RANGES,boidSteering} from './dist/boids.js';
+import {createCommanderFleet,CommanderSimulation,validateCommanderFleet} from './dist/fleet-commander-core.js';
+import {commanderPreset} from './dist/commander-presets.js';
+import {programOptions,compileProgram} from './dist/swarm-program.js';
+import {clearProgramEffects} from './dist/fleet-effects.js';
+import {parseFleetFile,compactFleet} from './dist/fleet-commander-storage.js';
+import {InWorldCommander} from './dist/in-world-commander.js';
+import {createDrone,updateDrone} from './dist/drone-system.js';
+const clone=x=>JSON.parse(JSON.stringify(x));
+const body={id:'a',pos:[0,20,0],velocity:[0,0,0]},peer={id:'b',pos:[2,20,0],velocity:[0,0,4],mode:'FLY'};
+const muted={...BOID_DEFAULTS,boids:'on',...Object.fromEntries(Object.keys(BOID_RANGES).filter(k=>!['boidRadius','boidDistance','boidForce'].includes(k)).map(k=>[k,0]))};
+const force=(key,extra={})=>boidSteering(body,{peers:[peer],settings:{...muted,[key]:1},...extra});
+assert(force('boidSeparation')[0]<0,'separation repels');
+assert(force('boidCohesion')[0]>0,'cohesion attracts toward neighbors');
+assert(force('boidMatching')[2]>0,'matching acquires neighbor velocity');
+assert(boidSteering({...body,velocity:[3,0,0]},{peers:[peer],settings:{...muted,boidAlignment:1}})[2]>0,'alignment turns toward peer heading');
+assert(force('boidAttraction',{target:[10,20,0]})[0]>0,'attraction follows assignment');
+assert(force('boidAvoidance',{obstacles:[{x:0,z:0,w:2,d:2,h:25}]})[1]>0,'avoidance climbs clear');
+assert.deepEqual(force('boidSeparation',{settings:BOID_DEFAULTS}),[0,0,0],'None is exactly zero');
+assert.deepEqual(boidSteering(body,{peers:[peer],settings:muted}),[0,0,0],'all zero weights are neutral');
+assert.deepEqual(force('boidCohesion',{peers:[{...peer,pos:[100,20,0]}]}),[0,0,0],'neighbors outside radius ignored');
+assert.deepEqual(force('boidCohesion',{peers:[{...peer,mode:'RETURN HOME'}]}),[0,0,0],'returning aircraft do not pull the flock');
+const overlap={...peer,pos:[...body.pos]};assert(force('boidSeparation',{peers:[overlap]})[0]<0);assert(boidSteering({...overlap,id:'b'},{peers:[body],settings:{...muted,boidSeparation:1}})[0]>0,'overlap breaks symmetrically');
+assert(Math.hypot(...boidSteering(body,{peers:[peer],target:[1e6,1e6,1e6],settings:{...BOID_DEFAULTS,boids:'on',boidForce:2}}))<=2.000001);
+const fleet=commanderPreset(createCommanderFleet(100),'flock');fleet.program.settings.field2='wave';fleet.program.settings.boidAlignment=1.25;
+assert.equal(parseFleetFile(JSON.stringify(compactFleet(fleet))).program.settings.boidAlignment,1.25,'fleet roundtrip');
+const old=clone(fleet);for(const key of Object.keys(BOID_DEFAULTS))delete old.program.settings[key];assert.equal(validateCommanderFleet(old).program.settings.boids,'none','older saves are opt-in');
+for(const bad of [NaN,Infinity,-1,4]){const next=clone(fleet);next.program.settings.boidCohesion=bad;assert.throws(()=>validateCommanderFleet(next));}
+const script=clone(fleet);script.program.mode='script';script.program.settings.countIn=0;script.program.source='select alpha\nboids on\nboidCohesion 2\nwait 2\nreset boids\nwait 2\nboids on\nrepeat 6';script.program.settings.boids='none';const p=validateCommanderFleet(script).program;
+assert.equal(programOptions(p,'drone-001',1).boidCohesion,2);assert.equal(programOptions(p,'drone-002',1).boids,'none');assert.equal(programOptions(p,'drone-001',3).boids,'none');assert.equal(programOptions(p,'drone-001',5).boidCohesion,BOID_DEFAULTS.boidCohesion);assert.equal(programOptions(p,'drone-001',7).boidCohesion,2);
+assert.throws(()=>compileProgram('boids orbit'));assert.throws(()=>compileProgram('boidRadius 900'));assert.equal(clearProgramEffects(fleet.program.settings).boids,'none');assert.equal(commanderPreset(fleet,'none').program.settings.boids,'none');
+// None must not retain steering history after applying a new plan.
+const a=new CommanderSimulation(fleet);a.launch();for(let i=0;i<600;i++)a.step(.05);
+assert.equal(a.metrics().active,100);assert(a.drones.every(d=>[...d.pos,...d.velocity].every(Number.isFinite)));
+const off=a.snapshot();off.program.settings.boids='none';a.apply(off);const b=new CommanderSimulation(off);b.drones=clone(a.drones);b.program=clone(a.program);b.fleet.program=b.program;b.elapsed=a.elapsed;
+for(let i=0;i<30;i++){a.step(.05);b.step(.05);}assert.deepEqual(a.drones.map(d=>d.pos),b.drones.map(d=>d.pos),'off equals clean run from the same state');
+const world=new InWorldCommander(),ctx={operator:[0,1.7,0],bike:[5,1.4,4],terrain:()=>0,solids:[],yaw:0};world.spawn(fleet,ctx);for(let i=0;i<600;i++)world.step(.05,ctx);
+assert.equal(world.stats().active,100);assert(world.drones.every(d=>d.system.hp>90&&d.system.pos.every(Number.isFinite)));
+world.config.options.unlimited=false;world.drones[0].battery=1;world.step(.05,ctx);assert.equal(world.drones[0].system.mode,'RETURN HOME','reserve overrides boids');
+world.recall();for(let i=0;i<4000&&world.stats().active;i++)world.step(.05,ctx);assert.equal(world.stats().active,0,'entire boid fleet recalls and docks');
+for(const mode of ['MANUAL','RETURN HOME','LANDED']){const drone=createDrone([0,20,0]);drone.mode=mode;const copy=clone(drone),context={home:[0,1,0],terrain:()=>0,solids:[],battery:100,type:'scout',swarmPeers:[peer]};updateDrone(drone,.05,{...context,boids:{...BOID_DEFAULTS,boids:'on'}});updateDrone(copy,.05,{...context,boids:BOID_DEFAULTS});assert.deepEqual(drone.pos,copy.pos,mode+' has full authority');}
+const big=new CommanderSimulation(commanderPreset(createCommanderFleet(2000),'flock'));big.launch();for(const d of big.drones){d.delay=0;d.mode='FLY';}const start=performance.now();for(let i=0;i<60;i++)big.step(.05);assert(big.drones.every(d=>[...d.pos,...d.velocity].every(Number.isFinite)));console.log('PASS: independent forces, radius/force limits, overlap, None/reset, selected script cues, old-save migration, fleet roundtrip, 100-drone flight/recall, emergency authority; 2,000-drone CPU step '+((performance.now()-start)/60).toFixed(1)+' ms.');

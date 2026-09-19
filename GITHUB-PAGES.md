@@ -10,7 +10,7 @@ The game is already static and uses relative module/asset URLs, so it supports a
 
 No personal access token needs to be added to the workflow. It uses GitHub's built-in workflow token with read access to source and Pages deployment permissions. Repository/organization rules may require an environment approval.
 
-The current game remains available at https://gridrunner.goodyartist.chatgpt.site. This source repository is https://github.com/charltonty/GRIDRUNNER. Enable GitHub Pages with GitHub Actions as its publishing source, then run the included workflow.
+The game is maintained at https://github.com/jalapenoseed/GRIDRUNNER on `main`, including the former `grok` development and the live v7.40 updates. The included workflow publishes `dist/` to https://jalapenoseed.github.io/GRIDRUNNER/ when `main` is pushed. The legacy `v8.html` launcher redirects to the same site's current game. The existing hosted game remains at https://gridrunner.goodyartist.chatgpt.site.
 
 Saves belong to each website's browser origin. Before moving, export your save from the existing game's Save / Load menu, then import it on GitHub Pages. Nothing automatically copies between these two origins.
 

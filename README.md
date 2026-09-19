@@ -1,6 +1,76 @@
-# GRIDRUNNER v7.31 — Personal thermal + neon escort
+# GRIDRUNNER v7.40 — Boids steering
+
+The complete game is maintained on [`jalapenoseed/GRIDRUNNER` → `main`](https://github.com/jalapenoseed/GRIDRUNNER/tree/main). The former `grok` development history and the live v7.40 updates are merged here. Pushes to `main` publish the game to [GitHub Pages](https://jalapenoseed.github.io/GRIDRUNNER/); the old `v8.html` link opens the same game.
+
+**[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)** · **[Fleet Commander](https://gridrunner.goodyartist.chatgpt.site/commander.html)**
+
+Open **Program → Boids, effects & variance**, turn **Boids on**, then Apply. Or load **Boids / balanced flock**, **loose swarm**, or **close formation**. In-game: **F9 → Boids, independent effects & variance**. Campaign programming has the same controls once unlocked.
+
+Six independent weights control separation, heading alignment, cohesion, obstacle avoidance, target attraction and velocity matching. Neighbor radius, personal space and force limits are adjustable. None / off and Reset Boids / off clear this layer without changing formations or fields; Clear all effects clears it too. Fleet saves and scripts retain the settings. Old saves start with Boids off. Physical collision and emergency return remain authoritative.
+
+See [Boids changes and checks](CHANGELOG-v7.40.md). `npm run test:boids` checks steering behavior and Commander controls. The 2,000-drone CPU stress test is not a device FPS or GPU guarantee.
+
+# GRIDRUNNER v7.39 — Fieldwork & flight
+
+**[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)** · **[Fleet Commander](https://gridrunner.goodyartist.chatgpt.site/commander.html)**
+
+The September 17 QA update lowers base bike consumption by about 72%, adds independent None/reset and four fleet influence layers, scripted variation, new show styles, grounded staging/relaunch and a write/upload soundtrack studio. **F9** opens the expedition test fleet; **F8** opens the cinematic camera with whole-fleet framing.
+
+The map gains three connected service areas, six enterable buildings and 24 additional crew NPCs across service areas and existing settlements. Bike, trailer, clothing and signage details use shared PBR materials. Thermal has four selectable palettes; UV reveals fluorescent marks. Opening shots use the live world, and audio now has layered environmental effects and distance-delayed storm thunder.
+
+Open **Expedition → Tutorial library** for 20 searchable, queued lessons. **Bike & trailer → Workshop camo shelter** makes the packed starting canopy easy to find. The player guide covers the new controls. Existing three-sector story progression and finite energy/save rules remain intact.
+
+See [the QA routes, changes and limitations](CHANGELOG-v7.39.md). `npm run test:qa-update` runs the new focused integration gate; `npm test` includes it with the full regression suite. GPU appearance, device performance and audio listening remain user QA; complete new character art and voice performance remain further production work.
+
+## Earlier releases
+
+# GRIDRUNNER v7.38 — One fleet, many words
+
+Commander and the in-world F9 fleet test now support **1–2,000 actual aircraft**. Choose 2,000 and Build / Deploy, then use **Program → Word sequence** to fly HELLO → WORLD or up to 16 custom messages with hold, transition and loop controls. The same aircraft move between cues. Task menus group formations, words, drawing and rhythm; contextual dialogs explain and route the next action. Changing a deployed roster offers an explicit Deploy action.
+
+Aircraft beacons use a small luminous emitter, soft additive optical glare, distance falloff and a brief white strobe; eight nearby dynamic lights provide surface illumination. Distant geometry uses adaptive detail while every aircraft retains its simulation body and beacon. Large in-world fleets run the regular controller at 20 Hz with visual interpolation. The 2,000-aircraft CPU checks pass; the available browser has no WebGL, so final GPU appearance and device frame rate remain user QA. Existing expedition progression and saves remain compatible.
+
+See [v7.38 changes and QA](CHANGELOG-v7.38.md). `npm run test:commander` includes the capacity and sequence suite; `npm run test:admin-fleet` checks actual expedition controls.
+
+# GRIDRUNNER v7.37 — All the lights we carried
 
 **[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
+
+Start **New expedition** for the one-Scout story progression. Press **U** for the new Field link: transmissions, Charger commands and the next field step. Rebuild aircraft in **Equipment → Field bench**, leave them at persistent stations in **Fleet → Fleet network**, and follow **Expedition → Sensor discoveries** for UV, thermal and RF recoveries. Fleet network also contains the saved flight recorder.
+
+Complete Black Start to stage a finale with your actual available fleet, then draw or script your show. Existing saves retain their fleet; Swarm Start, Flight Yard, standalone Commander and F9 experimentation remain available.
+
+Read the [release notes and verification limits](CHANGELOG-v7.37.md) and [full campaign arc](dist/CAMPAIGN-ARC.md). The seven-region expansion, animated calls, full component repair and image/music imports are future production work. `npm run test:story` runs the focused campaign integration checks; `npm test` includes the full regression suite.
+
+# GRIDRUNNER v7.36 — In-world Fleet Commander
+
+**[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)** · **[Independent Commander](https://gridrunner.goodyartist.chatgpt.site/commander.html)**
+
+Start an expedition and press **F9**, or open **Menu → System → Settings → Reset & hints → Advanced / admin tools → In-game fleet test**. Choose up to **100** and **Spawn / replace & resume** to test the fleet in the actual game world.
+
+Both Commander modes now have **29 presets**, drawing and word formations, manual/scripted math influences, and **beat dance with BPM, tap tempo and an optional metronome**. Named fleets are shared between them. In-game test copies stay out of campaign saves. See [v7.36 controls and limits](CHANGELOG-v7.36.md). Run `npm run test:admin-fleet` for the focused world integration checks.
+
+# GRIDRUNNER v7.35 — Fleet Commander
+
+**[Play Fleet Commander](https://gridrunner.goodyartist.chatgpt.site/commander.html)** · **[Main game](https://gridrunner.goodyartist.chatgpt.site)**
+
+An independent arena for **1–100 drones**, with four existing airframes, eight beacon colors plus white, editable groups, manual/scripted formations, math influences, words and drawing. Click **Launch all**, then try **Program** or **Games**. The main menu and Fleet directory also launch Commander and hold your expedition for the return trip.
+
+**Saves** keeps named fleet setups and supports JSON export/import. Try free flight, formation drills, beacon hunts or a 2–4 player local pass-and-play relay. Six starters remain four Scouts and two Relays. See [v7.35 release notes](CHANGELOG-v7.35.md) for controls, validation and limits. `npm run test:commander` runs the focused simulation/UI/handoff checks.
+
+# GRIDRUNNER v7.34 — Programmable swarms
+
+Open **Swarm Command → Program Swarm**. Choose aircraft, preview hand inputs or a cue script, then **Apply to Live Fleet → Resume Field Run**. Four Scouts and two Relays remain the starter kit; Scouts 03/04 are the editor default so existing guards and links keep working.
+
+New: bounded formula editor; 11 mathematical influence choices; timed group assignments; flyby, roll, flip and dance choreography; upright or horizontal word/drawing formations; multi-stroke mouse/touch/keyboard drawing; preview Run/Pause/Step/Reset; and local preset save/import/export.
+
+See [v7.34 release notes](CHANGELOG-v7.34.md).
+
+# GRIDRUNNER v7.33 — Swarm field operations
+
+**[Play GRIDRUNNER](https://gridrunner.goodyartist.chatgpt.site)**
+
+**Swarm Command → Play Swarm Start** puts you beside the bike with four Scouts, two Relays and a deployed camouflage cloth. **Protect + Scout** splits guarding, scouting and airborne relay duties; use each row’s **FLY** button for FPV. Existing saves gain the starter cluster. Open **SWARM** during play to change orders or return the fleet. See [the release notes](CHANGELOG-v7.33.md) and [next-update programming notes](SWARM-NEXT-UPDATE.md).
 
 B selects personal thermal on foot or bike. Fleet → Formations → Protective Ring brings your aircraft around your character with cyan, amber, lime and magenta identification lights. FPV keeps its airframe-specific sensors; recall returns to the rig. See [CHANGELOG-v7.31.md](CHANGELOG-v7.31.md).
 
@@ -20,7 +90,7 @@ WATCH-01 is a non-weaponized enemy prototype: it patrols, builds suspicion throu
 
 **New in v7.23:** Y / YOLO runs bundled YOLOX-Nano on visible rendered game frames locally, in its own worker. It reports real general-object detections; it does not identify custom electrical equipment or replace R's authored field scanner. Toggle it off to release its runtime. This pass also hardens class/load-sized collision, docking, terrain rollback and rider fallback; adds later-chapter prop coverage; fixes unselected Utility policy scheduling and deliberate re-arm after interruption; and adds menu child/focus/scroll memory plus first-use cards. Settings can replay those hints.
 
-Read the **[full project scope, history, future build paths and options](dist/GRIDRUNNER-PROJECT-SCOPE.md)** and [v7.23 changes and limits](CHANGELOG-v7.23.md). Three.js remains the main build. Native engine ports, full suspension/trailer physics, custom detector training, heavier enemy AI remain separate future slices. Source is maintained in this Site's `main` branch; older `grok` notes refer to the separate GitHub track.
+Read the **[full project scope, history, future build paths and options](dist/GRIDRUNNER-PROJECT-SCOPE.md)** and [v7.23 changes and limits](CHANGELOG-v7.23.md). Three.js remains the main build. Native engine ports, full suspension/trailer physics, custom detector training, heavier enemy AI remain separate future slices. Source is maintained on GitHub `main`; older `grok` notes describe development history now merged into it.
 
 Verification: `npm test` plus `npm run test:foundations`. The latter runs the committed YOLO model with the committed WASM runtime; it is not a browser/GPU playtest.
 

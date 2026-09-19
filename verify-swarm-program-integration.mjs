@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+export function verifySwarmProgramIntegration({run,tick,w}){
+ const click=selector=>{const el=w.document.querySelector(selector);assert(el,selector);el.click();};
+ const input=(selector,value,event='input')=>{const el=w.document.querySelector(selector);assert(el,selector);el.value=value;el.dispatchEvent(new w.Event(event,{bubbles:true}));};
+ run('started=false;settings.weather="heat";settings.randomEnvironment=false;settings.reduceMotion=false;open("swarm")');click('[data-swarm-start]');tick(25);
+ run('open("swarmProgram")');assert.equal(w.document.querySelectorAll('[data-program-id]:checked').length,2);
+ input('[data-program-setting="boids"]','on','change');input('[data-program-number="boidCohesion"]','1.1');click('[data-program-action="apply"]');assert.equal(run('liveBoids("scout-03").boids'),'on');assert.equal(run('liveBoids("scout")'),null);click('[data-boids-reset]');click('[data-program-action="apply"]');assert.equal(run('liveBoids("scout-03").boids'),'none');
+ input('[data-program-setting="field"]','riemann','change');input('[data-program-number="strength"]','12');click('[data-program-action="apply"]');
+ assert.equal(run('s.swarmOps.program.activeIds.length'),2);assert.equal(run('s.squad.scout.swarmOrder'),'operator');assert.equal(run('s.squad.relay.swarmOrder'),'relay');
+ assert.equal(run('s.swarmOps.program.settings.field'),'riemann');click('[data-program-action="resume"]');tick(12);
+ assert(run('s.swarmOps.program.time>11'));assert.equal(run('s.squad["scout-03"].system.mode'),'FOLLOW');assert(run('s.squad["scout-03"].system.hp>85'));assert(run('s.squad["scout-03"].battery<100'));
+ run('s.swarmOps.program.settings.show="flip";s.swarmOps.program.time=7;liveSwarmOffset("scout-03",s.squad["scout-03"]);fleet.update(.02,s,trailer,bike,camera)');
+ assert(run('Math.abs(fleet.meshes["scout-03"].rotation.x-s.squad["scout-03"].system.pitch)>1'),'show flip rotates the rendered airframe');
+ run('fleet.update(.02,s,trailer,bike,camera,{reducedMotion:true})');assert(run('Math.abs(fleet.meshes["scout-03"].rotation.x-s.squad["scout-03"].system.pitch)<.001'),'reduced motion removes the visual flip');run('s.swarmOps.program.settings.show="none"');
+ run('open("swarmProgram")');click('[data-program-action="live-pause"]');const t=run('s.swarmOps.program.time');click('[data-program-action="resume"]');tick(2);assert.equal(run('s.swarmOps.program.time'),t);
+ run('open("swarmProgram")');click('[data-program-mode="script"]');input('[data-program-source]','select scout-03\nformation line\nshow flip\nwait 3\nassign bike\nrepeat 12');click('[data-program-action="apply"]');click('[data-program-action="resume"]');tick(6);
+ assert.equal(run('s.squad["scout-03"].swarmOrder'),'bike','live timeline changes an individual assignment');assert.equal(run('s.squad["scout-04"].swarmOrder'),'formation');
+ run('open("swarmProgram")');input('[data-program-source]','formation impossible');click('[data-program-action="apply"]');assert.match(w.document.querySelector('[data-program-error]').textContent,/Line 1/);assert(!run('s.swarmOps.program.source.includes("impossible")'),'invalid edit cannot mutate running program');
+ input('[data-program-source]','formation word\nword GRID\nshow dance\nrepeat 24');click('[data-program-action="apply"]');
+ run('writeSave("manual2");restore(getSave("manual2"))');assert(run('s.swarmOps.program.source.includes("word GRID")'));assert.equal(run('s.swarmOps.program.activeIds.length'),2);
+ run('open("swarmProgram")');click('[data-program-mode="manual"]');click('[data-program-action="draw"]');
+ const canvas=w.document.querySelector('#swarmProgramCanvas');for(const key of [' ','ArrowRight','ArrowRight','ArrowDown',' '])canvas.dispatchEvent(new w.KeyboardEvent('keydown',{key,bubbles:true}));
+ assert.equal(run('swarmProgramDraft.strokes.length'),1);assert(run('swarmProgramDraft.strokes[0].length>=3'));click('[data-program-action="draw"]');click('[data-program-action="apply"]');assert.equal(run('s.swarmOps.program.settings.shape'),'drawing');
+ click('[data-program-action="save"]');assert(w.localStorage.getItem('gridrunner.swarm.programs.v1'));click('[data-program-action="clear"]');input('[data-program-saved]','My swarm','change');click('[data-program-action="load"]');assert.equal(run('swarmProgramDraft.strokes.length'),1);
+ run('selectFleetAircraft("scout-03");issueDrone("MANUAL");play()');tick(.2);assert(!run('s.swarmOps.program.activeIds.includes("scout-03")'),'FPV removes program authority');assert.equal(run('s.droneSystem.mode'),'MANUAL');
+ run('s.squad["scout-04"].battery=5');tick(.2);assert.equal(run('s.squad["scout-04"].swarmOrder'),null,'reserve return overrides program');
+ run('open("swarmProgram")');click('[data-program-action="return"]');assert.equal(run('s.swarmOps.program.enabled'),false);assert.equal(run('fleetLaunchQueue.length'),0);
+ run('started=false;startSwarmRun();globalThis.standbyProgram=createSwarmProgram();standbyProgram.mode="script";standbyProgram.source=`select scout-04\nassign standby`;applyLiveSwarmProgram(standbyProgram)');
+ assert(!run('fleetLaunchQueue.includes("scout-04")'),'script standby cancels a queued launch');
+ console.log('PASS: live program UI, protected guards/Relays, actual flight and batteries, pause, timed assignment, invalid-edit isolation, save restore, keyboard drawing, device presets, FPV and reserve overrides.');
+}

@@ -1,6 +1,58 @@
+# Current implementation — v7.40
+
+Repository consolidation (2026-09-19): `jalapenoseed/GRIDRUNNER` → `main` is the canonical game branch. It merges GitHub `grok` at `53e7f17` and the live v7.40 source at `a9a6400`, preserving both histories and the GitHub Pages workflow. The older `grok` branch is retained for history. Historical sync-status and branch notes below describe their release dates and are superseded by this consolidation.
+
+Date: 2026-09-18. Explicit composable Boids layer. `dist/boids.js` is the shared stateless acceleration kernel; `boids-ui.js` supplies standalone, admin and campaign controls. Program validation migrates missing settings to None. `reset boids`, `boids on|none`, and all numeric `boid*` properties work in grouped/timed scripts. Clear effects and the None preset reset Boids too.
+
+Commander adds the bounded correction before its existing separation/collision safeguards. The regular drone controller adds it to desired velocity in autonomous formation modes only; manual flight, precision tasks, docking and emergency returns bypass it. When explicit program settings are present, the legacy hidden alignment/cohesion is disabled to prevent double stacking. Neighbor queries retain nearest-24 limits in the large fleet paths. Snapshots are taken before integration, and no Boids force persists between frames.
+
+Tests: `verify-boids.mjs`, extended Commander UI, admin UI and campaign program integration gates; existing Commander, drone and swarm-program regressions. 100 active bodies and complete recall verified with Boids on. 2,000-body CPU stress remains bounded and finite but is expensive; no GPU/FPS claim. See CHANGELOG-v7.40.md.
+
+## Previous release record
+
+# Current implementation — v7.39
+
+Date: 2026-09-18. September 17 expedition QA, Fleet Commander independence and presentation update. Canonical checkout: `/workspace/sites/gridrunner-swarm-live`; Site: `gridrunner.goodyartist.chatgpt.site`. No changes to the old checkout or separate GitHub histories.
+
+See CHANGELOG-v7.39.md for exact controls, feature scope and verification. New modules cover independent fleet layers/UI, soundtrack composition/upload, energy accounting, player-requested tutorials, cinematic/prologue cameras, branching storm events, layered audio, shared PBR detail and three connected service areas. Defaults migrate through the existing program validator. Fleet copies remain outside campaign snapshots. Existing story gates, finite power ledgers and normal physical flight/recall remain in place.
+
+Twenty-four added crew NPCs use the existing resident navigation and animation. Substantial settlement props now collide; Vee/Sol's old meal waypoint was moved clear of a bench so Recast can bake every route. Static geometry batches retain UVs; repeated PBR material variants share textures. The six new service interiors and approach lanes have clearance checks. Grounded test aircraft remain visible and can relaunch as the same identities.
+
+The complete `npm test` regression passed, followed by the focused QA and audio gates for the final weather-audio correction. The full regression workflow includes `verify-runtime.mjs --qa-update`, the real-scene/DOM test for effects, malformed-edit recovery, 2,000-body camera framing in both aspect ratios, audio timing and cancellation, spectra restoration, paused storms, guide queue isolation, six-body physical landing/relaunch and the new service interiors. Large-fleet simulation and story/endings remain in the existing gates. Browser evidence covers actual menus and controls in tactical/CPU fallback only. The cloud browser has no WebGL; never promote these checks into GPU appearance or FPS claims.
+
+Next production priorities: inspect real GPU output and auditory mix with the user's new QA; authored detailed human/environment meshes and stronger animations; voice performance; terrain and outward map expansion; lightning event subscribers for conductivity, circuits, reactions and puzzles; audio cue analysis and image formations. Current lightning has geometry/light/target/event/thunder only. Current music supports local playback and written notes, not automatic beat analysis. The seven-region campaign remains a direction, not a finished open world.
+
+## Previous release record
+
+# v7.38 implementation record
+
+Date: 2026-09-18. Fleet capacity, beacons, word sequencing and menu update.
+
+Both Commander modes accept 1–2,000 actual drones with legacy fleet migration and compact archives. `word-sequence.js` controls hold / smooth transition / loop; the same IDs, bodies and flight clocks persist between words. Dense words use spaced depth rows. `fleet-spatial.js` supplies exact nearest-24 queries within 48 m for the live test fleet. The common steering math avoids per-neighbor allocations without changing its control rules. Large world tests use 20 Hz flight updates and interpolated positions. GPU geometry is bounded by distance while all 2,000 beacons remain present. `aircraft-beacons.js` provides optical cores/glare/strobes plus eight nearby surface lights.
+
+The new task menus and native contextual dialogs are available in Commander and F9. Browser-checked the 2,000 selection, word editor and running HELLO/WORLD in the tactical fallback. Automated tests cover real flight bodies, timing/continuity/identity, save/import migration, exact spatial queries, count-change routing, recall, bounded edge deployment and scene beacon capacities. The full `npm test` regression suite passed, including story and save checks. WebGL appearance and physical-device performance remain unverified here. See CHANGELOG-v7.38.md.
+
+## Previous release record
+
 # GRIDRUNNER continuation state
 
-Date: 2026-09-16. Current slice: v7.31 Personal thermal and neon escort.
+Date: 2026-09-17. Current slice: v7.37 All the lights we carried.
+
+v7.37 connects the existing three-sector expedition to earned aircraft, eight Field link calls, six sourced bench exercises, four frame rebuilds, named Charger dispatch, six finite charging stations, saved aircraft placement across sector travel, three sensor recovery trails, a bounded fleet flight recorder and a finale using actual owned/available aircraft. New story expeditions start with one Scout. Old saves and Swarm Start keep legacy access. `dist/CAMPAIGN-ARC.md` records the larger seven-region direction and distinguishes current implementation from future regions, animated calls, deeper engineering curriculum, physical handheld and image/music import.
+
+Run `npm run test:story` for the focused real-scene/DOM checks. It is included in `npm test`. See CHANGELOG-v7.37.md for verification scope and controls. The new visual layouts have not passed browser acceptance because preview access was unavailable; no GPU or physical-device validation is claimed. Current implementation uses the existing assets and small station/cache meshes.
+
+Continuation: follow `dist/CAMPAIGN-ARC.md` next-implementation order. Keep aircraft and battery identity, finite energy ledgers, station ownership, old-save migration and independent practice modes intact. Do not claim that the full seven-region campaign, true RF triangulation or automatic picture/music interpretation is already built.
+
+v7.36 adds a hidden Settings / Reset & hints / Advanced admin entry and F9 for 1–100 temporary drones in the actual campaign scene. `in-world-commander.js` uses the regular aircraft controller with actual terrain, solids, radio, reserve returns and campaign peers; `in-world-commander-visuals.js` instances the existing airframes. Copies remain outside campaign snapshots and clear on world/session changes. Both Commander modes share 29 presets and saved setups, multi-stroke drawing and beat choreography with BPM/tap tempo/optional metronome. See CHANGELOG-v7.36.md and `npm run test:admin-fleet`. GPU/device acceptance remains open; main-game browser checks use the explicit CPU/HUD diagnostic, and standalone checks use the tactical fallback.
+
+v7.35 adds `commander.html`: an independent 1–100-drone arena with nine beacon colors, fleet builder, bounded grouped programs, named fleet JSON saves, drill/hunt/pass-and-play games, instanced reference models and a working canvas fallback. Campaign entry/return holds and restores the current expedition in session storage without overwriting named saves. Full regression and focused Commander simulation/DOM/handoff tests pass; desktop and 390 px browser controls are checked in the fallback because WebGL is unavailable in the browser. See CHANGELOG-v7.35.md for the measured CPU scope and unverified GPU limits. Discovery/parts-builder progression remains future work.
+
+v7.34 adds the live program bench, bounded arithmetic/script interpreter, group timeline, layered mathematical fields, show attitudes, words and drawn paths, and device-local presets. Source remains `/workspace/sites/gridrunner-swarm-live`; the other dirty checkout and remote PC / GitHub worktrees are untouched. See CHANGELOG-v7.34.md for checks and limitations.
+
+v7.33 integrates six starter aircraft (four Scouts and two Relays), live guard/scout/relay assignments, per-instance saves and FPV, and physical camouflage cover. The canonical Sites checkout is `/workspace/sites/gridrunner-swarm-live`, resumed from published `df10466`. Full tests pass; browser command UI was checked at desktop and 390 px, with WebGL unavailable in that browser. See CHANGELOG-v7.33.md. The user’s requested programming, formula influences, dance flybys, word formations and drawings are recorded in SWARM-NEXT-UPDATE.md for the next update. The PC worktree `GRIDRUNNER-swarm-command` remains at its prior sandbox revision; it was inspected but not overwritten by this Site release.
+
+v7.32 adds an optional virtual Swarm Command sandbox beside Flight Yard. Players can vary the four current airframe counts, place origin/objective points, and combine formations, motion patterns, missions, origin logic, intelligence and teammate rules. It keeps practice preferences device-local and does not mutate expedition saves, hull, charge, tasks or discoveries. See CHANGELOG-v7.32.md.
 
 v7.31 resumes GitHub `grok` commit `812380d` (Grok v7.29), restores independent personal optics, anchors escort flight to the operator, adds LOW-compatible neon airframe lights and repairs bloom output. See CHANGELOG-v7.31.md for validation and remaining limitations. Concurrent Grok v7.30 contact AO (`90fa399`) is also retained, with HDR output corrections. The separate dirty v7.21 and prior sync worktrees were not used or overwritten.
 

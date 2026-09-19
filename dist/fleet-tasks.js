@@ -1,5 +1,6 @@
+import {aircraftType} from './fleet-manifest.js';
 // Persistent jobs own references, not duplicate aircraft, charge, or cargo.
-// Four existing airframes retain class-keyed slots until multi-instance hangars.
+// Stable instance keys keep every battery and job attached to one airframe.
 import {lineTaskTarget,validateLineHarvest,controlLineTask,advanceLineHarvest} from './line-harvest.js';
 import {commandDrone,droneLink} from './drone-system.js';
 export const TASK_STATES=['RUNNING','PAUSED','COMPLETED','CANCELLED','FAILED'];
@@ -8,8 +9,8 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const distance=(a,b)=>Math.hypot(...a.map((v,i)=>v-b[i]));
 const finite=(v,a,b)=>Number.isFinite(v)&&v>=a&&v<=b;
 const point=p=>Array.isArray(p)&&p.length===3&&finite(p[0],-600,600)&&finite(p[1],.65,195)&&finite(p[2],-4720,230);
-export const aircraftId=type=>'aircraft-'+type+'-01';
-export const aircraftBatteryId=type=>'battery-'+type+'-01';
+export const aircraftId=type=>'aircraft-'+type+(type.includes('-')?'':'-01');
+export const aircraftBatteryId=type=>'battery-'+type+(type.includes('-')?'':'-01');
 export const hasLiveTask=r=>!!r.task&&['RUNNING','PAUSED'].includes(r.task.state);
 export function taskDestination(record){
  const t=record.task;if(t?.state!=='RUNNING')return null;if(t.kind==='LINE')return lineTaskTarget(record);
@@ -21,7 +22,7 @@ export function activeRelayNodes(squad={}){
  return Object.values(squad).filter(r=>r.type==='relay'&&r.task?.kind==='RELAY'&&r.task.state==='RUNNING'&&r.task.stage==='RELAY'&&r.system.mode==='RELAY'&&r.battery>=10&&r.system.hp>=20)
   .map(r=>({id:r.id,pos:r.system.pos,battery:r.battery,hp:r.system.hp}));
 }
-export function createAircraftRecord(type,system,battery=100){return {id:aircraftId(type),type,batteryId:aircraftBatteryId(type),system,battery,taskSerial:0,task:null};}
+export function createAircraftRecord(type,system,battery=100){return {id:aircraftId(type),type:aircraftType(type),swarmOrder:null,batteryId:aircraftBatteryId(type),system,battery,taskSerial:0,task:null};}
 
 export function validateAircraftTask(record,source,leg=1){
  if(source.id!==undefined&&source.id!==record.id||source.type!==undefined&&source.type!==record.type||source.batteryId!==undefined&&source.batteryId!==record.batteryId)throw Error('Invalid aircraft ownership');
@@ -62,7 +63,7 @@ export function assignSurvey(record,{destination,leg=1,home,solids=[],payloadKg=
  if(record.taskSerial>=1e9)return {ok:false,reason:'Task sequence limit reached.'};
  if(record.battery<25||record.system.hp<30)return {ok:false,reason:'Survey needs at least 25% battery and 30% hull.'};
  if(!commandDrone(record.system,'SCOUT AHEAD',home,record.battery,solids,{type:record.type,payloadKg}))return {ok:false,reason:'Recover the landed aircraft before assigning work.'};
- record.taskSerial++;
+ record.swarmOrder=null;record.taskSerial++;
  record.task={version:1,id:record.id+':task:'+record.taskSerial,kind:'SURVEY',aircraftId:record.id,batteryId:record.batteryId,leg,state:'RUNNING',stage:'TRANSIT',destination:[...destination],elapsed:0,stageElapsed:0,dwell:0,scanned:false,contacts:0,reason:'Flying to survey point'};
  return {ok:true,reason:record.task.reason};
 }
@@ -71,6 +72,7 @@ export function assignSurvey(record,{destination,leg=1,home,solids=[],payloadKg=
 // mutate a job. Automatic failsafes bypass this wrapper and are reconciled below.
 export function commandAircraft(record,command,home,solids=[],payloadKg=record.system.collisionPayload||0){
  if(!commandDrone(record.system,command,home,record.battery,solids,{type:record.type,payloadKg}))return false;
+ record.swarmOrder=null;
  if(hasLiveTask(record)){
   if(['MANUAL','HOLD'].includes(command)){record.task.state='PAUSED';record.task.dwell=0;record.task.reason=command==='MANUAL'?'Manual takeover; resume when ready':'Operator hold; resume when ready';}
   else finish(record,'CANCELLED',['DOCK','RETURN HOME'].includes(command)?'Recalled by operator':'Replaced by '+command);
@@ -92,7 +94,7 @@ export function controlTask(record,action,home,solids=[]){
  if(!commandDrone(record.system,t.stage==='RETURN'?'RETURN HOME':'SCOUT AHEAD',home,record.battery,solids))return {ok:false,reason:'Aircraft cannot resume.'};
  t.state='RUNNING';t.stageElapsed=0;t.dwell=0;t.reason='Job resumed';return {ok:true,reason:t.reason};
 }
-export function cancelRegionTasks(s){for(const r of Object.values(s.squad||{}))if(hasLiveTask(r))finish(r,'CANCELLED','Region changed; assign a new local job');}
+export function cancelRegionTasks(s){for(const r of Object.values(s.squad||{})){r.swarmOrder=null;if(hasLiveTask(r))finish(r,'CANCELLED','Region changed; assign a new local job');}if(s.swarmOps){s.swarmOps.objective=null;s.swarmOps.fixed=null;if(s.swarmOps.program){s.swarmOps.program.enabled=false;s.swarmOps.program.running=false;s.swarmOps.program.activeIds=[];}}if(s.camo)s.camo.deployed=false;}
 
 export function advanceAircraftTask(record,dt,{home,solids=[],events=[],scan,state=null,squad={},terrain=()=>0,storm=false,jammed=false,trailerHome=null,trailerStopped=false}={}){
  if(!hasLiveTask(record))return [];

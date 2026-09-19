@@ -1,3 +1,5 @@
+import {aircraftType} from './fleet-manifest.js';
+import {boidSteering} from './boids.js';
 import {swarmVelocity} from './swarm-steering.js';
 import {sensorFor,SENSOR_SPECS,sensorReading,idleOffset} from './sensor-packages.js';
 // Drone 2.0: renderer-independent vehicle simulation. Distances are world metres.
@@ -17,7 +19,7 @@ const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
 // Gameplay tuning, not manufacturer specifications. Dry mass includes the
 // aircraft's own battery. Payload is real attached cargo, never rider inventory.
 export function dronePerformance(type='scout',payloadKg=0){
- const base=DRONE_CLASSES[type]||DRONE_CLASSES.scout;
+ const base=DRONE_CLASSES[aircraftType(type)]||DRONE_CLASSES.scout;
  const payload=clamp(Number.isFinite(payloadKg)?payloadKg:0,0,base.payloadKg),massKg=base.massKg+payload,ratio=massKg/base.massKg;
  return {...base,dryMassKg:base.massKg,massKg,loadKg:payload,
   speed:base.speed/Math.sqrt(ratio),climb:base.climb/Math.sqrt(ratio),acceleration:base.acceleration/ratio,
@@ -94,7 +96,7 @@ function coveredReturnPlan(pos,home,solids,type='scout',payloadKg=0){
  }
  options.sort((a,b)=>a.length-b.length);return {home:[...home],points:options[0]?.points||[],blocked:!options.length};
 }
-export function updateDrone(d,dt,{home,followHome=home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',payloadKg=0,terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null,taskTarget=null,relayNodes=[],idleMotion=true,formationSpeed=Infinity,swarmPeers=[],swarmId=type}){
+export function updateDrone(d,dt,{home,followHome=home,yaw=0,input=[0,0,0],attitude=[0,0,0],flight='stabilized',battery,type='scout',payloadKg=0,terrain=()=>0,solids=[],storm=false,jammed=false,difficulty=1,wind=0,elapsed=0,floorZ=-1600,formationOffset=null,taskTarget=null,relayNodes=[],idleMotion=true,formationSpeed=Infinity,swarmPeers=[],swarmId=type,boids=null}){
  d.collisionType=type;d.collisionPayload=payloadKg;
  dt=clamp(dt,0,.05);const homeVelocity=d.lastHome?home.map((v,i)=>clamp((v-d.lastHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastHome=[...home];const followVelocity=d.lastFollowHome?followHome.map((v,i)=>clamp((v-d.lastFollowHome[i])/Math.max(dt,.001),-40,40)):[0,0,0];d.lastFollowHome=[...followHome];const spec=dronePerformance(type,payloadKg),events=[];d.cooldown=Math.max(0,d.cooldown-dt);d.scanCooldown=Math.max(0,d.scanCooldown-dt);
  if(d.mode==='DOCK'){d.pos=[...home];d.velocity=[0,0,0];d.rates=[0,0,0];d.pitch=d.roll=d.thrust=0;d.yaw=wrapAngle(yaw);d.speed=0;d.altitude=home[1]-terrain(home[0],home[2]);d.range=0;d.signal=100;d.linkVia=null;return {battery,events};}
@@ -147,7 +149,8 @@ export function updateDrone(d,dt,{home,followHome=home,yaw=0,input=[0,0,0],attit
  if(d.mode==='SCOUT AHEAD'&&taskTarget&&taskTarget[1]-terrain(taskTarget[0],taskTarget[2])<.85){
   desired[1]=Math.max(desired[1],-Math.min(2,Math.max(.15,(d.altitude-.65)*.7)));
  }
- desired=swarmVelocity(d,desired,{id:swarmId,type,peers:swarmPeers,taskTarget,speed:Math.min(spec.speed,formationSpeed),climb:spec.climb});
+ if(boids?.boids==='on'&&['FOLLOW','ORBIT','SCOUT AHEAD'].includes(d.mode)&&!taskTarget){const probe=d.pos.map((v,j)=>v+d.velocity[j]*.75),obstacles=segmentCandidates(solids,d.pos,probe,4),steering=boidSteering(d,{id:swarmId,peers:swarmPeers,target,targetVelocity:followVelocity,obstacles,settings:boids});desired=desired.map((v,j)=>v+steering[j]*.4);const factor=Math.min(1,Math.min(spec.speed,formationSpeed)/Math.max(.001,Math.hypot(desired[0],desired[2])));desired[0]*=factor;desired[2]*=factor;desired[1]=clamp(desired[1],-spec.climb,spec.climb);}
+ desired=swarmVelocity(d,desired,{id:swarmId,type,peers:swarmPeers,taskTarget,speed:Math.min(spec.speed,formationSpeed),climb:spec.climb,social:boids===null});
  const old=[...d.pos];
  if(!auto&&flight==='acro'){
   // Simplified vectored-thrust FPV model: nose drive, body-up rotor lift,
@@ -192,10 +195,10 @@ export function radioQuality(a,b,range,{solids=[],terrain=()=>0,storm=false,jamm
  return clamp(100-100*(distance(a,b)/effective)**1.65-blocked*24,0,100);
 }
 export function droneLink(pos,home,{type='scout',relayNodes=[],...environment}={}){
- const spec=DRONE_CLASSES[type]||DRONE_CLASSES.scout;
+ const spec=DRONE_CLASSES[aircraftType(type)]||DRONE_CLASSES.scout;
  let signal=radioQuality(home,pos,spec.range,environment),via=null;
  for(const node of relayNodes){
-  if(type==='relay'||node.battery<10||node.hp<20)continue;
+  if(aircraftType(type)==='relay'||node.battery<10||node.hp<20)continue;
   const signalAtRelay=radioQuality(home,node.pos,DRONE_CLASSES.relay.range,environment);
   const hop=radioQuality(node.pos,pos,spec.range,environment),candidate=Math.min(signalAtRelay,hop)*.95;
   if(candidate>signal){signal=candidate;via=node.id;}
@@ -205,6 +208,6 @@ export function droneLink(pos,home,{type='scout',relayNodes=[],...environment}={
 export const wrapAngle=a=>Math.atan2(Math.sin(a),Math.cos(a));
 export function droneAxes({pitch=0,yaw=0,roll=0}){const sp=Math.sin(pitch),cp=Math.cos(pitch),sy=Math.sin(yaw),cy=Math.cos(yaw),sr=Math.sin(roll),cr=Math.cos(roll);return {nose:[-sy*cp,sp,-cy*cp],up:[-cy*sr+sy*sp*cr,cp*cr,sy*sr+cy*sp*cr]};}
 export function scanEntities(d,entities,{type='scout',solids=[],elapsed=0,leg=1,sensor='visible'}){
- if(d.scanCooldown>0)return [];d.scanCooldown=5;sensor=sensorFor(type,sensor);const spec=SENSOR_SPECS[sensor],radius=(type==='personal'?60:DRONE_CLASSES[type].scan)*spec.range;
+ if(d.scanCooldown>0)return [];d.scanCooldown=5;sensor=sensorFor(type,sensor);const spec=SENSOR_SPECS[sensor],radius=(type==='personal'?60:DRONE_CLASSES[aircraftType(type)].scan)*spec.range;
  return entities.filter(e=>(sensor!=='uv'||e.sensors?.includes('uv'))&&(!e.sensors||e.sensors.includes(sensor))&&(!spec.kinds||spec.kinds.includes(e.kind))&&distance(d.pos,[e.x,e.y,e.z])<=radius&&obstruction(d.pos,[e.x,e.y+1,e.z],solids)<(sensor==='rf'?2:1)).map(e=>({...e,at:elapsed,leg,...sensorReading(sensor,e,distance(d.pos,[e.x,e.y,e.z]),radius,obstruction(d.pos,[e.x,e.y+1,e.z],solids))}));
 }

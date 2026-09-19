@@ -1,3 +1,5 @@
+import {fieldMaterial} from './field-fabrication.js';
+import {fieldSign} from './service-district.js';
 import * as T from './three.js';
 import {makePerson} from './visuals.js';
 import {SETTLEMENT_LAYOUT} from './scene-layout.js';
@@ -11,13 +13,13 @@ export const RESIDENTS=[
  {id:'kip',name:'Kip',site:'quarters',role:'Signal watcher',color:0x85805f,cost:{wire:1},reward:{steel:2},limit:3,line:'There is a person behind that transmission. I heard them stop to breathe. Spare wire? I have scrap.',rumor:'The last bank can light the camps or carry a message farther. That choice belongs to whoever gets there.'}
 ];
 export function residentState(raw){if(raw===undefined)return {};if(!raw||Array.isArray(raw)||typeof raw!=='object'||Object.keys(raw).some(k=>!RESIDENTS.some(n=>n.id===k)))throw Error('Invalid residents');for(const [id,r]of Object.entries(raw)){const n=RESIDENTS.find(n=>n.id===id);if(!r||typeof r.met!=='boolean'||!Number.isInteger(r.trades)||r.trades<0||r.trades>n.limit)throw Error('Invalid resident record');}return raw;}
-export function makeSettlements(scene,solids){const groups=[],actors=[],lamps=[];const material=new Map();const mat=(c,glow=false)=>{const key=c+':'+glow;if(!material.has(key))material.set(key,new T.MeshStandardMaterial({color:c,roughness:.86,metalness:.12,emissive:glow?c:0,emissiveIntensity:glow?.8:0}));return material.get(key);};
+export function makeSettlements(scene,solids){const groups=[],actors=[],lamps=[];const material=new Map();const mat=(c,glow=false)=>{const key=c+':'+glow;if(!material.has(key))material.set(key,glow?new T.MeshStandardMaterial({color:c,roughness:.5,emissive:c,emissiveIntensity:.35}):fieldMaterial('paint',c));return material.get(key);};
  // Keep the light count stable while settlement geometry enters/leaves range.
  // Changing that count recompiles every lit material during the ride.
  for(let i=0;i<3;i++){const lamp=new T.PointLight(0xffc886,0,24,2);scene.add(lamp);lamps.push(lamp);}
  const geometry=new T.BoxGeometry(1,1,1);
  for(const site of SETTLEMENTS){const g=new T.Group();g.position.set(site.x,0,site.z);scene.add(g);groups.push({site,g});const wall=site.leg===1?0x9b8062:site.leg===2?0x67766b:0x606e77,trim=site.leg===1?0xaf784b:site.leg===2?0x85afa0:0x98afb1,glow=site.leg===3?0x7ddcdd:0xffc886;
- const box=(x,y,z,w,h,d,c,solid=false,emissive=false)=>{const m=new T.Mesh(geometry,mat(c,emissive));m.position.set(x,y,z);m.scale.set(w,h,d);m.receiveShadow=true;g.add(m);if(solid)solids.push({x:site.x+x,z:site.z+z,w:w/2+.45,d:d/2+.45,minY:y-h/2,maxY:y+h/2});return m;};
+ const box=(x,y,z,w,h,d,c,solid=false,emissive=false)=>{const m=new T.Mesh(geometry,mat(c,emissive));m.position.set(x,y,z);m.scale.set(w,h,d);m.receiveShadow=true;g.add(m);if(solid||h>.25&&w>.4&&d>.4)solids.push({x:site.x+x,z:site.z+z,w:w/2+.45,d:d/2+.45,minY:y-h/2,maxY:y+h/2});return m;};
  // Open-front rooms with separate walls: genuinely enterable, no invisible box collider.
  for(let j=0;j<2;j++){const x=j*22-11,h=site.style==='garage'?6:4.5;box(x,.12,-7,18,.24,16,0x55554e);box(x,h/2,-15,18,h,.45,wall,true);box(x-9,h/2,-7,.4,h,16,wall,true);box(x+9,h/2,-7,.4,h,16,wall,true);box(x,h+.12,-7,19,.35,17,0x343e40,true);box(x,h-.35,1,18,.65,.4,trim,true);box(x,h-1.1,.85,4,.18,.2,glow,false,true);
  for(let k=0;k<4;k++){box(x-6+k*4,h*.55,-14.72,2.2,1.5,.08,0x263f45);box(x-6+k*4,h*.55,-14.64,2.35,.12,.08,trim);}
@@ -43,8 +45,9 @@ export function makeSettlements(scene,solids){const groups=[],actors=[],lamps=[]
  const awningHeight=site.style==='garage'?5.1:3.6;
  for(const x of [-9,9])box(x,(awningHeight+7.75)/2,1.85,.15,7.75-awningHeight,.15,0x65736a);
  box(0,7.7,1.85,20.3,.12,.15,0x65736a);
- const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=128;const ctx=canvas.getContext('2d');ctx.fillStyle='#182a2b';ctx.fillRect(0,0,1024,128);ctx.strokeStyle='#bca57e';ctx.lineWidth=8;ctx.strokeRect(8,8,1008,112);ctx.fillStyle='#ece1c2';ctx.font='bold 42px monospace';ctx.textAlign='center';ctx.fillText(site.name,512,80);const tex=new T.CanvasTexture(canvas);tex.colorSpace=T.SRGBColorSpace;const sign=new T.Mesh(new T.PlaneGeometry(20,2.5),new T.MeshBasicMaterial({map:tex}));sign.position.set(0,6.6,2);g.add(sign);
+ const [signTitle,signDetail]=site.name.split(' / '),sign=fieldSign(signTitle,signDetail||'FIELD SERVICES',20,2.5);sign.position.set(0,6.6,2);g.add(sign);
  for(const n of RESIDENTS.filter(n=>n.site===site.id)){const actor=makePerson(-8,4,n.color);g.add(actor);actors.push({n,site,actor});}
+ for(let i=0;i<2;i++){const x=7+i*6,n={id:site.id+'-crew-'+i,stops:[[x,4],[x,-3],[x-2,6],[x+1,5]]},actor=makePerson(x,4,[0x747665,0x867154,0x61736e][(i+site.leg)%3]);actor.userData.crew=true;g.add(actor);actors.push({n,site,actor});}
  }
  // Batch static architecture by material within each settlement.
  for(const {g} of groups){const batches=new Map();for(const m of [...g.children])if(m.isMesh&&m.geometry===geometry){if(!batches.has(m.material))batches.set(m.material,[]);batches.get(m.material).push(m);}for(const [material,list]of batches){const batch=new T.InstancedMesh(geometry,material,list.length);for(let i=0;i<list.length;i++){list[i].updateMatrix();batch.setMatrixAt(i,list[i].matrix);g.remove(list[i]);}batch.receiveShadow=true;g.add(batch);}}

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 export function verifySwarmSensorsIntegration({run,tick,w}){
  run('newCampaign();open("drones")');
- const content=w.document.querySelector('#fieldContent'),quick=content.querySelector('.fleetQuick');assert(quick);assert.equal(quick.querySelectorAll('[data-quick-aircraft]').length,4);assert(content.innerHTML.indexOf('fleetQuick')<content.innerHTML.indexOf('droneOps'));
+ const content=w.document.querySelector('#fieldContent'),quick=content.querySelector('.fleetQuick');assert(quick);assert.equal(quick.querySelectorAll('[data-quick-aircraft]').length,8);assert(content.innerHTML.indexOf('fleetQuick')<content.innerHTML.indexOf('droneOps'));
  assert(w.document.querySelector('[data-quick-aircraft="cargo"]').disabled,'campaign locks remain');
  run('launchAllDrones();play()');tick(3);assert.equal(run('s.droneSystem.mode'),'FOLLOW');assert.equal(run('s.squad.cargo.system.mode'),'DOCK');assert(run('s.drone<100'));
  run('newCampaign();s.intro=introState()');assert.equal(run('launchAllDrones()'),false,'onboarding cannot be bypassed');

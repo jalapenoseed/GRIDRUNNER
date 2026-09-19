@@ -19,7 +19,7 @@ export class AmbientResidents {
     this.actors=[{id:'mara',actor:mara,leg:1,x:54,z:-94,bounds:[-9,9,-12,8],
       stops:[[0,0],[-3,-2],[2,-5],[3,2]]},
       ...settlements.actors.map(({n,site,actor})=>({id:n.id,actor,leg:site.leg,x:site.x,z:site.z,
-        bounds:[-28,28,-18,17],stops:[[-8,4],[-12,-5],[-4,8],[10,8]],local:true}))];
+        bounds:[-28,28,-18,17],stops:n.stops||[[-8,4],[-8,-2],[-4,8],[10,8]],local:true}))];
     for(const a of this.actors){a.actor.userData.ambient=true;this.resetActor(a);}
     const camps=this.actors.map(({id,x,z,bounds,stops})=>({id,x,z,bounds,stops}));
     this.ready=Promise.resolve().then(()=>build(camps,solids)).then(results=>{
@@ -30,7 +30,7 @@ export class AmbientResidents {
     }).catch(error=>{this.status='fallback';console.warn('Residents remain at camp; navigation unavailable.',error);return [];});
   }
   resetActor(a) {
-    a.route=0;a.point=1;a.wait=9+this.actors.indexOf(a)*1.7;a.phase=0;a.state='WORK';
+    a.route=0;a.point=1;a.wait=9+this.actors.indexOf(a)*1.7;a.phase=this.actors.indexOf(a)*.7;a.state='WORK';
     a.actor.position.x=a.local?a.stops[0][0]:a.x+a.stops[0][0];
     a.actor.position.z=a.local?a.stops[0][1]:a.z+a.stops[0][1];
     a.actor.position.y=0;
