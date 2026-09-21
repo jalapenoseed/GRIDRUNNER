@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
 @import "tailwindcss";
+@source "./**/*.{ts,tsx}";
+@source "../spa/**/*.{ts,tsx,html}";
 
 @theme {
   --color-bg: #07080a;
@@ -38,9 +40,15 @@
   #app,
   #root {
     height: 100%;
+    margin: 0;
+    overflow: hidden;
     background: var(--color-bg);
     color: var(--color-fg);
     font-family: var(--font-sans);
+  }
+  #app,
+  #root {
+    position: relative;
   }
   h1,
   h2,
