@@ -21,6 +21,13 @@ export function applyDemoShell(doc = globalThis.document) {
   doc.documentElement?.classList.add('gridrunner-demo');
   doc.body?.classList.add('gridrunner-demo');
   if (doc.title) doc.title = 'GRIDRUNNER — Quiet Field demo';
+  if (doc.head && !doc.getElementById('gridrunner-demo-css')) {
+    const link = doc.createElement('link');
+    link.id = 'gridrunner-demo-css';
+    link.rel = 'stylesheet';
+    link.href = './demo.css';
+    doc.head.appendChild(link);
+  }
 }
 
 export function applyDemoSettings(settings) {
@@ -60,3 +67,5 @@ export function demoStartCopy() {
     button: 'PLAY THE FIRST MILE'
   };
 }
+
+if (typeof document !== 'undefined' && liveDemo()) applyDemoShell();

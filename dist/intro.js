@@ -1,4 +1,6 @@
 // First-hour lock: Approach → Yard → Line. Same map, fewer verbs.
+import {liveDemo,applyDemoShell} from './demo-boot.js';
+if (typeof document !== 'undefined' && liveDemo()) applyDemoShell();
 export function introState(){
   return {stage:'approach',trailerBriefed:false,scoutBriefed:false,mounted:false,salvaged:false,scouted:false,talked:false,launched:false};
 }
