@@ -1,0 +1,104 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #07080a;
+  --color-surface: #101317;
+  --color-surface-2: #171b21;
+  --color-fg: #e6e8e3;
+  --color-muted: #8b9188;
+  --color-subtle: #5c635c;
+  --color-border: #2a2f2c;
+  --color-accent: #9aa7a0;
+  --color-accent-fg: #0a0c0b;
+  --color-beacon: #7ee0d0;
+  --color-amber: #d89a4a;
+  --color-danger: #c45c4a;
+  --color-lime: #b5d46a;
+  --color-scout: #7ee0d0;
+  --color-relay: #9ec4e8;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Barlow Condensed", "IBM Plex Sans", sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --motion-quick: 150ms;
+  --motion-fast: 250ms;
+  --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  html,
+  body,
+  #app {
+    height: 100%;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    font-family: var(--font-display);
+  }
+  p {
+    text-wrap: pretty;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+.hud-panel {
+  background: color-mix(in oklab, var(--color-bg) 78%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-fg) 12%, transparent);
+  box-shadow: 0 12px 40px color-mix(in oklab, var(--color-bg) 55%, transparent);
+}
+
+.sensor-thermal {
+  background: color-mix(in oklab, #3a1208 28%, transparent);
+  mix-blend-mode: multiply;
+}
+.sensor-thermal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklab, #e08a3c 16%, transparent);
+  mix-blend-mode: screen;
+}
+.sensor-uv {
+  background: color-mix(in oklab, #10203a 30%, transparent);
+  mix-blend-mode: multiply;
+}
+.sensor-uv::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklab, #7ee0d0 12%, transparent);
+  mix-blend-mode: screen;
+}
+.sensor-nv {
+  background: color-mix(in oklab, #041208 42%, transparent);
+  mix-blend-mode: multiply;
+}
+.sensor-nv::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklab, #7cff9a 10%, transparent);
+  mix-blend-mode: screen;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
