@@ -4,3 +4,4 @@ dist
 .output
 .nitro
 *.log
+dist-ops

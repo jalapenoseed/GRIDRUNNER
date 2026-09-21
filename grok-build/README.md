@@ -1,36 +1,25 @@
 # GRIDRUNNER — grok-build ops demo
 
 Night-ops **Field Run** + **Fleet Commander** web demo. Built in Grok Build
-(React Three Fiber), borrowed from Fleet Commander mechanics without touching
-the Unity project or the live GRIDRUNNER game on `main`.
+(React Three Fiber). Borrowed Fleet Commander mechanics without touching the
+Unity project or rewriting the live GRIDRUNNER v7 game.
 
-This folder lives on the `grok-build-ops` branch only.
+## Play in the browser
 
-## What’s in here
+https://jalapenoseed.github.io/GRIDRUNNER/ops/
 
-- **Field Run** — chase-cam dual-sport, three salvage waves, bank at cyan gates
-- **Fleet Commander** — 6 / 16 / 24 airframes with spinning rotors, boids,
-  tap-to-rally, airframe filter
-- Briefings: Night Harvest, Formation Drill, Beacon Hunt, Relay Hop,
-  **Night Intercept**, Free Flight
-- Asset library (bike, four airframes, pads, drums, floodlights, gates)
+Live v7 game (unchanged): https://jalapenoseed.github.io/GRIDRUNNER/
 
-## Run it
-
-This snapshot still uses the Grok Build / TanStack Start scaffold (`vite`,
-`@tanstack/react-start`, R3F). From this folder:
+## Run locally
 
 ```bash
 npm install
-npm run dev
+npm run dev          # TanStack Start preview
+npm run build:pages  # static SPA for GitHub Pages
 ```
 
-Dev server binds `0.0.0.0:8080`.
-
-```bash
-npm run build
-npm run typecheck
-```
+`build:pages` writes `dist-ops/` with base `/GRIDRUNNER/ops/`. Copy that folder
+to `dist/ops/` on this repo so Pages can serve it.
 
 ## Controls
 
@@ -43,12 +32,3 @@ npm run typecheck
 | Harvest / hop | F | F / R |
 | Airframe filter | — | V or chips |
 | Pause | Esc | Esc |
-
-A turns left, D turns right from the chase cam.
-
-## Layout
-
-```
-src/game/     sim, craft, swarm, scenes, HUD
-public/assets textures, library stills, dream-loop targets
-```

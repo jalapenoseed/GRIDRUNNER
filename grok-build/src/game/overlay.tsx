@@ -16,6 +16,7 @@ import { fleetCam } from "./cam";
 import { useGame } from "./store";
 import { FLEET_SIZES, FOCUSES, FORMATIONS, type Briefing } from "./types";
 import { cn } from "@/lib/utils";
+import { assetUrl } from "./assets";
 
 export function Overlay() {
   const mode = useGame((s) => s.mode);
@@ -622,10 +623,10 @@ function DreamPanel() {
   const toggleDream = useGame((s) => s.toggleDream);
   const src =
     mode === "fleet"
-      ? "/assets/targets/fleet-ops-sm.jpg"
+      ? assetUrl("assets/targets/fleet-ops-sm.jpg")
       : mode === "hangar"
-        ? "/assets/targets/hangar-ops-sm.jpg"
-        : "/assets/targets/field-sm.jpg";
+        ? assetUrl("assets/targets/hangar-ops-sm.jpg")
+        : assetUrl("assets/targets/field-sm.jpg");
   return (
     <div className="pointer-events-auto absolute top-20 right-4 z-10 w-[min(100%-2rem,20rem)]">
       <div className="hud-panel overflow-hidden rounded-[var(--radius-lg)]">

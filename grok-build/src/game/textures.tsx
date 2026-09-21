@@ -1,6 +1,7 @@
 import { useTexture } from "@react-three/drei";
 import { createContext, useContext, useLayoutEffect, type ReactNode } from "react";
 import * as THREE from "three";
+import { assetUrl } from "./assets";
 
 export type GameTextures = {
   earth: THREE.Texture;
@@ -37,14 +38,14 @@ let glowCache: THREE.Texture | null = null;
 
 export function TextureProvider({ children }: { children: ReactNode }) {
   const maps = useTexture({
-    earth: "/assets/textures/earth.jpg",
-    earthRough: "/assets/textures/earth_rough.jpg",
-    metal: "/assets/textures/metal.jpg",
-    metalRough: "/assets/textures/metal_rough.jpg",
-    camo: "/assets/textures/camo.jpg",
-    concrete: "/assets/textures/concrete.jpg",
-    bark: "/assets/textures/bark.jpg",
-    sky: "/assets/textures/sky.jpg",
+    earth: assetUrl("assets/textures/earth.jpg"),
+    earthRough: assetUrl("assets/textures/earth_rough.jpg"),
+    metal: assetUrl("assets/textures/metal.jpg"),
+    metalRough: assetUrl("assets/textures/metal_rough.jpg"),
+    camo: assetUrl("assets/textures/camo.jpg"),
+    concrete: assetUrl("assets/textures/concrete.jpg"),
+    bark: assetUrl("assets/textures/bark.jpg"),
+    sky: assetUrl("assets/textures/sky.jpg"),
   });
 
   useLayoutEffect(() => {
