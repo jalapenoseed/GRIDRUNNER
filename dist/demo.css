@@ -1,0 +1,12 @@
+body.gridrunner-demo #yoloToggle,
+body.gridrunner-demo #swarmOpen,
+body.gridrunner-demo #squadButton,
+body.gridrunner-demo #adminFleetHUD,
+body.gridrunner-demo #storyLinkHUD,
+body.gridrunner-demo #opticsBar{display:none!important}
+body.gridrunner-demo #charging,
+body.gridrunner-demo #navigation,
+body.gridrunner-demo #dronePanel{display:none}
+body.gridrunner-demo footer button[data-act="inventory"],
+body.gridrunner-demo footer button[data-act="map"],
+body.gridrunner-demo #quickBtn{opacity:.35}
