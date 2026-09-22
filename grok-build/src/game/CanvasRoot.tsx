@@ -9,7 +9,7 @@ import type { Mode } from "./types";
 export function CanvasRoot({ mode }: { mode: Mode }) {
   return (
     <Canvas
-      camera={{ fov: 48, position: [4.5, 3.2, 11], near: 0.1, far: 240 }}
+      camera={{ fov: 48, position: [4.5, 3.2, 11], near: 0.1, far: 420 }}
       shadows
       dpr={[1, 1.5]}
       gl={{
@@ -21,7 +21,7 @@ export function CanvasRoot({ mode }: { mode: Mode }) {
       onCreated={({ gl }) => {
         gl.shadowMap.type = THREE.PCFShadowMap;
       }}
-      style={{ width: "100%", height: "100%", display: "block", background: "#07080a" }}
+      style={{ width: "100%", height: "100%", display: "block", background: "#05070b" }}
     >
       <Suspense fallback={null}>
         <TextureProvider>
@@ -32,11 +32,11 @@ export function CanvasRoot({ mode }: { mode: Mode }) {
           <EffectComposer>
             <Bloom
               luminanceThreshold={0.55}
-              intensity={1.15}
+              intensity={1.05}
               mipmapBlur
               luminanceSmoothing={0.15}
             />
-            <Vignette eskil={false} offset={0.22} darkness={0.72} />
+            <Vignette eskil={false} offset={0.22} darkness={0.68} />
           </EffectComposer>
         </TextureProvider>
       </Suspense>

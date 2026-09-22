@@ -293,6 +293,12 @@ export function Bike() {
       10,
       dt,
     );
+    lean.current.rotation.x = THREE.MathUtils.damp(
+      lean.current.rotation.x,
+      sim.mode === "field" ? -sim.bike.pitch : 0,
+      8,
+      dt,
+    );
   });
 
   return (

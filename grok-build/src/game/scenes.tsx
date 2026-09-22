@@ -31,7 +31,6 @@ import {
   TowerLine,
 } from "./world";
 
-const _fwd = new THREE.Vector3();
 const _desired = new THREE.Vector3();
 const _look = new THREE.Vector3();
 const _punch = new THREE.Vector3();
@@ -42,22 +41,21 @@ function syncStore() {
   sim.formation = s.formation;
   sim.boids = s.boids;
   sim.mode = s.mode === "library" ? "library" : s.mode;
+  sim.cam = s.camView;
+  sim.stance = s.stance;
 }
 
 export function FieldScene() {
   const bike = useRef<THREE.Group>(null);
   const watch = useRef<THREE.Group>(null);
-  const droneRefs = useRef<(THREE.Group | null)[]>([]);
   const gate = useRef<THREE.Group>(null);
-  const [roster, setRoster] = useState(sim.rosterId);
 
   useFrame(({ camera }, dt) => {
     syncStore();
     stepSim(dt);
-    if (sim.rosterId !== roster) setRoster(sim.rosterId);
     const b = sim.bike;
     if (bike.current) {
-      bike.current.position.set(b.x, 0, b.z);
+      bike.current.position.set(b.x, b.y, b.z);
       bike.current.rotation.y = b.yaw;
     }
     if (watch.current) {
@@ -67,26 +65,49 @@ export function FieldScene() {
     if (gate.current) {
       gate.current.position.set(0, 0, sim.dropZ);
     }
-    sim.drones.forEach((d, i) => {
-      const g = droneRefs.current[i];
-      if (!g) return;
-      g.position.set(d.x, d.y, d.z);
-      g.rotation.y = d.yaw;
-      g.userData.airborne = d.airborne;
-    });
-    _fwd.set(-Math.sin(b.yaw), 0, -Math.cos(b.yaw));
-    _desired.set(b.x, 0, b.z).addScaledVector(_fwd, -9.2);
-    _desired.x += Math.cos(b.yaw) * 1.05;
-    _desired.y = 3.35;
-    camera.position.lerp(_desired, 1 - Math.exp(-3.4 * Math.min(dt, 0.1)));
-    if (sim.juice > 0.05) {
-      camera.position.x += (Math.random() - 0.5) * sim.juice * 0.18;
-      camera.position.y += (Math.random() - 0.5) * sim.juice * 0.08;
+
+    const fx = -Math.sin(b.yaw);
+    const fz = -Math.cos(b.yaw);
+    const rx = Math.cos(b.yaw);
+    const rz = -Math.sin(b.yaw);
+    const view = sim.cam;
+    let follow = 3.6;
+    if (view === "hood") {
+      _desired.set(b.x + fx * 0.55 + rx * 0.18, b.y + 1.28, b.z + fz * 0.55 + rz * 0.18);
+      _look.set(b.x + fx * 16, 0.9, b.z + fz * 16);
+      follow = 14;
+    } else if (view === "shoulder") {
+      _desired.set(b.x - fx * 4.6 + rx * 1.55, 2.05, b.z - fz * 4.6 + rz * 1.55);
+      _look.set(b.x + fx * 8, 1.05, b.z + fz * 8);
+      follow = 7;
+    } else if (view === "drone") {
+      const d = sim.drones.find((dr) => dr.airborne) ?? sim.drones[0];
+      if (d) {
+        _desired.set(d.x - fx * 5.4, d.y + 1.8, d.z - fz * 5.4);
+        _look.set(b.x, 1.1, b.z);
+      } else {
+        _desired.set(b.x - fx * 9, 8.5, b.z - fz * 9);
+        _look.set(b.x, 1.1, b.z);
+      }
+      follow = 4.2;
+    } else if (view === "orbit") {
+      const t = sim.time * 0.32;
+      _desired.set(b.x + Math.cos(t) * 11.5, 5.8, b.z + Math.sin(t) * 11.5);
+      _look.set(b.x, 1.2, b.z);
+      follow = 3.2;
+    } else {
+      _desired.set(b.x - fx * 9.4 + rx * 1.05, 3.4, b.z - fz * 9.4 + rz * 1.05);
+      _look.set(b.x + fx * (4 + Math.abs(b.speed) * 0.18), 1.15, b.z + fz * (4 + Math.abs(b.speed) * 0.18));
+      follow = 3.4;
     }
-    _look.set(b.x, 1.15, b.z).addScaledVector(_fwd, 4 + Math.abs(b.speed) * 0.2);
+    camera.position.lerp(_desired, 1 - Math.exp(-follow * Math.min(dt, 0.1)));
+    if (sim.juice > 0.05 && view === "chase") {
+      camera.position.x += (Math.random() - 0.5) * sim.juice * 0.1;
+      camera.position.y += (Math.random() - 0.5) * sim.juice * 0.05;
+    }
     camera.lookAt(_look);
     const persp = camera as THREE.PerspectiveCamera;
-    const wantFov = 46 + Math.min(9, Math.abs(b.speed) * 0.42);
+    const wantFov = view === "hood" ? 58 : 46 + Math.min(8, Math.abs(b.speed) * 0.38);
     persp.fov += (wantFov - persp.fov) * (1 - Math.exp(-3.2 * Math.min(dt, 0.1)));
     persp.updateProjectionMatrix();
   });
@@ -95,7 +116,7 @@ export function FieldScene() {
     <>
       <NightLights />
       <SkyDome />
-      <fog attach="fog" args={["#07090c", 28, 150]} />
+      <fog attach="fog" args={["#07090c", 48, 210]} />
       <Terrain />
       <TowerLine />
       <OakField />
@@ -111,17 +132,8 @@ export function FieldScene() {
       <group ref={watch}>
         <WatchUnit />
       </group>
-      {sim.drones.slice(0, 6).map((d, i) => (
-        <group
-          key={`${roster}-${d.id}`}
-          ref={(el) => {
-            droneRefs.current[i] = el;
-          }}
-        >
-          <Drone kind={d.kind} scale={1.85} />
-          <pointLight intensity={2.4} distance={8} color={d.beacon} />
-        </group>
-      ))}
+      <LiveSwarm />
+      <HostileSwarm />
       {Array.from({ length: 8 }, (_, i) => (
         <Pickup key={i} index={i} />
       ))}
@@ -204,7 +216,7 @@ export function FleetScene() {
     <>
       <NightLights />
       <SkyDome />
-      <fog attach="fog" args={["#07090c", 32, 160]} />
+      <fog attach="fog" args={["#07090c", 40, 180]} />
       <Terrain />
       <FleetYard />
       <OakField />

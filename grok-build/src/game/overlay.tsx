@@ -1,22 +1,37 @@
-import { useEffect, useState, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import {
+  Camera,
   Crosshair,
   Minus,
   Pause,
   Plus,
   Radio,
   RotateCcw,
+  Shield,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CATALOG, catalogById } from "./catalog";
-import { briefingDef, BRIEFING_DEFS } from "./ops";
+import { briefingDef, BRIEFING_DEFS, FIELD_STORY } from "./ops";
 import { sim } from "./sim";
 import { fleetCam } from "./cam";
 import { useGame } from "./store";
-import { FLEET_SIZES, FOCUSES, FORMATIONS, type Briefing } from "./types";
+import {
+  ALL_FORMS,
+  CAM_VIEWS,
+  FLEET_SIZES,
+  FOCUSES,
+  FORMATIONS,
+  SPELLS,
+  STANCES,
+  type Briefing,
+  type CamView,
+  type EscortStance,
+  type Formation,
+} from "./types";
 import { cn } from "@/lib/utils";
 import { assetUrl } from "./assets";
+import { unlockAudio } from "./audio";
 
 export function Overlay() {
   const mode = useGame((s) => s.mode);
@@ -24,19 +39,71 @@ export function Overlay() {
   const paused = useGame((s) => s.paused);
   const showHelp = useGame((s) => s.showHelp);
   const showDream = useGame((s) => s.showDream);
+  const showIntro = useGame((s) => s.showIntro);
 
   return (
     <div className="pointer-events-none absolute inset-0 text-fg">
-      {mode === "hangar" && showHelp && <HangarMenu />}
+      {showIntro && <IntroReel />}
+      {!showIntro && mode === "hangar" && showHelp && <HangarMenu />}
       {mode === "library" && <LibraryPanel />}
       {mode === "field" && playing && <FieldHud />}
       {mode === "fleet" && playing && <FleetHud />}
-      {paused && playing && <PauseMenu />}
-      {showDream && <DreamPanel />}
-      <TopBar />
-      {mode === "field" && <TouchPad />}
+      {paused && playing && !showIntro && <PauseMenu />}
+      {showDream && !showIntro && <DreamPanel />}
+      {!showIntro && <TopBar />}
+      {mode === "field" && !showIntro && <TouchPad />}
       {mode === "fleet" && playing && !paused && <FleetTouch />}
       <SensorWash />
+    </div>
+  );
+}
+
+function IntroReel() {
+  const dismissIntro = useGame((s) => s.dismissIntro);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [blocked, setBlocked] = useState(false);
+
+  useEffect(() => {
+    unlockAudio();
+    const v = videoRef.current;
+    if (!v) return;
+    v.volume = 0.7;
+    const play = v.play();
+    if (play && typeof play.catch === "function") {
+      play.catch(() => setBlocked(true));
+    }
+  }, []);
+
+  return (
+    <div className="pointer-events-auto absolute inset-0 z-30 bg-bg">
+      <video
+        ref={videoRef}
+        src={assetUrl("assets/intro.mp4")}
+        className="h-full w-full object-cover"
+        playsInline
+        autoPlay
+        onEnded={dismissIntro}
+      />
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-bg via-bg/70 to-transparent p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+        <p className="text-[10px] tracking-[0.28em] text-muted uppercase">Night operations</p>
+        <h1 className="font-display text-4xl tracking-[0.14em] md:text-5xl">GRIDRUNNER</h1>
+        <p className="mt-2 max-w-lg text-sm leading-relaxed text-muted">{FIELD_STORY.logline}</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {blocked && (
+            <Button
+              onClick={() => {
+                void videoRef.current?.play();
+                setBlocked(false);
+              }}
+            >
+              Play intro
+            </Button>
+          )}
+          <Button variant={blocked ? "secondary" : "primary"} onClick={dismissIntro}>
+            Skip to hangar
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -92,27 +159,37 @@ function HangarMenu() {
   const fleetCount = useGame((s) => s.fleetCount);
   const setFleetCount = useGame((s) => s.setFleetCount);
   const best = useGame((s) => s.best);
+  const replayIntro = useGame((s) => s.replayIntro);
   const def = briefingDef(briefing);
 
   return (
-    <div className="pointer-events-auto absolute inset-x-0 bottom-0 max-h-[72%] overflow-y-auto p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:max-w-xl">
-      <div className="hud-panel rounded-[var(--radius-xl)] p-4 md:p-6">
-        <p className="text-[10px] tracking-[0.24em] text-muted uppercase">Night operations</p>
-        <h1 className="font-display mt-1 text-3xl leading-none tracking-wide md:text-4xl">
-          Fleet on the line.
-        </h1>
-        <p className="mt-2 max-w-md text-sm leading-relaxed text-muted">
-          Two games, one yard. Fleet Commander runs the airframes. Field Run rides the grid —
-          three salvage waves, bank the cyan gates.
+    <div className="pointer-events-auto absolute inset-x-0 bottom-0 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:max-w-2xl">
+      <div className="hud-panel rounded-[var(--radius-xl)] p-3 md:p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-[10px] tracking-[0.24em] text-muted uppercase">Night operations</p>
+            <h1 className="font-display text-2xl leading-none tracking-wide md:text-3xl">
+              Fleet on the line.
+            </h1>
+          </div>
+          <button
+            onClick={replayIntro}
+            className="shrink-0 rounded-[var(--radius-sm)] border border-border px-2.5 py-1.5 text-[10px] tracking-[0.18em] text-muted uppercase"
+          >
+            Intro
+          </button>
+        </div>
+        <p className="mt-2 max-w-xl text-xs leading-relaxed text-subtle md:text-sm">
+          {FIELD_STORY.logline}
         </p>
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap gap-1.5">
           {BRIEFING_DEFS.map((b) => (
             <button
               key={b.id}
               onClick={() => setBriefing(b.id)}
               className={cn(
-                "rounded-[var(--radius-sm)] border px-3 py-2 text-left text-xs tracking-wide uppercase",
+                "rounded-[var(--radius-sm)] border px-2.5 py-1.5 text-left text-[11px] tracking-wide uppercase",
                 briefing === b.id
                   ? "border-fg bg-fg text-accent-fg"
                   : "border-border bg-surface text-muted",
@@ -128,16 +205,16 @@ function HangarMenu() {
           ))}
         </div>
 
-        <p className="mt-3 text-sm leading-relaxed text-subtle">{def.blurb}</p>
+        <p className="mt-2 text-xs leading-relaxed text-subtle">{def.blurb}</p>
 
-        <div className="mt-3 flex items-center gap-2">
+        <div className="mt-2 flex items-center gap-2">
           <p className="text-[10px] tracking-[0.2em] text-muted uppercase">Roster</p>
           {FLEET_SIZES.map((n) => (
             <button
               key={n}
               onClick={() => setFleetCount(n)}
               className={cn(
-                "size-10 rounded-[var(--radius-sm)] border text-sm tabular-nums",
+                "size-9 rounded-[var(--radius-sm)] border text-sm tabular-nums",
                 fleetCount === n
                   ? "border-fg bg-fg text-accent-fg"
                   : "border-border bg-surface text-muted",
@@ -148,7 +225,7 @@ function HangarMenu() {
           ))}
         </div>
 
-        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+        <div className="mt-3 flex flex-col gap-2 sm:flex-row">
           <Button size="lg" onClick={() => play("fleet", briefing)}>
             Engage Fleet
           </Button>
@@ -159,9 +236,8 @@ function HangarMenu() {
             Library
           </Button>
         </div>
-        <p className="mt-3 text-xs text-subtle">
-          Tap yard to rally · V filter airframe · 1–5 formations · Space launch · L recall · F
-          harvest · R hop · WASD ride
+        <p className="mt-2 text-[11px] text-subtle">
+          WASD ride · A/D steer · Space wheelie · G guard · C camera · 1–5 form · 6–8 spell
         </p>
       </div>
     </div>
@@ -185,6 +261,10 @@ function FieldHud() {
   const toggleBoids = useGame((s) => s.toggleBoids);
   const cycleSensor = useGame((s) => s.cycleSensor);
   const sensor = useGame((s) => s.sensor);
+  const stance = useGame((s) => s.stance);
+  const setStance = useGame((s) => s.setStance);
+  const camView = useGame((s) => s.camView);
+  const cycleCam = useGame((s) => s.cycleCam);
 
   return (
     <>
@@ -203,6 +283,9 @@ function FieldHud() {
             {(Math.abs(hud.speed) * 4.2).toFixed(0)}
             <span className="ml-1 text-xs tracking-wide text-subtle">km/h</span>
           </p>
+          {hud.stalled && (
+            <p className="mt-1 text-[10px] tracking-[0.16em] text-danger uppercase">Stall — sweep a cell</p>
+          )}
         </div>
         <div className="hud-panel rounded-[var(--radius-md)] p-2.5 md:p-3">
           <p className="text-[10px] tracking-[0.2em] text-muted uppercase">
@@ -212,6 +295,11 @@ function FieldHud() {
             {hud.salvage} / {hud.waveNeed}
           </p>
           <p className="mt-1 text-xs leading-snug text-subtle">{hud.prompt}</p>
+          {hud.hostiles > 0 && (
+            <p className="mt-1 text-[10px] tracking-[0.16em] text-danger uppercase">
+              {hud.hostiles} inbound · {hud.tagged} tagged
+            </p>
+          )}
         </div>
       </div>
 
@@ -219,11 +307,42 @@ function FieldHud() {
         {hud.suspicion > 4 && (
           <div className="hud-panel rounded-[var(--radius-md)] px-3 py-2">
             <p className="text-[10px] tracking-[0.2em] text-danger uppercase">WATCH-01</p>
-            <div className="mt-1 h-1 w-28 overflow-hidden rounded-full bg-surface-2">
+            <div className="mt-1 ml-auto h-1 w-28 overflow-hidden rounded-full bg-surface-2">
               <div className="h-full bg-danger" style={{ width: `${hud.suspicion}%` }} />
             </div>
+            {hud.observed && (
+              <p className="mt-1 text-[10px] text-subtle">Logged — ride on</p>
+            )}
           </div>
         )}
+        <div className="hud-panel mt-2 rounded-[var(--radius-md)] px-3 py-2">
+          <p className="text-[10px] tracking-[0.2em] text-muted uppercase">Cam · {hud.cam}</p>
+          <p className="text-[10px] tracking-[0.2em] text-muted uppercase">Stance · {hud.stance}</p>
+        </div>
+      </div>
+
+      <div className="pointer-events-auto absolute bottom-20 left-1/2 hidden w-[min(100%-1.5rem,40rem)] -translate-x-1/2 md:bottom-[5.5rem] md:block">
+        <div className="hud-panel flex flex-wrap items-center justify-center gap-1.5 rounded-[var(--radius-xl)] px-2 py-1.5">
+          {STANCES.map((st) => (
+            <button
+              key={st}
+              onClick={() => setStance(st)}
+              className={cn(
+                "min-h-9 rounded-[var(--radius-sm)] px-2.5 py-1 text-xs tracking-wide uppercase",
+                stance === st ? "bg-fg text-accent-fg" : "text-muted hover:text-fg",
+              )}
+            >
+              {st}
+            </button>
+          ))}
+          <button
+            onClick={cycleCam}
+            className="min-h-9 rounded-[var(--radius-sm)] px-2.5 py-1 text-xs tracking-wide text-muted uppercase hover:text-fg"
+          >
+            <Camera className="mr-1 inline size-3.5" />
+            {camView}
+          </button>
+        </div>
       </div>
 
       <FormationDock
@@ -233,21 +352,16 @@ function FieldHud() {
         onFormation={setFormation}
         onBoids={toggleBoids}
         onSensor={cycleSensor}
+        spells
       />
 
       {hud.won && (
         <CenterCard
           title="Substation live"
-          body={`Three waves banked. Score ${hud.score}. The northern feed can take the next hop.`}
+          body={`Three waves banked. Score ${hud.score}. ${FIELD_STORY.win}`}
           action="Return to hangar"
           restart
         />
-      )}
-      {hud.stalled && !hud.won && (
-        <CenterCard title="Stalled" body="Battery empty. Sweep a salvage cell or limp home." restart />
-      )}
-      {hud.observed && !hud.won && (
-        <CenterCard title="Observed" body="WATCH-01 logged the bike. Ride on — this prototype does not fire." />
       )}
     </>
   );
@@ -330,7 +444,7 @@ function FleetHud() {
         <ZoomBtns />
       </div>
 
-      <div className="pointer-events-auto absolute bottom-4 left-1/2 w-[min(100%-1rem,42rem)] -translate-x-1/2 pb-[max(0px,env(safe-area-inset-bottom))]">
+      <div className="pointer-events-auto absolute bottom-4 left-1/2 w-[min(100%-1rem,46rem)] -translate-x-1/2 pb-[max(0px,env(safe-area-inset-bottom))]">
         <div className="hud-panel rounded-[var(--radius-xl)] px-2 py-2 md:px-3">
           <div className="flex flex-wrap items-center justify-center gap-1.5">
             {FORMATIONS.map((f) => (
@@ -340,6 +454,18 @@ function FleetHud() {
                 className={cn(
                   "min-h-10 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-xs tracking-wide uppercase",
                   formation === f ? "bg-fg text-accent-fg" : "text-muted hover:text-fg",
+                )}
+              >
+                {f}
+              </button>
+            ))}
+            {SPELLS.map((f) => (
+              <button
+                key={f}
+                onClick={() => setFormation(f)}
+                className={cn(
+                  "min-h-10 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-xs tracking-wide uppercase",
+                  formation === f ? "bg-beacon text-accent-fg" : "text-beacon/80 hover:text-beacon",
                 )}
               >
                 {f}
@@ -509,24 +635,33 @@ function FormationDock({
   onFormation,
   onBoids,
   onSensor,
+  spells = false,
 }: {
   formation: string;
   boids: boolean;
   sensor: string;
-  onFormation: (f: (typeof FORMATIONS)[number]) => void;
+  onFormation: (f: Formation) => void;
   onBoids: () => void;
   onSensor: () => void;
+  spells?: boolean;
 }) {
+  const forms = spells ? ALL_FORMS : FORMATIONS;
   return (
-    <div className="pointer-events-auto absolute bottom-4 left-1/2 w-[min(100%-1.5rem,42rem)] -translate-x-1/2 pb-[max(0px,env(safe-area-inset-bottom))]">
-      <div className="hud-panel flex flex-wrap items-center justify-center gap-2 rounded-[var(--radius-xl)] px-3 py-2">
-        {FORMATIONS.map((f) => (
+    <div className="pointer-events-auto absolute bottom-4 left-1/2 w-[min(100%-1.5rem,46rem)] -translate-x-1/2 pb-[max(0px,env(safe-area-inset-bottom))]">
+      <div className="hud-panel flex flex-wrap items-center justify-center gap-1.5 rounded-[var(--radius-xl)] px-3 py-2">
+        {forms.map((f) => (
           <button
             key={f}
             onClick={() => onFormation(f)}
             className={cn(
               "min-h-10 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-xs tracking-wide uppercase",
-              formation === f ? "bg-fg text-accent-fg" : "text-muted hover:text-fg",
+              formation === f
+                ? SPELLS.includes(f)
+                  ? "bg-beacon text-accent-fg"
+                  : "bg-fg text-accent-fg"
+                : SPELLS.includes(f)
+                  ? "text-beacon/80 hover:text-beacon"
+                  : "text-muted hover:text-fg",
             )}
           >
             {f}
@@ -596,10 +731,25 @@ function PauseMenu() {
   const play = useGame((s) => s.play);
   const mode = useGame((s) => s.mode);
   const briefing = useGame((s) => s.briefing);
+  const camView = useGame((s) => s.camView);
+  const setCamView = useGame((s) => s.setCamView);
+  const stance = useGame((s) => s.stance);
+  const setStance = useGame((s) => s.setStance);
+  const volMaster = useGame((s) => s.volMaster);
+  const volSfx = useGame((s) => s.volSfx);
+  const volMusic = useGame((s) => s.volMusic);
+  const setVolume = useGame((s) => s.setVolume);
+  const replayIntro = useGame((s) => s.replayIntro);
+
   return (
     <div className="pointer-events-auto absolute inset-0 flex items-center justify-center bg-bg/60 p-4">
-      <div className="hud-panel w-full max-w-sm rounded-[var(--radius-xl)] p-6">
+      <div className="hud-panel max-h-[min(92dvh,40rem)] w-full max-w-sm overflow-y-auto rounded-[var(--radius-xl)] p-6">
         <h2 className="font-display text-3xl">Paused</h2>
+        <p className="mt-1 text-xs text-subtle">
+          {mode === "field"
+            ? "WASD ride · Space wheelie · G guard · C camera · L recall"
+            : "Tap yard · 1–5 form · 6–8 spell · Space launch · L recall"}
+        </p>
         <div className="mt-4 flex flex-col gap-2">
           <Button onClick={togglePause}>Resume</Button>
           <Button
@@ -613,6 +763,85 @@ function PauseMenu() {
             Hangar
           </Button>
         </div>
+
+        {mode === "field" && (
+          <>
+            <p className="mt-5 text-[10px] tracking-[0.2em] text-muted uppercase">Camera</p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {CAM_VIEWS.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setCamView(c as CamView)}
+                  className={cn(
+                    "min-h-9 rounded-[var(--radius-sm)] px-2.5 py-1 text-xs tracking-wide uppercase",
+                    camView === c ? "bg-fg text-accent-fg" : "border border-border text-muted",
+                  )}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+            <p className="mt-4 text-[10px] tracking-[0.2em] text-muted uppercase">Escort</p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {STANCES.map((st) => (
+                <button
+                  key={st}
+                  onClick={() => setStance(st as EscortStance)}
+                  className={cn(
+                    "min-h-9 rounded-[var(--radius-sm)] px-2.5 py-1 text-xs tracking-wide uppercase",
+                    stance === st ? "bg-fg text-accent-fg" : "border border-border text-muted",
+                  )}
+                >
+                  {st}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        <p className="mt-5 text-[10px] tracking-[0.2em] text-muted uppercase">Audio</p>
+        <label className="mt-2 flex items-center justify-between gap-3 text-xs text-muted">
+          Master
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={volMaster}
+            onChange={(e) => setVolume("master", Number(e.target.value))}
+            className="w-36 accent-beacon"
+          />
+        </label>
+        <label className="mt-2 flex items-center justify-between gap-3 text-xs text-muted">
+          SFX
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={volSfx}
+            onChange={(e) => setVolume("sfx", Number(e.target.value))}
+            className="w-36 accent-beacon"
+          />
+        </label>
+        <label className="mt-2 flex items-center justify-between gap-3 text-xs text-muted">
+          Ambience
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={volMusic}
+            onChange={(e) => setVolume("music", Number(e.target.value))}
+            className="w-36 accent-beacon"
+          />
+        </label>
+        <button
+          onClick={replayIntro}
+          className="mt-4 text-left text-xs tracking-wide text-subtle uppercase hover:text-fg"
+        >
+          Replay intro
+        </button>
       </div>
     </div>
   );
@@ -711,10 +940,37 @@ function SensorWash() {
 function TouchPad() {
   const playing = useGame((s) => s.playing);
   const paused = useGame((s) => s.paused);
+  const cycleCam = useGame((s) => s.cycleCam);
+  const cycleStance = useGame((s) => s.cycleStance);
   if (!playing || paused) return null;
   return (
-    <div className="pointer-events-auto absolute bottom-24 left-3 md:hidden">
+    <div className="pointer-events-auto absolute bottom-24 left-3 flex items-end gap-2 md:hidden">
       <Stick />
+      <div className="flex flex-col gap-2">
+        <button
+          aria-label="Wheelie"
+          className="hud-panel flex size-12 items-center justify-center rounded-[var(--radius-md)] text-[10px] tracking-wide uppercase"
+          onPointerDown={() => sim.setKeys(["KeyW", "Space"])}
+          onPointerUp={() => sim.setKeys([])}
+          onPointerCancel={() => sim.setKeys([])}
+        >
+          Wheelie
+        </button>
+        <button
+          aria-label="Guard stance"
+          className="hud-panel flex size-12 items-center justify-center rounded-[var(--radius-md)]"
+          onClick={cycleStance}
+        >
+          <Shield className="size-4" />
+        </button>
+        <button
+          aria-label="Camera"
+          className="hud-panel flex size-12 items-center justify-center rounded-[var(--radius-md)]"
+          onClick={cycleCam}
+        >
+          <Camera className="size-4" />
+        </button>
+      </div>
     </div>
   );
 }

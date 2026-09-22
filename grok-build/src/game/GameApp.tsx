@@ -1,9 +1,9 @@
 import { useEffect, useState, type ComponentType } from "react";
-import { unlockAudio } from "./audio";
+import { setVolumes, unlockAudio } from "./audio";
 import { Overlay } from "./overlay";
 import { attachInput, bindControlsTest, sim } from "./sim";
 import { useGame } from "./store";
-import { FORMATIONS } from "./types";
+import { FORMATIONS, SPELLS } from "./types";
 import type { Mode } from "./types";
 
 export function GameApp() {
@@ -22,6 +22,12 @@ export function GameApp() {
   const harvest = useGame((s) => s.harvest);
   const hop = useGame((s) => s.hop);
   const cycleFocus = useGame((s) => s.cycleFocus);
+  const cycleCam = useGame((s) => s.cycleCam);
+  const cycleStance = useGame((s) => s.cycleStance);
+  const volMaster = useGame((s) => s.volMaster);
+  const volSfx = useGame((s) => s.volSfx);
+  const volMusic = useGame((s) => s.volMusic);
+  const showIntro = useGame((s) => s.showIntro);
 
   useEffect(() => {
     void import("./CanvasRoot").then((m) => setCanvasRoot(() => m.CanvasRoot));
@@ -34,9 +40,13 @@ export function GameApp() {
   }, []);
 
   useEffect(() => {
+    setVolumes({ master: volMaster, sfx: volSfx, music: volMusic });
+  }, [volMaster, volSfx, volMusic]);
+
+  useEffect(() => {
     const unlock = () => unlockAudio();
-    window.addEventListener("pointerdown", unlock, { once: true });
-    window.addEventListener("keydown", unlock, { once: true });
+    window.addEventListener("pointerdown", unlock);
+    window.addEventListener("keydown", unlock);
     const vis = () => {
       if (document.visibilityState === "visible") unlockAudio();
     };
@@ -51,6 +61,7 @@ export function GameApp() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.repeat) return;
+      if (showIntro) return;
       if (e.code === "Escape") {
         if (playing) togglePause();
         else hangar();
@@ -59,7 +70,9 @@ export function GameApp() {
       if (e.code === "KeyK") cycleSensor();
       if (e.code === "KeyB") toggleBoids();
       if (e.code === "KeyV") cycleFocus();
-      if (e.code === "Space" && playing) {
+      if (e.code === "KeyC") cycleCam();
+      if (e.code === "KeyG" && (mode === "field" || mode === "fleet")) cycleStance();
+      if (e.code === "Space" && playing && mode === "fleet") {
         e.preventDefault();
         if (sim.drones.some((d) => d.airborne)) recall();
         else launch();
@@ -69,6 +82,8 @@ export function GameApp() {
       if (e.code === "KeyR" && mode === "fleet") hop();
       const idx = ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5"].indexOf(e.code);
       if (idx >= 0) setFormation(FORMATIONS[idx]);
+      const sp = ["Digit6", "Digit7", "Digit8"].indexOf(e.code);
+      if (sp >= 0) setFormation(SPELLS[sp]);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -85,7 +100,10 @@ export function GameApp() {
     harvest,
     hop,
     cycleFocus,
+    cycleCam,
+    cycleStance,
     mode,
+    showIntro,
   ]);
 
   useEffect(() => {
