@@ -14,23 +14,85 @@ function mulberry32(a: number) {
 }
 
 export function SkyDome() {
-  const { sky } = useGameTextures();
+  const stars = useMemo(() => {
+    const geo = new THREE.BufferGeometry();
+    const count = 1600;
+    const pos = new Float32Array(count * 3);
+    const col = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const r = 210;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(0.02 + Math.random() * 0.92);
+      pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      pos[i * 3 + 1] = r * Math.cos(phi);
+      pos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+      const b = 0.65 + Math.random() * 0.35;
+      col[i * 3] = 0.78 * b;
+      col[i * 3 + 1] = 0.84 * b;
+      col[i * 3 + 2] = 0.95 * b;
+    }
+    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+    return geo;
+  }, []);
+
+  const sky = useMemo(() => {
+    const g = new THREE.SphereGeometry(250, 28, 18);
+    const colors = new Float32Array(g.attributes.position.count * 3);
+    const p = g.attributes.position;
+    for (let i = 0; i < p.count; i++) {
+      const y = p.getY(i) / 250;
+      const h = Math.max(0, y);
+      colors[i * 3] = 0.02 + h * 0.03;
+      colors[i * 3 + 1] = 0.035 + h * 0.04;
+      colors[i * 3 + 2] = 0.055 + h * 0.07;
+      if (y < 0.12) {
+        const k = 1 - y / 0.12;
+        colors[i * 3] += 0.06 * k;
+        colors[i * 3 + 1] += 0.035 * k;
+        colors[i * 3 + 2] += 0.01 * k;
+      }
+    }
+    g.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    return g;
+  }, []);
+
   return (
-    <mesh>
-      <sphereGeometry args={[180, 32, 20]} />
-      <meshBasicMaterial map={sky} side={THREE.BackSide} depthWrite={false} />
-    </mesh>
+    <group>
+      <color attach="background" args={["#05070b"]} />
+      <mesh geometry={sky}>
+        <meshBasicMaterial vertexColors side={THREE.BackSide} depthWrite={false} fog={false} />
+      </mesh>
+      <points geometry={stars} frustumCulled={false}>
+        <pointsMaterial
+          vertexColors
+          size={1.4}
+          sizeAttenuation={false}
+          depthWrite={false}
+          transparent
+          opacity={0.9}
+        />
+      </points>
+      <mesh position={[-62, 92, -130]}>
+        <sphereGeometry args={[7.5, 18, 18]} />
+        <meshBasicMaterial color="#eef2f6" fog={false} />
+      </mesh>
+      <mesh position={[-62, 92, -130]}>
+        <sphereGeometry args={[16, 16, 16]} />
+        <meshBasicMaterial color="#9aadc4" transparent opacity={0.08} depthWrite={false} fog={false} />
+      </mesh>
+    </group>
   );
 }
 
 export function NightLights({ hangar = false }: { hangar?: boolean }) {
   return (
     <>
-      <hemisphereLight args={["#9aafc0", "#1a140e", hangar ? 1.05 : 0.42]} />
-      <ambientLight intensity={hangar ? 0.7 : 0.14} />
+      <hemisphereLight args={["#9aafc0", "#1a140e", hangar ? 1.05 : 0.55]} />
+      <ambientLight intensity={hangar ? 0.7 : 0.22} />
       <directionalLight
         position={[36, 52, 18]}
-        intensity={hangar ? 2.4 : 0.55}
+        intensity={hangar ? 2.4 : 0.72}
         color="#c5d4e2"
         castShadow
         shadow-mapSize-width={1024}
@@ -57,26 +119,36 @@ export function Terrain({ hangar = false }: { hangar?: boolean }) {
   return (
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <planeGeometry args={[420, 420]} />
+        <planeGeometry args={[520, 560]} />
         <meshStandardMaterial
           map={hangar ? concrete : earth}
           roughnessMap={hangar ? undefined : earthRough}
-          roughness={hangar ? 0.55 : 0.34}
+          roughness={hangar ? 0.55 : 0.42}
           metalness={hangar ? 0.12 : 0.08}
-          color={hangar ? "#9aa09c" : "#6a655c"}
+          color={hangar ? "#9aa09c" : "#5a564c"}
         />
       </mesh>
       {!hangar && (
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, -90]} receiveShadow>
-          <planeGeometry args={[9, 240]} />
-          <meshPhysicalMaterial
-            color="#3a372f"
-            roughness={0.22}
-            metalness={0.12}
-            clearcoat={0.7}
-            clearcoatRoughness={0.18}
-          />
-        </mesh>
+        <>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.035, -90]} receiveShadow>
+            <planeGeometry args={[16.4, 280]} />
+            <meshPhysicalMaterial
+              color="#35332c"
+              roughness={0.28}
+              metalness={0.14}
+              clearcoat={0.55}
+              clearcoatRoughness={0.22}
+            />
+          </mesh>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-9.4, 0.04, -90]}>
+            <planeGeometry args={[2.4, 280]} />
+            <meshStandardMaterial color="#4a463c" roughness={0.7} />
+          </mesh>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[9.4, 0.04, -90]}>
+            <planeGeometry args={[2.4, 280]} />
+            <meshStandardMaterial color="#4a463c" roughness={0.7} />
+          </mesh>
+        </>
       )}
     </group>
   );
@@ -175,11 +247,11 @@ export function OakField() {
   const trees = useMemo(() => {
     const rand = mulberry32(42);
     const list: { x: number; z: number; s: number }[] = [];
-    for (let i = 0; i < 42; i++) {
-      const x = (rand() - 0.5) * 160;
-      const z = (rand() - 0.5) * 220;
-      if (Math.abs(x) < 18) continue;
-      list.push({ x, z, s: 0.8 + rand() * 0.7 });
+    for (let i = 0; i < 90; i++) {
+      const x = (rand() - 0.5) * 200;
+      const z = 30 - rand() * 280;
+      if (Math.abs(x) < 14) continue;
+      list.push({ x, z, s: 0.75 + rand() * 0.85 });
     }
     return list;
   }, []);
@@ -209,25 +281,43 @@ export function OakField() {
 export function Substation() {
   return (
     <group position={[0, 0, -200]}>
-      <mesh position={[0, 1.2, 0]} castShadow>
-        <boxGeometry args={[10, 2.4, 6]} />
-        <meshStandardMaterial color="#3a3f3c" metalness={0.4} roughness={0.5} />
+      <mesh position={[0, 2.2, 0]} castShadow>
+        <boxGeometry args={[14, 4.4, 8]} />
+        <meshStandardMaterial color="#3a3f3c" metalness={0.45} roughness={0.48} />
       </mesh>
-      <mesh position={[0, 2.6, 0]}>
-        <boxGeometry args={[4, 0.4, 2]} />
+      <mesh position={[0, 4.6, 0]}>
+        <boxGeometry args={[6, 0.5, 3]} />
         <meshStandardMaterial color="#2a2e2c" metalness={0.6} roughness={0.35} />
       </mesh>
-      {[-3, 0, 3].map((x) => (
-        <pointLight key={x} position={[x, 3.4, 2.2]} color="#e0a15a" intensity={6} distance={22} />
+      {[-5, 0, 5].map((x) => (
+        <mesh key={x} position={[x, 5.4, 2.6]}>
+          <boxGeometry args={[0.35, 0.35, 0.35]} />
+          <meshStandardMaterial color="#e0a15a" emissive="#e0a15a" emissiveIntensity={3.2} />
+        </mesh>
       ))}
-      <mesh position={[0, 3.6, 2.1]}>
-        <boxGeometry args={[0.3, 0.3, 0.3]} />
-        <meshStandardMaterial color="#e0a15a" emissive="#e0a15a" emissiveIntensity={3} />
+      <mesh position={[-6.8, 2.1, 0]} castShadow>
+        <boxGeometry args={[0.22, 4.2, 0.22]} />
+        <meshStandardMaterial color="#3a423e" metalness={0.55} roughness={0.4} />
       </mesh>
-      <mesh position={[0, 0.05, 6]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[8, 24]} />
-        <meshStandardMaterial color="#7ee0d0" transparent opacity={0.08} />
+      <mesh position={[6.8, 2.1, 0]} castShadow>
+        <boxGeometry args={[0.22, 4.2, 0.22]} />
+        <meshStandardMaterial color="#3a423e" metalness={0.55} roughness={0.4} />
       </mesh>
+      <mesh position={[0, 4.3, 4.8]}>
+        <boxGeometry args={[13.8, 0.16, 0.16]} />
+        <meshStandardMaterial color="#7ee0d0" emissive="#7ee0d0" emissiveIntensity={2.4} />
+      </mesh>
+      <mesh position={[0, 0.06, 8]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[6.2, 7.4, 36]} />
+        <meshBasicMaterial color="#7ee0d0" transparent opacity={0.45} />
+      </mesh>
+      <mesh position={[0, 0.05, 8]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[8, 28]} />
+        <meshStandardMaterial color="#7ee0d0" transparent opacity={0.07} />
+      </mesh>
+      {[-10, 10].map((x) => (
+        <Floodlight key={x} position={[x, 0, 6]} />
+      ))}
     </group>
   );
 }
@@ -328,10 +418,13 @@ export function SalvageOrb({ position, taken }: { position: [number, number, num
   return (
     <group position={position}>
       <mesh>
-        <icosahedronGeometry args={[0.35, 0]} />
-        <meshStandardMaterial color="#7ee0d0" emissive="#7ee0d0" emissiveIntensity={2.2} />
+        <icosahedronGeometry args={[0.38, 0]} />
+        <meshStandardMaterial color="#7ee0d0" emissive="#7ee0d0" emissiveIntensity={2.6} toneMapped={false} />
       </mesh>
-      <pointLight color="#7ee0d0" intensity={3.5} distance={6} />
+      <mesh>
+        <icosahedronGeometry args={[0.55, 0]} />
+        <meshBasicMaterial color="#7ee0d0" transparent opacity={0.16} depthWrite={false} />
+      </mesh>
     </group>
   );
 }
@@ -512,15 +605,111 @@ export function FleetYard() {
 export function FieldClutter() {
   return (
     <group>
-      <CrateStack position={[7.2, 0, -8]} />
-      <CrateStack position={[-8.4, 0, -36]} />
-      <FuelDrum position={[6.6, 0, -24]} />
-      <FuelDrum position={[7.2, 0, -23.4]} />
-      <FuelDrum position={[-7.1, 0, -88]} />
-      <Floodlight position={[8.5, 0, 6]} />
-      <Floodlight position={[-8.5, 0, 6]} />
-      <Generator position={[8, 0, -118]} />
-      <CommsDish position={[-9, 0, -70]} />
+      <FieldEnvironment />
+      <CrateStack position={[8.4, 0, -8]} />
+      <CrateStack position={[-9.2, 0, -36]} />
+      <CrateStack position={[10.2, 0, -96]} />
+      <FuelDrum position={[7.4, 0, -24]} />
+      <FuelDrum position={[8, 0, -23.4]} />
+      <FuelDrum position={[-8.2, 0, -88]} />
+      <FuelDrum position={[-8.8, 0, -154]} />
+      <Floodlight position={[9.6, 0, 8]} />
+      <Floodlight position={[-9.6, 0, 8]} />
+      <Floodlight position={[10.2, 0, -62]} />
+      <Floodlight position={[-10.2, 0, -62]} />
+      <Floodlight position={[10.2, 0, -148]} />
+      <Floodlight position={[-10.2, 0, -148]} />
+      <Generator position={[9.2, 0, -118]} />
+      <Generator position={[-10.4, 0, -42]} />
+      <CommsDish position={[-11, 0, -70]} />
+      <CommsDish position={[11.4, 0, -172]} />
+    </group>
+  );
+}
+
+export function FieldEnvironment() {
+  const posts = useMemo(() => {
+    const list: [number, number, number, number][] = [];
+    for (let z = 24; z > -250; z -= 5.5) {
+      list.push([-8.55, 0.42, z, 0]);
+      list.push([8.55, 0.42, z, 0]);
+    }
+    return list;
+  }, []);
+  const dashes = useMemo(() => {
+    const list: number[] = [];
+    for (let z = 22; z > -248; z -= 5) list.push(z);
+    return list;
+  }, []);
+  const rocks = useMemo(() => {
+    const rand = mulberry32(91);
+    const list: { x: number; z: number; s: number }[] = [];
+    for (let i = 0; i < 36; i++) {
+      const side = rand() > 0.5 ? 1 : -1;
+      list.push({
+        x: side * (12 + rand() * 16),
+        z: 18 - rand() * 250,
+        s: 0.4 + rand() * 0.9,
+      });
+    }
+    return list;
+  }, []);
+  const sheds = useMemo(
+    () =>
+      [
+        [-18, -28],
+        [20, -54],
+        [-22, -110],
+        [19, -176],
+      ] as [number, number][],
+    [],
+  );
+  const miles = useMemo(() => [0, -40, -80, -120, -160, -200], []);
+
+  return (
+    <group>
+      {posts.map((p, i) => (
+        <mesh key={i} position={[p[0], p[1], p[2]]} castShadow>
+          <boxGeometry args={[0.08, 0.84, 0.08]} />
+          <meshStandardMaterial color="#c9c2a8" roughness={0.55} metalness={0.2} />
+        </mesh>
+      ))}
+      {dashes.map((z) => (
+        <mesh key={z} position={[0, 0.045, z]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[0.16, 2.1]} />
+          <meshBasicMaterial color="#cfc8a8" transparent opacity={0.55} />
+        </mesh>
+      ))}
+      {rocks.map((r, i) => (
+        <mesh key={i} position={[r.x, r.s * 0.35, r.z]} scale={r.s} castShadow>
+          <dodecahedronGeometry args={[0.7, 0]} />
+          <meshStandardMaterial color="#4a463e" roughness={0.9} />
+        </mesh>
+      ))}
+      {sheds.map(([x, z], i) => (
+        <group key={i} position={[x, 0, z]}>
+          <mesh position={[0, 1.1, 0]} castShadow>
+            <boxGeometry args={[3.4, 2.2, 2.6]} />
+            <meshStandardMaterial color="#2c322e" roughness={0.7} />
+          </mesh>
+          <mesh position={[0, 2.35, 0]} rotation={[0, 0, 0.08]}>
+            <boxGeometry args={[3.8, 0.12, 2.9]} />
+            <meshStandardMaterial color="#1c201e" metalness={0.4} roughness={0.5} />
+          </mesh>
+        </group>
+      ))}
+      {miles.map((z) => (
+        <group key={z} position={[-10.6, 0, z]}>
+          <mesh position={[0, 1.15, 0]}>
+            <boxGeometry args={[0.08, 2.3, 0.08]} />
+            <meshStandardMaterial color="#3a403c" metalness={0.5} roughness={0.4} />
+          </mesh>
+          <mesh position={[0.02, 2.05, 0]}>
+            <boxGeometry args={[0.04, 0.42, 0.55]} />
+            <meshStandardMaterial color="#7ee0d0" emissive="#7ee0d0" emissiveIntensity={0.8} />
+          </mesh>
+        </group>
+      ))}
     </group>
   );
 }

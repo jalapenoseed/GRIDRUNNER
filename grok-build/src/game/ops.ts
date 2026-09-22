@@ -24,7 +24,7 @@ export const BRIEFING_DEFS: BriefingDef[] = [
     id: "drill",
     title: "Formation Drill",
     tag: "Training",
-    blurb: "Hold wedge, line, then ring at 80% cohesion for three seconds each. Three minutes.",
+    blurb: "Hold wedge, line, then ring at 80% cohesion for three seconds each. Spell GRID when you want a show.",
     time: 180,
     sizeHint: 16,
     win: "Drill complete",
@@ -60,12 +60,18 @@ export const BRIEFING_DEFS: BriefingDef[] = [
     id: "free",
     title: "Free Flight",
     tag: "Lab",
-    blurb: "Tap the yard to rally. Filter airframes, hold formation, launch and recall. No clock.",
+    blurb: "Tap the yard to rally. Filter airframes, hold formation, spell a word, launch and recall. No clock.",
     time: 0,
     sizeHint: 16,
     win: "Open field",
   },
 ];
+
+export const FIELD_STORY = {
+  logline:
+    "02:14 — northern feed went dark. GRIDRUNNER rides the corridor, harvests the cells, banks them at the cyan gates. Three waves. The substation is the end of the line.",
+  win: "Substation live. The northern hop can take a fleet. WATCH-01 saw the lights — hangar before they vector.",
+};
 
 export function briefingDef(id: Briefing) {
   return BRIEFING_DEFS.find((b) => b.id === id) ?? BRIEFING_DEFS[0];
